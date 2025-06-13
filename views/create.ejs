@@ -1,0 +1,16 @@
+<%- include("partials/start.ejs") -%>
+
+<h1>Creación de grupo de arte</h1>
+<form method="POST" action="/creategroup" enctype="multipart/form-data">
+    <p>Título*</p>
+    <input type="text" minlength="1" maxlength="30" name="title" required>
+    <p>Descripción</p>
+    <input type="text" maxlength="250" name="description">
+    <p>Contraseña*</p>
+    <input type="password" minlength="5" name="password" required>
+    <p>Icono del grupo</p>
+    <input type="file" name="icon">
+    <button type="submit">Crear</button>
+</form>
+
+<%- include("partials/end.ejs") -%>

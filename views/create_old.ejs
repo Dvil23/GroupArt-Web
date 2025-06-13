@@ -1,0 +1,91 @@
+<%- include("partials/start.ejs") -%>
+<h1>Crear un grupo</h1>
+<form method="POST">
+    <input type="text" name="title" placeholder="Nombre del grupo">
+
+    <input type="file" name="grouppicture">
+
+
+
+
+    <h1>Creación de sesiones</h1>
+    <h3>Programa automaticamente las sesiones, o crealas tú manualmente</h3>
+    <button type="button" id="auto_button">Automaticas</button>
+    <button type="button" id="manual_button">Manuales</button>
+    <!-- Solo mostrar si seleccionas automáticas -->
+    <div id="auto_container">
+        <p>Número de sesiones por día</p> 
+        <p>
+            <input type="number" id="session_count"> sesiones de arte cada 
+            <input type="number" id="session_days"> día(s)
+        </p>
+    </div>
+    <!-- ------------------------------------- -->
+
+
+    <h1>Limitaciones para los usuarios</h1>
+
+    <p>Fecha para publicaciones en las sesiones de arte</p>
+    <span>Dictará cuando los usuarios podrán subir sus imagenes a las sesiones de arte</span>
+    <select name="limitpublishedimages">
+        <option value="punctual">Puntuales: Solo el día de la sesión</option>
+        <option value="flexible">Flexible: El día de la sesión y los anteriores</option>
+        <option value="unlimited">Ilimitado: Cualquier día</option>
+    </select>
+
+    <p>Publicaciones máximas de un individuo por sesión de arte</p>
+    <select name="maxpostsperuser" id="post_limit_select">
+        <option value="onceperday">Una por día</option>
+        <option value="unlimited">Ilimitadas</option>
+        <option value="custom">Personalizable</option>
+    </select>
+
+    <!-- Solo mostrar si seleccionas personalizable -->
+    <input type="number" name="maxpostsperusercustom" id="custom_post_limit" style="display: none;">
+    <!-- ---------------------------------------------- -->
+
+
+
+    <button type="submit">Acceder</button>
+</form>
+
+<script>
+
+  // Script para sesiones automaticas o manuales
+  const autoButton = document.getElementById('auto_button')
+  const manualButton = document.getElementById('manual_button')
+  const autoContainer = document.getElementById('auto_container')
+  const sessionCount = document.getElementById('session_count')
+  const sessionDays = document.getElementById('session_days')
+
+  autoContainer.style.display = 'block'
+
+  autoButton.addEventListener('click', () => {
+    autoContainer.style.display = 'block'
+  });
+
+  manualButton.addEventListener('click', () => {
+    autoContainer.style.display = 'none'
+    sessionCount.value = ''
+    sessionDays.value = ''
+  });
+</script>
+<script>
+
+  // Script para publicaciones de un invidiuo custom
+  const post_limit_select = document.getElementById('post_limit_select')
+  const customPostInput = document.getElementById('custom_post_limit')
+
+  post_limit_select.addEventListener('change', () => {
+    if (post_limit_select.value === 'custom') {
+      customPostInput.style.display = 'inline'
+      customPostInput.value = 1
+    } else {
+      customPostInput.style.display = 'none'
+      customPostInput.value = 0
+    }
+  });
+  
+</script>
+
+<%- include("partials/end.ejs") -%>

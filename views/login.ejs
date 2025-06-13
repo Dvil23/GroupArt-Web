@@ -1,0 +1,17 @@
+<%- include("partials/start.ejs") -%>
+
+<h1>Login</h1>
+
+<form method="POST">
+    <input type="email" name="email" placeholder="email" value="<%= email %>" required>
+    <input type="password" name="password" placeholder="password" required>
+    <button type="submit">Acceder</button>
+    <% if (error){ %>
+    <p>El email o contraseña son incorrectos.</p>
+    <% } %>
+    <p>¿No tienes una cuenta? Registrate <a href="/register">aquí</a></p>
+</form>
+
+
+
+<%- include("partials/end.ejs") -%>

@@ -1,0 +1,52 @@
+<%- include("partials/start.ejs") -%>
+
+<h1>Inicio</h1>
+    <% if (typeof myuser!=='undefined'){ %> 
+
+    <form method="GET" action="/creategroup">
+        <button type="submit">Crear tú grupo de arte</button>
+    </form>
+    <form method="GET" action="/accessgroup">
+        <button type="button" id="openPopup">Acceder a un grupo de arte</button>
+    </form>
+
+    <% }%>
+
+
+<script src="/sweetalert2/sweetalert2.all.min.js"></script>
+    
+<script>
+    document.getElementById('openPopup').addEventListener('click', () => {
+    Swal.fire({
+        title: 'Introduce el código del grupo',
+        input: 'text',
+        inputLabel: 'Código',
+        inputPlaceholder: 'Ej: abcd1234',
+        showCancelButton: true,
+        confirmButtonText: 'Acceder',
+        preConfirm: (code) => {
+        if (!code) {
+            Swal.showValidationMessage('Tienes que escribir un código');
+            return false;
+        }
+        // Si hay código, redirigimos al GET
+        window.location.href = '/accessgroup?code=' + encodeURIComponent(code);
+        }
+    });
+    });
+</script>
+
+<% if (invalidcode) { %>
+
+    <script>
+        Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No existe ningún grupo con ese código.',
+        confirmButtonText: 'Salir'
+        });
+  </script>
+
+<% } %>
+
+<%- include("partials/end.ejs") -%>
