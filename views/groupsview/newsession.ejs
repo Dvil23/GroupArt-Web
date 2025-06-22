@@ -1,0 +1,215 @@
+<%- include("../partials/start.ejs") -%>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<h1>Crear nueva sesión de arte</h1>
+<form method="POST" action="/group/<%=encrypted_id%>/event/<%= event_id %>/newsession">
+    <p>Tema*</p>
+    <input type="text" name="topic" maxlength="30" required>
+    <p>Descripción</p>
+    <input type="text" name="description" maxlength="250" placeholder="Máximo 250 carácteres">
+    
+<!-- DATE START  -->
+<fieldset>
+    <legend>Inicio de la sesión</legend>
+    <label>
+      <input type="radio" name="start_date_option" value="now" checked>
+      Activar inmediatamente
+    </label>
+    <label>
+      <input type="radio" name="start_date_option" value="custom">
+      Elegir fecha personalizada
+    </label>
+        <!-- Calendario para empezar -->
+    <div id="start_picker_container" style="display: none">
+      <input type="text" id="start_date" name="date_start" placeholder="Selecciona una fecha">
+    </div>
+
+    <!-- Escoger hora para empezar -->
+    <div id="start_hour_option_div" style="display:none">
+        <legend>Hora de inicio</legend>
+        <label>
+            <input type="radio" name="start_hour_option" value="start" checked>
+            Cuando empieza el dia
+        </label>
+        <label>
+            <input type="radio" name="start_hour_option" value="custom">
+            Elegir hora personalizada
+        </label>
+        <div id="start_hour_div" style="display: none">
+            <input type="text" id="start_hour" name="hour_start" placeholder="Selecciona una hora">
+        </div>
+    </div>
+   
+
+</fieldset>
+
+<!-- DATE END  -->
+<fieldset>
+    <legend>Final de la sesión</legend>
+    <p>Los usuarios no podrán publicar sus imagenes una vez la sesión termine.</p>
+    <p>(Aunque haya terminado, podrá permitir la publicación de imagenes de nuevo si así lo desea)</p>
+
+    
+    <label>
+      <input type="radio" name="end_date_option" value="none" checked>
+      Sin fecha de finalización
+    </label>
+    <label>
+      <input type="radio" name="end_date_option" value="custom">
+      Elegir fecha personalizada
+    </label>
+
+      <!-- Calendario para acabar -->
+    <div id="end_picker_container" style="display: none">
+      <input type="text" id="end_date" name="date_end" placeholder="Selecciona una fecha">
+    </div>
+
+    
+      <!-- Hora para finalizar -->
+    <div id="end_hour_option_div" style="display: none">
+        <legend>Hora de finalización</legend>
+        <label>
+            <input type="radio" name="end_hour_option" value="midnight" checked>
+            Al finalizar el dia
+        </label>
+        <label>
+            <input type="radio" name="end_hour_option" value="custom">
+            Elegir hora personalizada
+        </label>
+        <div id="end_hour_div" style="display: none">
+            <input type="text" id="end_hour" name="hour_end" placeholder="Selecciona una hora">
+        </div>
+
+    </div>
+</fieldset>
+
+
+
+<!-- OPCIÓN DE LÍMITE DE IMÁGENES -->
+<fieldset>
+    <legend>Máximo de imagenes permitidas por usuario</legend>
+    <label>
+    <input type="radio" name="max_images_option" value="one" checked>
+    Una imagen por usuario
+    </label>
+    <label>
+    <input type="radio" name="max_images_option" value="unlimited">
+    Ilimitadas
+    </label>
+    <label>
+    <input type="radio" name="max_images_option" value="custom">
+    Personalizado
+    </label>
+
+
+    <div id="custom_image_limit" style="display: none">
+    <label for="custom_images_count">¿Cuántas imágenes por usuario?</label>
+    <input type="number" id="custom_images_count" name="images_custom_count" min="2" max="20" value="2">
+    </div>
+
+
+    <% if (error == 1){ %>
+        <p>La fecha de inicio introducida es mayor o igual a la de finalización</p>
+    <% } else if (error == 2){%>
+        <p> La hora de inicio introducida es mayor o igual a la de finalización</p>
+    <% } else if (error == 3){ %>
+        <p> Una sesión de arte ya tiene ese tema</p>
+    <% } else if ( error == 4){ %>
+        <p>Porfavor, elija una hora si escoge la opción "Elegir hora personalizada" </p>
+    <% } else if ( error == 5){ %>
+        <p>Porfavor, elija una fecha si escoge la opción "Elegir fecha personalizada" </p>
+    <% } %>
+    <button type="submit">Crear</button>
+</form>
+
+</fieldset>
+
+
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script>
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // Formateamos los input text con la libreria de Flatpickr, para que sean calendarios
+    let startPicker = flatpickr("#start_date", {
+      minDate: "today",
+      dateFormat: "Y-m-d"
+    })
+
+    let endPicker = flatpickr("#end_date", {
+      minDate: "today",
+      dateFormat: "Y-m-d"
+    })
+
+    let start_buttons = document.getElementsByName("start_date_option")
+    let end_buttons = document.getElementsByName("end_date_option")
+
+    // Condiciones booleanas. Si el valor de los botones es "custom" cambia a true, si no, es false.
+    start_buttons.forEach(radio => {
+        radio.addEventListener("change", () => {
+            let is_custom = radio.value === "custom"
+            document.getElementById("start_picker_container").style.display = is_custom  ? "block" : "none"
+            document.getElementById("start_hour_option_div").style.display = is_custom ? "block" : "none"
+            if (is_custom){
+                document.getElementById("start_hour").value = "12:00"
+            }
+      })
+    })
+
+    end_buttons.forEach(radio => {
+        radio.addEventListener("change", () => {
+            let is_custom = radio.value === "custom"
+            document.getElementById("end_picker_container").style.display = is_custom  ? "block" : "none"
+            document.getElementById("end_hour_option_div").style.display = is_custom  ? "block" : "none"
+            if (is_custom){
+                document.getElementById("end_hour").value = "12:00"
+            }
+        })
+    })
+  
+
+     let startHourPicker = flatpickr("#start_hour", {
+      enableTime: true,
+      noCalendar: true,
+      dateFormat: "H:i",
+      time_24hr: true
+    })
+
+    let endHourPicker = flatpickr("#end_hour", {
+      enableTime: true,
+      noCalendar: true,
+      dateFormat: "H:i",
+      time_24hr: true
+    })
+
+    let start_hour_buttons = document.getElementsByName("start_hour_option")
+    let end_hour_buttons = document.getElementsByName("end_hour_option")
+
+    start_hour_buttons.forEach(radio => {
+      radio.addEventListener("change", () => {
+        document.getElementById("start_hour_div").style.display = radio.value === "custom" ? "block" : "none"
+      })
+    })
+
+    end_hour_buttons.forEach(radio => {
+      radio.addEventListener("change", () => {
+        document.getElementById("end_hour_div").style.display = radio.value === "custom" ? "block" : "none"
+      })
+    })
+
+
+    // Condición booleana. Quitar o mostrar la opcion de maximas imagenes por usuario custom
+    let max_images_buttons = document.getElementsByName("max_images_option")
+    let custom_max_image_input = document.getElementById("custom_image_limit")
+
+    max_images_buttons.forEach(radio => {
+      radio.addEventListener("change", () => {
+        custom_max_image_input.style.display = radio.value === "custom" ? "block" : "none"
+      })
+    })
+  })
+</script>
+
+<%- include("../partials/end.ejs") -%>

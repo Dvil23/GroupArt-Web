@@ -1,0 +1,29 @@
+<%- include("../partials/start.ejs") -%>
+<h1><%= element.title %></h1>
+<h3><%= element.description %></h1>
+<% if (isadmin){ %>
+    <form method="GET" action="/group/<%=encrypted_id%>/event/<%= event_id %>/newsession">
+        <button type="submit">Crear nueva sesión</button>
+    </form>
+<% } %>
+<% sessions.forEach((session) => { %>
+  <form>
+    <h1><%= session.topic %></h1>
+
+    <% if (session.description) { %>
+      <h3><%= session.description %></h3> 
+    <% } %>
+
+    <% if (session.has_started) { %>
+      <p>Empezó el <%= session.date_start_formatted %> a las <%= session.hour_start_formatted %></p>
+    <% } else { %>
+      <p>Empieza en el <%= session.date_start_formatted %> a la hora <%= session.hour_start_formatted %></p>
+    <% } %>
+
+    <% if (session.date_end_formatted && session.hour_end_formatted) { %>
+      <p>Finaliza el <%= session.date_end_formatted %> a las <%= session.hour_end_formatted %></p>
+    <% } %>
+  </form>
+<% }) %>
+<% console.log("hola",sessions) %>
+<%- include("../partials/end.ejs") -%>

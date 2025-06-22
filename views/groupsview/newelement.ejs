@@ -1,0 +1,77 @@
+<%- include("../partials/start.ejs") -%>
+
+<form method="POST" enctype="multipart/form-data">
+    <h1>Escoge que crear</h1>
+
+    <input type="radio" name="section_type" value="gallery" id="radio_gallery" hidden>
+    <input type="radio" name="section_type" value="event" id="radio_event" hidden>
+
+    <div id="choose_element">
+        <div id="choose_gallery" class="choose_box">
+            <h2>Galería</h2>
+            <p>Comparte y visualiza tu arte y el de tus amigos sin límites. </p>
+        </div>
+        <div id="choose_event" class="choose_box">
+            <h2>Evento</h2>
+            <p>Crea sesiones de dibujo con o sin limite de tiempo que se desbloquean en las fechas acordadas.</p>
+            <span>Podras visualizar las imagenes incluso aunque acabe la sesión</span>
+        </div>
+    </div>
+
+    <p>Título</p>
+    <input type="text" name="title" minlength="1" maxlength="30">
+    <p>Descripción (Opcional)</p>
+    <input type="text" name="description" maxlength="250">
+    <p>Imagen de portada</p>
+    <input type="file" name="cover" id="cover">
+    <p>Banner</p>
+    <input type="file" name="banner" id="banner">
+    <button type="submit">Crear</button>
+
+    <% if (error==1){ %>
+        <span>Debe rellenar el campo de título</span>
+    <% }else if(error==2){ %>
+        <span>Debe escoger entre galería o evento</span>
+    <% }else if(error == 3){ %>
+        <span>Un evento o galería con el mismo nombre ya existe en tu grupo</span>
+    <% }  %>
+</form>
+
+
+<style>
+  .choose_box {
+    border: 2px solid transparent;
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  .choose_box.selected {
+    border: 2px solid black;
+  }
+</style>
+
+<script>
+  let chooseGallery = document.getElementById('choose_gallery')
+  let chooseEvent = document.getElementById('choose_event')
+  let radioGallery = document.getElementById('radio_gallery')
+  let radioEvent = document.getElementById('radio_event')
+
+  function clearSelection() {
+    chooseGallery.classList.remove('selected')
+    chooseEvent.classList.remove('selected')
+  }
+
+  chooseGallery.addEventListener('click', () => {
+    clearSelection()
+    chooseGallery.classList.add('selected')
+    radioGallery.checked = true
+  });
+
+  chooseEvent.addEventListener('click', () => {
+    clearSelection()
+    chooseEvent.classList.add('selected')
+    radioEvent.checked = true
+  });
+</script>
+
+<%- include("../partials/end.ejs") -%>

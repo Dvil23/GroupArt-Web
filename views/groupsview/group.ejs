@@ -1,5 +1,96 @@
 <%- include("../partials/start.ejs") -%>
 
-<h1>Hola</h1>
+<h1><%= group.title %></h1>
 
+<% if(group.description == ""){  %>
+<p style="color:gray">Sin descripción</p>
+<% }else{ %>
+<%= group.description %>
+<% } %>
+
+
+<% if (isadmin){ %>
+    <form method="GET" action="/group/<%=encrypted_id%>/newelement">
+        <button>Crear nueva galería o evento</button>
+    </form>
+<% }%>
+
+<% if (sections.length>0){%>
+    <% sections.forEach((section,index) => { %>
+    <form method="GET" action="/group/<%=encrypted_id%>/<%= section.section_type %>/<%=section.id%>" class="section_forms" id="section_form_<%= index %>">
+        <% if (section.section_type == "event") {%>
+        <h3>Evento</h2>
+        <% }else if(section.section_type == "gallery"){ %>
+        <h3>Galería</h2>
+        <% }%>
+        <h2><%=section.title %></h2>
+        <p><%=section.description %></p>
+    </form>
+    <% }) %>
+<% }else if(sections.length==0 & isadmin){%>
+    <p><%= group.title %> está vacío por ahora ¿Que quieres crear?</p>
+    
+<% }else{ %>
+    <p><%= group.title %> está vacío por ahora</p>
+<% } %>
+    
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        let sections_forms = document.querySelectorAll('.section_forms');
+        sections_forms.forEach(form => {
+            form.addEventListener('click', () => {
+                form.submit();
+            });
+        });
+    });
+</script>
+
+
+<script src="/sweetalert2/sweetalert2.all.min.js"></script>
+
+    <% if (created_element == 1 || created_element == 2) { %>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        let mensaje = ""
+        if (<%= created_element %> === 1) {
+            mensaje = "Se ha creado la nueva galería correctamente"
+        } else if (<%= created_element %> === 2) {
+            mensaje = "Se ha creado el nuevo evento correctamente"
+        }
+
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: mensaje,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        })
+    })
+ 
+</script>
+   <% } %>
+
+<style>
+    .swal2-container.swal2-top-end {
+    top: 5% !important;
+    right: 5% !important
+    }
+</style>
+
+<style>
+    .section-card {
+        border: 1px solid #ccc;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+    .section-card:hover {
+        background-color: #f0f0f0;
+    }
+</style>
 <%- include("../partials/end.ejs") -%>
