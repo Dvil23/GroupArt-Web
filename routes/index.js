@@ -700,9 +700,11 @@ router.post('/group/:id/event/:sect_id/newsession', isLoggedIn, isMemberOfGroup(
 
 
   //Mira que no haya otra sesión con el mismo titulo
-  let check_same_title = "SELECT * FROM sessions WHERE art_group_id = ? AND topic = ?"
-
-  db.query(check_same_title, [req.params.id,topic], (error,results) => {
+  let check_same_title = "SELECT * FROM sessions WHERE section_id = ? AND topic = ?"
+  console.log("sect id:",req.params.sect_id)
+  db.query(check_same_title, [req.params.sect_id,topic], (error,results) => {
+    console.log("resultado:",results)
+    console.log("error:",error)
     if (results.length>0){
       return res.redirect("/group/"+req.params.id+"/event/"+req.params.sect_id+"/newsession?error=3")
     }else{
@@ -719,7 +721,7 @@ router.post('/group/:id/event/:sect_id/newsession', isLoggedIn, isMemberOfGroup(
       //Insertar si todo es correcto y válido
       let insert_session = "INSERT INTO sessions (topic, description, date_start, date_end, section_id, images_per_user, hour_start, hour_end) VALUES (?,?,?,?,?,?,?,?)"
 
-      db.query(insert_session, [topic,description,date_start,date_end,results[0].id,final_max_images,hour_start,hour_end], (error,insert_results) => {
+      db.query(insert_session, [topic,description,date_start,date_end,req.params.sect_id,final_max_images,hour_start,hour_end], (error,insert_results) => {
         if (error){ console.log(error)}
         console.log(insert_results)
         res.redirect("/group/"+req.params.id+"/event/"+req.params.sect_id+"/newsession")

@@ -1,0 +1,14 @@
+</head>
+<body>
+    <header>
+    <% if (typeof myuser!=='undefined'){ %>    
+        <p>Bienvenido, <%=myuser.myusername%></p>
+    <% }else{ %>
+        <form method="GET" action="/login">
+            <button type="submit">Login</button>
+        </form>
+        <form method="GET" action="/register">
+            <button type="submit">Registrarse</button>
+        </form>
+    <% }%>
+    </header>
