@@ -1,0 +1,22 @@
+<%- include("../partials/start.ejs") -%>
+<%- include("../partials/header.ejs") -%>
+
+
+<% members.forEach((user) => { %>
+    <p><%=user.username%></p>
+    <% if(user.type=="2" ){ %>
+        <p>Creador</p>
+    <%}else if(user.type=="1"){ %>
+        <p>Admin</p>
+        <% if (issuperadmin){ %>
+            <form method="POST" action="/group/<%=encrypted_id%>/members/<%=user.id%>">
+                <button>Quitar admin</button>
+            </form>
+        <% } %>
+    <%} else if(user.type=="0" && issuperadmin){%>
+        <form method="POST" action="/group/<%=encrypted_id%>/members/<%=user.id%>">
+            <button>Añadir admin</button>
+        </form>
+    <%}%>
+<% }) %>
+<%- include("../partials/end.ejs") -%>

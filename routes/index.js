@@ -148,6 +148,37 @@ function ConvertToMinutes(timeStr) {
   return total
 }
 
+function format_sessions(sessions, currentTime = dayjs().tz("Europe/Madrid")) {
+  return sessions.map(s => {
+    // Fecha y hora de inicio
+    const startDate = dayjs(`${dayjs(s.date_start).format("YYYY-MM-DD")} ${s.hour_start}`, "YYYY-MM-DD HH:mm").tz("Europe/Madrid")
+    const has_started = currentTime.isAfter(startDate)
+
+    // Fecha y hora de fin, si existen
+    let endDate = null
+    let has_ended = false
+    let date_end_formatted = null
+    let hour_end_formatted = null
+
+    if (s.date_end && s.hour_end) {
+      endDate = dayjs(`${dayjs(s.date_end).format("YYYY-MM-DD")} ${s.hour_end}`, "YYYY-MM-DD HH:mm").tz("Europe/Madrid")
+      has_ended = currentTime.isAfter(endDate)
+      date_end_formatted = endDate.format("YYYY-MM-DD")
+      hour_end_formatted = endDate.format("HH:mm")
+    }
+
+    return {
+      ...s,
+      date_start_formatted: startDate.format("YYYY-MM-DD"),
+      hour_start_formatted: startDate.format("HH:mm"),
+      date_end_formatted,
+      hour_end_formatted,
+      has_started,
+      has_ended
+    }
+  })
+}
+
 // -------------------------- INDISPENSABLES --------------------------
 
 // GET home page
@@ -390,6 +421,67 @@ router.get('/group/:id', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), function
   })
 })
 
+// GET MEMBERS
+router.get('/group/:id/members', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), function(req, res, next) {
+
+  let find_members = "SELECT users.*, members.type FROM members JOIN users ON users.id = members.users_id WHERE members.art_group_id = ? ORDER BY FIELD(members.type, 2, 1, 0)"
+
+  db.query(find_members, [req.art_group.id], (error,users) => {
+
+    let find_superadmin = "SELECT * FROM members WHERE users_id = ?"
+
+    db.query(find_superadmin, [req.session.myuser.id], (error,current_user) => {
+      res.render("groupsview/members", {
+        encrypted_id: req.params.id,
+        isadmin: req.isadmin,
+        issuperadmin: (current_user[0].type == 2),
+        members: users
+    })
+    })
+  })
+})
+
+
+// POST MEMBERS MAKE OR REMOVE ADMIN
+router.post('/group/:id/members/:changeadmin_id', isLoggedIn, isMemberOfGroup(true), GetGroupInfo(), function(req, res, next) {
+
+  let find_superadmin = "SELECT * FROM members WHERE users_id = ?"
+
+  db.query(find_superadmin, [req.session.myuser.id], (error,mysuperadmin) => {
+    //El usuario que ha mandado la acción existe
+    if (mysuperadmin.length >0){
+      //El usuario que ha mandado la acción es el creador. El unico que puede cambiar admin
+      if (mysuperadmin[0].type !== "2"){
+
+        let find_changeadmin = "SELECT * FROM members WHERE users_id = ? AND art_group_id = ?"
+
+        db.query(find_changeadmin, [req.params.changeadmin_id,req.art_group.id], (error,user) => {
+
+          //El usuario que vamos a cambiar existe y no es el creador
+          if (user==undefined || user.length <=0 || user[0].type== "2"){
+            return res.redirect("/group/"+ req.params.id +"/members")
+          }
+
+          //Si es admin, no lo será. Si no es admin, lo será.
+          let newtype = user[0].type === 1 ? 0 : 1
+
+          let changeadmin = "UPDATE members SET type = ? WHERE users_id = ? AND art_group_id = ?"
+
+          //Cambiar o quitar admin
+          db.query(changeadmin, [newtype,req.params.changeadmin_id,req.art_group.id], (error,changed_user) => {
+            return res.redirect("/group/"+ req.params.id +"/members")
+          })
+        })
+
+      }else{
+        return res.redirect("/group/"+ req.params.id +"/members")
+      }
+    }else{
+      return res.redirect("/group/"+ req.params.id +"/members")
+    }
+  })
+})
+
 
 // ----------------------------- LOGIN & REGISTER MEMBER TO GROUP -----------------------------
 
@@ -543,35 +635,17 @@ router.get('/group/:id/event/:sect_id', isLoggedIn, isMemberOfGroup(), GetGroupI
       let find_sessions = "SELECT * FROM sessions WHERE section_id = ? ORDER BY date_start ASC, hour_start ASC"
 
       db.query(find_sessions, [results[0].id], (error,sessions) => {
-        sessions = sessions.map(s => {
-        const startDate = dayjs(`${dayjs(s.date_start).format("YYYY-MM-DD")} ${s.hour_start}`, "YYYY-MM-DD HH:mm").tz("Europe/Madrid");
-        
-        let has_started = Spain.isAfter(startDate)
 
-        let has_ended = false
-        if (s.date_end && s.hour_end) {
-          const endDate = dayjs(`${dayjs(s.date_end).format("YYYY-MM-DD")} ${s.hour_end}`, "YYYY-MM-DD HH:mm").tz("Europe/Madrid");
-          has_ended = Spain.isAfter(endDate)
-        }
-
-        return {
-          ...s,
-          date_start_formatted: startDate.format("YYYY-MM-DD"),
-          hour_start_formatted: startDate.format("HH:mm"),
-          date_end_formatted: s.date_end ? dayjs(s.date_end).format("YYYY-MM-DD") : null,
-          hour_end_formatted: s.hour_end ? dayjs(s.hour_end, "HH:mm:ss").format("HH:mm") : null,
-          has_started,
-          has_ended
-        };
-      });
+        //Formatear la session para añadir variables de has started, has ended o active
+        let formatted_sessions = format_sessions(sessions)
 
         res.render('groupsview/event', {
           encrypted_id: req.params.id,
           event_id: req.params.sect_id,
           isadmin: req.isadmin,
           element: results[0],
-          sessions: sessions
-        });
+          sessions: formatted_sessions
+        })
       })
     }else{
       console.log("fallado primero")
@@ -579,6 +653,10 @@ router.get('/group/:id/event/:sect_id', isLoggedIn, isMemberOfGroup(), GetGroupI
     }
   })
 })
+
+
+
+// ----------------------------- SESSIONS IN EVENT  -----------------------------
 
 // GET CREATE SESSION IN EVENT
 router.get('/group/:id/event/:sect_id/newsession', isLoggedIn, isMemberOfGroup(true), GetGroupInfo(), function(req, res, next) {
@@ -696,7 +774,7 @@ router.post('/group/:id/event/:sect_id/newsession', isLoggedIn, isMemberOfGroup(
 
 
   //Si opción de imagenes es one pone 1, si es unlimited null y si no, el valor custom
-  let final_max_images = max_images_option === "one" ? 1 : max_images_option === "unlimited" ? null : images_custom_count;
+  let final_max_images = max_images_option === "one" ? 1 : max_images_option === "unlimited" ? null : images_custom_count
 
 
   //Mira que no haya otra sesión con el mismo titulo
@@ -730,6 +808,35 @@ router.post('/group/:id/event/:sect_id/newsession', isLoggedIn, isMemberOfGroup(
   })  
 })
 
+// GET VISTA SESSION OF EVENT
+router.get('/group/:id/event/:sect_id/session/:sess_id', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), function(req, res, next) {
+  
+  let find_session = "SELECT * FROM sessions WHERE id = ?"
+
+  db.query(find_session, [req.params.sess_id], (error,sess_result) => {
+    console.log(error,sess_result)
+    if (sess_result.length>0){
+      let formatted_session = format_sessions(sess_result)
+      if (formatted_session[0].has_started == false){
+        res.redirect("/group/"+req.params.id+"/event/"+req.params.sect_id)
+      }else{
+        res.render('groupsview/session',{
+          encrypted_id: req.params.id,
+          event_id: req.params.sect_id,
+          sess_id: req.params.sess_id,
+          session: formatted_session[0]
+        })
+      }
+      
+    }else{
+      res.redirect("/group/"+req.params.id+"/event/"+req.params.sect_id)
+    }
+  })
+      
+
+})
+
+
 module.exports = router;
 
 
@@ -740,26 +847,5 @@ module.exports = router;
 //imagenes a nivel de usuario en tu perfil
 //cambiar tu foto de perfil
 //cambiar fotos y banners de secciones y grupos
-//crear secciones
 //Comentarios, a nivel de la imagen a nivel de usuario
 
-
-
-// // GET VISTA EVENT
-// router.get('/group/:id/event/:sect_id', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), function(req, res, next) {
-
-//   let find_section = "SELECT * FROM sections WHERE id = ?"
-
-//   db.query(find_section, [req.params.sect_id], (error,results) => {
-
-//     if(results.length > 0){
-
-//       res.render('groupsview/event',{
-//         event_id: req.params.sect_id,
-//         isadmin: req.isadmin
-//       })
-//     }else{
-//       res.redirect('/group/'+ req.params.id)
-//     }
-//   })
-// })
