@@ -1,39 +1,52 @@
 <%- include("partials/start.ejs") -%>
 <%- include("partials/header.ejs")-%>
-
-<h1>Inicio</h1>
-    
-
-    <form method="GET" action="/creategroup">
-        <button type="submit">Crear tu grupo de arte</button>
-    </form>
-    <form method="GET" action="/accessgroup">
-        <button type="button" id="openPopup">Acceder a un grupo de arte</button>
-    </form>
-    
-        <div class="content">
-            <div class="content_title">
-                <h1>Friends&Art</h1>
-                <h2>Trigger your inspiration together</h2>
-                <div>
-                    <% if (typeof myuser!=='undefined'){ %> 
-                        <div class="content_buttons">
-                            <div class="button_container">
-                                <button></button>
-                            </div>
-                            
-                        </div>
-                    <% }else{%>
-                        <div class="content_info">
-                            <h3>¿Tienes un código?</h3>
-                            <h4><a href="/register">Regístrate</a> o <a href="/login">Inicia sesión</a></h4>
-                        </div>
-                    <% }%>
-
-                </div>
+<link rel="stylesheet" href="/stylesheets/inicio.css" class="css">
+<div class="global">
+    <div class="global_title">
+        <div class="title">
+            <h1>Koraw</h1>
         </div>
-    
-
+        <div class="subtitle">
+            <h2>Trigger your inspiration together</h2>
+        </div>
+        <% if (typeof myuser!=='undefined'){ %> 
+        <div class="content_buttons">
+            <form class="button_container" method="GET" action="/creategroup">
+                <button type="submit">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <p>Unirse a un grupo</p>
+                </button>
+            </form>
+            <form class="button_container" method="GET" action="/accessgroup">
+                <button type="button" id="openPopup">
+                    <i class="fa-solid fa-plus"></i> 
+                    <p>Crear a un grupo</p>
+                </button>
+            </form>
+        </div>
+        <% }else{%>
+        <div class="content_login">
+            <h3>¿Tienes un código?</h3>
+            <h4><a href="/register">Regístrate</a> o <a href="/login">Inicia sesión</a></h4>
+        </div>
+        <% }%>
+            
+    </div>
+    <div class="info">
+        <div class="info_item">
+            <i class="fa-solid fa-users"></i>
+            <p>Puedes crear o acceder a grupos de arte personalizables solo para tus amigos.</p>
+        </div>
+        <div class="info_item">
+            <i class="fa-solid fa-palette"></i>
+            <p>En tus grupos puedes tener galerías de arte donde puedes exponer tu arte con tus amigos !Como un museo!</p>
+        </div>
+        <div class="info_item">
+            <i class="fa-solid fa-calendar-day"></i>
+            <p>En tus grupos puedes crear eventos, donde puedes organizarte con tus amigos para dibujar.</p>
+        </div>
+    </div>
+</div>
 
 <script src="/sweetalert2/sweetalert2.all.min.js"></script>
     
