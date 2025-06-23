@@ -2,16 +2,37 @@
 <%- include("partials/header.ejs")-%>
 
 <h1>Inicio</h1>
-    <% if (typeof myuser!=='undefined'){ %> 
+    
 
     <form method="GET" action="/creategroup">
-        <button type="submit">Crear tú grupo de arte</button>
+        <button type="submit">Crear tu grupo de arte</button>
     </form>
     <form method="GET" action="/accessgroup">
         <button type="button" id="openPopup">Acceder a un grupo de arte</button>
     </form>
+    
+        <div class="content">
+            <div class="content_title">
+                <h1>Friends&Art</h1>
+                <h2>Trigger your inspiration together</h2>
+                <div>
+                    <% if (typeof myuser!=='undefined'){ %> 
+                        <div class="content_buttons">
+                            <div class="button_container">
+                                <button></button>
+                            </div>
+                            
+                        </div>
+                    <% }else{%>
+                        <div class="content_info">
+                            <h3>¿Tienes un código?</h3>
+                            <h4><a href="/register">Regístrate</a> o <a href="/login">Inicia sesión</a></h4>
+                        </div>
+                    <% }%>
 
-    <% }%>
+                </div>
+        </div>
+    
 
 
 <script src="/sweetalert2/sweetalert2.all.min.js"></script>

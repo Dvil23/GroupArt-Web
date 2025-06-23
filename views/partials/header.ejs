@@ -1,14 +1,32 @@
+<link rel="stylesheet" href="/stylesheets/header.css" class="css">
 </head>
 <body>
     <header>
-    <% if (typeof myuser!=='undefined'){ %>    
-        <p>Bienvenido, <%=myuser.myusername%></p>
+        <div class="header_title">
+            <h1 class="title">Friends&Art</h1>
+        </div>
+    <% if (typeof myuser!=='undefined'){ %>
+        <div class="header_functions">
+            <div>
+                <button class="header_button" type="submit">Inicio</button>
+            </div>
+            <div>
+                <button class="header_button" type="submit">Acceder Grupo</button>
+            </div>
+            <div class="profile_photo_div">
+                <div class="profile_photo">
+                    <img src="/images/default_pfp.jpg" alt="Foto de perfil">
+                </div>
+            </div>
+        </div>
     <% }else{ %>
-        <form method="GET" action="/login">
-            <button type="submit">Login</button>
-        </form>
-        <form method="GET" action="/register">
-            <button type="submit">Registrarse</button>
-        </form>
+        <div class="header_functions">
+            <form method="GET" action="/login">
+                <button class="header_button" type="submit">Login</button>
+            </form>
+            <form method="GET" action="/register">
+                <button class="header_button" type="submit">Registrarse</button>
+            </form>
+        </div>
     <% }%>
     </header>

@@ -1,0 +1,15 @@
+/*Add global styles to apply to all pages*/
+:root {
+  --color-blue: #228A78;
+  --color-lightblue: #a3d4cc;
+  --color-cream: #F3EADC;
+  --color-dark: #272D2D;
+  --font-main: "Inter", sans-serif;
+  --font-cool: "Lemonada", cursive;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}/*# sourceMappingURL=general_style.css.map */
