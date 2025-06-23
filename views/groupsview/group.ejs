@@ -12,9 +12,14 @@
 
 <% if (isadmin){ %>
     <form method="GET" action="/group/<%=encrypted_id%>/newelement">
-        <button>Crear nueva galería o evento</button>
+        <button type="submit">Crear nueva galería o evento</button>
     </form>
+
 <% }%>
+
+<form method="GET" action="/group/<%=encrypted_id%>/members">
+    <button type="submit">Miembros</button>
+</form>
 
 <% if (sections.length>0){%>
     <% sections.forEach((section,index) => { %>

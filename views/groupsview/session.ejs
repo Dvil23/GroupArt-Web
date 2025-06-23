@@ -1,0 +1,13 @@
+<%- include("../partials/start.ejs") -%>
+<%- include("../partials/header.ejs") -%>
+<h1>Estás en el sesioncita de artecita!</h1>
+
+<h1><%=session.topic%></h1>
+
+
+<% if (session.description) { %>
+    <h3><%= session.description %></h3> 
+<% } %>
+
+<% console.log(session) %>
+<%- include("../partials/end.ejs") -%>
