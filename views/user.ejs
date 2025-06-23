@@ -1,0 +1,42 @@
+<%- include("partials/start.ejs") -%>
+<%- include("partials/header.ejs")-%>
+
+<h1><%=user.username%></h1>
+<p><%=user.pfp%></p>
+
+<% var first_member_iteration=true %>
+
+<% groups.forEach((group,index) => { %>
+    <% if (group.type==2 && index == 0){ %>
+        <div style="background-color:antiquewhite">
+            <h1>Creador:</h1>
+    <% }%>
+    <% if (group.type==1 || group.type == 0  && first_member_iteration){ %>
+        <% first_member_iteration=false %>
+        </div>
+        <div style="background-color:rgb(174, 209, 167)">
+            <h1>Miembro:</h1>
+    <% }%>
+
+    <% if (user.isyou){ %>
+        <form method="GET" action="/group/<%=group.encrypted_id%>">
+    <% }else{ %>
+        <div>
+    <% } %>
+
+        <h3><%= group.title %></h3>
+        <p><%= group.description %></p>
+
+    <% if (user.isyou){ %>
+        <button type="access">Acceder</button>
+        </form>
+    <% }else{ %>
+        </div>
+    <% } %>
+
+    <% if (index === groups.length - 1) { %>
+        </div>
+    <% } %>
+
+<% }) %>
+<%- include("partials/end.ejs") -%>
