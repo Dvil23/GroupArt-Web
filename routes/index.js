@@ -40,7 +40,7 @@ function encriptar(texto) {
     resultado += cipher.final('hex')
     return resultado
   }catch(error){
-    console.error("Fallo al desencriptar:", e)
+    console.error("Fallo al encriptar:", error)
     return null
   }
   
@@ -187,7 +187,45 @@ router.get('/', function(req, res, next) {
   res.render('inicio',{invalidcode})
 })
 
+// GET USER PAGE
+router.get('/user/:user_username', isLoggedIn, (req, res, next) => {
+  const find_user = `SELECT id, username, pfp FROM users WHERE username = ?`;
 
+  db.query(find_user, [req.params.user_username], (error, user_results) => {
+
+    if (user_results.length === 0) {
+      return res.redirect("/");
+    }
+
+    const userData = user_results[0];
+
+    const user = {
+      username: userData.username,
+      pfp: userData.pfp,
+      isyou: userData.id === req.session.myuser.id
+    };
+
+    const find_groups = `
+      SELECT art_groups.id AS group_id, art_groups.title, art_groups.description, art_groups.group_picture,members.type AS member_type
+      FROM members
+      JOIN art_groups ON members.art_group_id = art_groups.id
+      WHERE members.users_id = ?
+      ORDER BY members.type DESC`;
+
+    db.query(find_groups, [userData.id], (error, group_results) => {
+
+      const groups = group_results.map(r => ({
+        encrypted_id: encriptar(r.group_id),
+        title: r.title,
+        description: r.description,
+        group_picture: r.group_picture,
+        type: r.member_type
+      }));
+
+      res.render("user", { user, groups });
+    });
+  });
+});
 // -------------------------- LOGIN Y REGISTER -------------------------- 
 
 // GET register 
