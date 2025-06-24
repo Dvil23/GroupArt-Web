@@ -1,18 +1,24 @@
 <%- include("partials/start.ejs") -%>
 <%- include("partials/header.ejs")-%>
+<link rel="stylesheet" href="/stylesheets/login.css" class="css">
 
-<h1>Login</h1>
-
-<form method="POST">
-    <input type="email" name="email" placeholder="email" value="<%= email %>" required>
-    <input type="password" name="password" placeholder="password" required>
-    <button type="submit">Acceder</button>
-    <% if (error){ %>
-    <p>El email o contraseña son incorrectos.</p>
-    <% } %>
-    <p>¿No tienes una cuenta? Registrate <a href="/register">aquí</a></p>
-</form>
-
-
+<div class="global">
+    <div class="shadow">
+        <form class="container" method="POST">
+            <h1>Iniciar sesión</h1>
+            <input type="email" name="email" placeholder="email" value="<%= email %>" required>
+            <input type="password" name="password" placeholder="password" required>
+            <div class="error">
+                <% if (error){ %>
+                <p>El email o contraseña son incorrectos.</p>
+                <% } %>
+            </div>
+            <div class="button_container">
+                <button type="submit">Acceder</button>
+            </div>
+            <p>¿No tienes una cuenta? Registrate <a href="/register">aquí</a></p>
+        </form>
+    </div>
+</div>
 
 <%- include("partials/end.ejs") -%>

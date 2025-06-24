@@ -16,6 +16,9 @@ header .header_title {
   width: 30%;
   margin-left: 3%;
 }
+header .header_title h1 {
+  cursor: pointer;
+}
 header .header_functions {
   font-family: var(--font-main);
   width: 70%;

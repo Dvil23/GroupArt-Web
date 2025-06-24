@@ -1,16 +1,28 @@
 <%- include("partials/start.ejs") -%>
 <%- include("partials/header.ejs")-%>
-
-<h1>Register</h1>
-<form method="POST" name="register">
-    <input type="text" name="username" placeholder="username" value = "<%= username %>">
-    <input type="email" name="email" placeholder="email" value = "<%= email %>">
-    <input type="password" name="password" placeholder="password">
-    <input type="password" name="repeat_password" placeholder="repeat_password">
-    <button type="submit">Registrarse</button>
-    <p><%= message %></p>
-    <p>¿Ya tienes cuenta? Logueate <a href="/login">aquí</a></p>
-</form>
+<link rel="stylesheet" href="/stylesheets/register.css" class="css">
+<div class="global">
+    <div class="shadow">
+        <form class="container" method="POST" name="register">
+            
+            <h1>Registrarse</h1>
+            <input type="text" name="username" placeholder="username" value = "<%= username %>">
+            <input type="email" name="email" placeholder="email" value = "<%= email %>">
+            <input type="password" name="password" placeholder="password">
+            <input type="password" name="repeat_password" placeholder="repeat_password">
+            <div class="error"> <!--Aquí falta un if de si hay error-->
+                <p><%= message %></p>
+            </div>
+            
+            <div class="button_container">
+                <button type="submit">Registrarse</button>
+            </div>
+            
+            <p>¿Ya tienes cuenta? Logueate <a href="/login">aquí</a></p>
+        
+        </form>
+    </div>
+</div>
 
 
 <%- include("partials/end.ejs") -%>

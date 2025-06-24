@@ -20,6 +20,7 @@
           text-decoration-skip-ink: none;
 }
 .global .global_title .title {
+  font-family: var(--font-cool);
   font-style: normal;
   font-size: xx-large;
   font-weight: 400;
