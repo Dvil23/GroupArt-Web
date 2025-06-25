@@ -14,11 +14,19 @@
                 <button class="header_button" type="submit">Acceder Grupo</button>
             </div>
             <form method="GET" action="/user/<%= myuser.myusername%>" class="profile_photo_div" id="profile_onclick">
-                <div class="profile_photo">
+                <div class="profile_photo" id="profile_photo_hover">
                     <img src="/images/default_pfp.jpg" alt="Foto de perfil">
                 </div>
             </form>
         </div>
+
+        <div class="profile_menu" id="profile_menu">
+            <a href="/user/<%= myuser.myusername%>">Ver perfil</a>
+            <form method="POST" action="/closesession">
+                <button type="submit">Cerrar sesión</button>
+            </form>
+        </div>
+
     <% }else{ %>
         <div class="header_functions">
             <form method="GET" action="/login">
@@ -38,3 +46,41 @@
         profile_image.submit();
     });
 </script>
+<% if (typeof myuser!=='undefined'){ %>
+<script>
+  const photo = document.getElementById('profile_photo_hover')
+  const menu = document.getElementById('profile_menu')
+
+  let isHovering = false
+
+  const showmenu = () => {
+    menu.style.display = 'block'
+  }
+
+  const hidemenu = () => {
+    if (!isHovering) {
+      menu.style.display = 'none'
+    }
+  }
+
+  photo.addEventListener('mouseenter', () => {
+    isHovering = true
+    showmenu()
+  })
+
+  photo.addEventListener('mouseleave', () => {
+    isHovering = false
+    setTimeout(() => hidemenu(), 400)
+  })
+
+  menu.addEventListener('mouseenter', () => {
+    isHovering = true
+    showmenu()
+  })
+
+  menu.addEventListener('mouseleave', () => {
+    isHovering = false
+    setTimeout(() => hidemenu(), 400)
+  })
+</script>
+<% } %>

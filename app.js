@@ -30,7 +30,10 @@ const session = require('express-session')
 app.use(session({
   secret: process.env.SESSION_COOKIE,
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 7 // 7 días en milisegundos
+  }
 }));
 
 app.use('/sweetalert2', express.static('node_modules/sweetalert2/dist'));

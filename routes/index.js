@@ -73,11 +73,17 @@ router.use((req, res, next) => {
 
 //Check si estás logeado
 function isLoggedIn(req, res, next) {
-  if (req.session && req.session.myuser) {
-    next() 
-  } else {
-    res.redirect('/login')
+  if (!req.session || !req.session.myuser) {
+    console.warn('Acceso no autorizado - sesión no válida');
+    return res.redirect('/login');
   }
+
+  if (!req.session.myuser.id || !req.session.myuser.myusername) {
+    console.error('Sesión inválida o incompleta');
+    return res.redirect('/login');
+  }
+
+  next();
 }
 
 
@@ -446,6 +452,15 @@ router.post('/login', function(req, res, next) {
       return
     }
   })
+})
+
+// CLOSE SESION
+router.post('/closession', isLoggedIn, function(req, res, next) {
+  req.session.destroy((err) => {
+    // ELIMINAR TAMBIEN COOKIE
+    res.clearCookie('connect.sid') 
+    res.redirect('/login')
+  });
 })
 
 // ----------------------------- GESTIÓN DE GRUPO -----------------------------
