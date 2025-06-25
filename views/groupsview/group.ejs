@@ -14,11 +14,14 @@
     <form method="GET" action="/group/<%=encrypted_id%>/newelement">
         <button type="submit">Crear nueva galería o evento</button>
     </form>
-
 <% }%>
 
 <form method="GET" action="/group/<%=encrypted_id%>/members">
     <button type="submit">Miembros</button>
+</form>
+
+<form method="GET" action="/group/<%=encrypted_id%>/getlinks">
+    <button type="submit">Compartir</button>
 </form>
 
 <% if (sections.length>0){%>
@@ -79,6 +82,50 @@
 </script>
    <% } %>
 
+   <% if (unique_code && unique_link) { %>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    Swal.fire({
+        title: 'Compartir grupo',
+        html: `
+            <div style="text-align:left">
+                <p><strong>Mediante código de invitación:</strong></p>
+                <span style="font-size:small">Los que reciban este código deberan insertarlo desde nuestra página web<span>
+                <div style="display:flex;align-items:center;gap:5px">
+                    <input id="swal-code" value="<%= unique_code %>" readonly style="flex:1;padding:4px;border:1px solid #ccc;border-radius:4px"/>
+                    <button onclick="copyToClipboard('swal-code')">📋</button>
+                </div>
+                <br>
+                <p><strong>O mediante enlace:</strong></p>
+                <div style="display:flex;align-items:center;gap:5px">
+                    <input id="swal-link" value="<%= unique_link %>" readonly style="flex:1;padding:4px;border:1px solid #ccc;border-radius:4px"/>
+                    <button onclick="copyToClipboard('swal-link')">📋</button>
+                </div>
+            </div>
+        `,
+        showConfirmButton: false,
+        showCloseButton: true
+    });
+});
+
+function copyToClipboard(id) {
+    let input = document.getElementById(id);
+    input.select();
+    input.setSelectionRange(0, 99999); // Para móviles
+    document.execCommand("copy");
+
+    Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Copiado al portapapeles',
+        showConfirmButton: false,
+        timer: 2000
+    });
+}
+</script>
+<% } %>
+
 <style>
     .swal2-container.swal2-top-end {
     top: 5% !important;
@@ -86,17 +133,4 @@
     }
 </style>
 
-<style>
-    .section-card {
-        border: 1px solid #ccc;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-    }
-    .section-card:hover {
-        background-color: #f0f0f0;
-    }
-</style>
 <%- include("../partials/end.ejs") -%>

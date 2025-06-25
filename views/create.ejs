@@ -7,10 +7,18 @@
     <input type="text" minlength="1" maxlength="30" name="title" required>
     <p>Descripción</p>
     <input type="text" maxlength="250" name="description">
+
     <p>Contraseña*</p>
+    <span>La contraseña debe ser de mínimo 5 carácteres</span>
     <input type="password" minlength="5" name="password" required>
+    <p>Repetir contraseña*</p>
+    <input type="password" minlength="5" name="repeat_password" required>
     <p>Icono del grupo</p>
     <input type="file" name="icon">
+
+    <% if (error) { %>
+        <p>Las contraseñas no coinciden</p>
+    <% } %>
     <button type="submit">Crear</button>
 </form>
 

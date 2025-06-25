@@ -19,6 +19,14 @@ dayjs.extend(timezone)
 
 const Spain = dayjs().tz('Europe/Madrid')
 
+//Mailer
+
+const transporter = require("../mailer");
+
+//uuid para tokens
+const { v4: uuidv4 } = require('uuid')
+const nodemailer = require("nodemailer")
+
 // --------------------------ENCRIPTAR DATOS --------------------------
 
 // Bcrypt
@@ -293,16 +301,42 @@ router.post('/register',  function(req, res, next) {
       bcrypt.genSalt(saltRounds, function(err, salt) {
         bcrypt.hash(password, salt, function(err, hash) {
           
-          let consulta_insert = "INSERT INTO users (username,email,password) VALUES (?,?,?)"
-          db.query(consulta_insert, [username, email, hash], function(err, insertResult) {
-            req.session.myuser = {
-              id: insertResult.insertId,
-              myusername: username,
-              mypfp: 'default_pfp.jpg'
-            }
-            console.log("Sesión iniciada")
-            return res.redirect('/')
-           })
+          
+          const verify_token = uuidv4()
+
+          let save_token = "INSERT INTO email_verifications (email, token) VALUES (?, ?)"
+          // Guardar el token temporalmente
+          db.query(save_token, [email, verify_token], function(err2) {
+
+            let consulta_insert = "INSERT INTO users (username,email,password) VALUES (?,?,?)"
+          
+            db.query(consulta_insert, [username, email, hash], function(err, insertResult) {
+              // req.session.myuser = {
+              //   id: insertResult.insertId,
+              //   myusername: username,
+              //   mypfp: 'default_pfp.jpg'
+              // }
+
+
+              let mailOptions = {
+                from: '"Koraw" <Korawinformation@gmail.com>',
+                to: email,
+                subject: 'Confirma tu cuenta en Koraw',
+                html: `
+                  <h2>¡Gracias por registrarte en Koraw, ${username}!</h2>
+                  <p>Haz clic en el siguiente botón para confirmar tu cuenta:</p>
+                  <a href="http://localhost:3000/verify?token=${verify_token}" style="padding:10px 15px;background:#228A78;color:white;text-decoration:none;border-radius:4px">Confirmar cuenta</a>
+                  <p> Si no eres tú, por favor no haga click en el enlace</p>
+                  `
+              };
+
+              transporter.sendMail(mailOptions, (error, info) => {
+                console.log(error || 'Email enviado: ' + info.response);
+              });
+
+              return res.redirect('/login?pleaseverify='+ encodeURIComponent(true))
+            })
+          }) 
         })
       })
     }
@@ -314,15 +348,50 @@ function saveDataRegister(req, username, email) {
   req.session.register_email = email || ""
 }
 
+// GET VERIFY ACCOUNT
+router.get('/verify', (req, res) => {
+  let token = req.query.token;
+
+  //Si no has puesto token
+  if (!token) {
+    return res.redirect('/')
+  }
+
+  // Buscar email asociado al token
+  find_token = "SELECT * FROM email_verifications WHERE token = ?"
+  db.query(find_token, [token], (err, results) => {
+
+    //Token no valido
+    if (results.length === 0) {
+      return res.redirect('/')
+    }
+
+    let email = results[0].email;
+
+    //Marcar usuario como verificado
+    let update_verify = "UPDATE users SET verified = true WHERE email = ?"
+    db.query(update_verify, [email], (err2) => {
+
+      // ELIMINAR TOKEN DE LA TABLA
+      let delete_token = "DELETE FROM email_verifications WHERE token = ?"
+      db.query(delete_token, [token]);
+
+      res.redirect('/login?completedverify=' + encodeURIComponent(true))
+    });
+  });
+});
 
 /* GET login */
 router.get('/login', function(req, res, next) {
 
-  let {error} = req.query
+  let {error,notverified,completedverify,pleaseverify} = req.query
 
   res.render('login',{ 
     error: error || "",
-    email: req.session.loginEmail || "" 
+    notverified: notverified || "",
+    email: req.session.loginEmail || "",
+    completedverify: completedverify || "",
+    pleaseverify: pleaseverify || ""
   })
 
   delete req.session.loginEmail
@@ -337,28 +406,39 @@ router.post('/login', function(req, res, next) {
 
   let consulta_check="SELECT * FROM users WHERE email = ?"
   db.query(consulta_check, [email], (error,results) => {
-    if (results.length > 0){
-      //Existe el email
-      console.log(results)
-      console.log("DIFF",results[0])
-      //Hashear la contraseña y compararla con el resultado de la base de datos
-      bcrypt.compare(password, results[0].password, (err, correct) => {
-        if (correct){
-          console.log("Sesión iniciada")
-          req.session.myuser= {
-            id: results[0].id,
-            myusername: results[0].username,
-            mypfp: results[0].pfp,
-          }
-          res.redirect('/')
-          return
 
-        }else{
-          req.session.loginEmail = email
-          res.redirect('/login?error=' + encodeURIComponent(true))
-          return
-        }
-      })
+    //Existe el email
+    if (results.length > 0){
+      
+      //Check para ver si está verificado
+      if (results[0].verified==1){
+        console.log("SI ESTÁS VERIFICADO")
+        //Hashear la contraseña y compararla con el resultado de la base de datos
+        bcrypt.compare(password, results[0].password, (err, correct) => {
+          if (correct){
+            console.log("Sesión iniciada")
+            req.session.myuser= {
+              id: results[0].id,
+              myusername: results[0].username,
+              mypfp: results[0].pfp,
+            }
+            res.redirect('/')
+            return
+
+          }else{
+            req.session.loginEmail = email
+            res.redirect('/login?error=' + encodeURIComponent(true))
+            return
+          }
+        })
+      }else{
+        // No está verificado
+        console.log("No estás verificado")
+        req.session.loginEmail = email
+        res.redirect('/login?notverified=' + encodeURIComponent(false))
+        return
+      }
+      
     }else{
       // No exite el email
       req.session.loginEmail = email
@@ -372,14 +452,22 @@ router.post('/login', function(req, res, next) {
 //Añadir borrar grupos
 // GET CREATE GROUP
 router.get('/creategroup', isLoggedIn, function(req, res, next) {
-  res.render('create')
+
+  let {error} = req.query
+
+  res.render('create',{
+    error: error || "",
+  })
 })
 
 // POST CREATE GROUP
 router.post('/creategroup', isLoggedIn, upload.single('icon'), async function(req, res, next) {
 
-  let  { title, description, password, icon } = req.body
+  let  { title, description, password, repeat_password, icon } = req.body
 
+  if (password != repeat_password){
+    return res.redirect('/creategroup?error=' + encodeURIComponent(true))
+  }
   console.log('Password recibido:', password)
 
   generateUniqueCode((err, uniqueCode) => {
@@ -443,6 +531,8 @@ router.get('/accessgroup', isLoggedIn, function(req, res, next) {
 // GET GROUP
 router.get('/group/:id', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), function(req, res, next) {
   
+  let share = req.query.share === 'true'
+
   let {created_element} = req.query
 
   //Display de secciones
@@ -454,10 +544,18 @@ router.get('/group/:id', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), function
       sections,
       encrypted_id:req.params.id, 
       isadmin: req.isadmin,
-      created_element: created_element || false
+      created_element: created_element || false,
+      unique_code: share === true ? req.art_group.code : false,
+      unique_link: share === true ? "http://localhost:3000/group/"+req.params.id : false
     })
   })
 })
+
+//GET SHARE LINKS
+router.get('/group/:id/getlinks', isLoggedIn, isMemberOfGroup(), function(req, res, next) {
+  return res.redirect("/group/"+ req.params.id +"?share="+ encodeURIComponent(true))
+})
+
 
 // GET MEMBERS
 router.get('/group/:id/members', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), function(req, res, next) {

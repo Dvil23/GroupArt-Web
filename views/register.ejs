@@ -6,10 +6,10 @@
         <form class="container" method="POST" name="register">
             
             <h1>Registrarse</h1>
-            <input type="text" name="username" placeholder="username" value = "<%= username %>">
-            <input type="email" name="email" placeholder="email" value = "<%= email %>">
-            <input type="password" name="password" placeholder="password">
-            <input type="password" name="repeat_password" placeholder="repeat_password">
+            <input type="text" name="username" placeholder="Nombre de usuario" value = "<%= username %>">
+            <input type="email" name="email" placeholder="Email" value = "<%= email %>">
+            <input type="password" name="password" placeholder="Contraseña">
+            <input type="password" name="repeat_password" placeholder="Repetir contraseña">
             <div class="error"> <!--Aquí falta un if de si hay error-->
                 <p><%= message %></p>
             </div>

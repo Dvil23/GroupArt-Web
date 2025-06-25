@@ -6,8 +6,8 @@
     <div class="shadow">
         <form class="container" method="POST">
             <h1>Iniciar sesión</h1>
-            <input type="email" name="email" placeholder="email" value="<%= email %>" required>
-            <input type="password" name="password" placeholder="password" required>
+            <input type="email" name="email" placeholder="Email" value="<%= email %>" required>
+            <input type="password" name="password" placeholder="Contraseña" required>
             <div class="error">
                 <% if (error){ %>
                 <p>El email o contraseña son incorrectos.</p>
@@ -20,5 +20,52 @@
         </form>
     </div>
 </div>
+
+<% if (notverified || completedverify || pleaseverify) { %>
+    <script src="/sweetalert2/sweetalert2.all.min.js"></script>
+<% } %>
+
+<% if (notverified) { %>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            Swal.fire({
+            icon: 'warning',
+            title: 'Cuenta no verificada',
+            text: 'Por favor, revisa tu correo y confirma tu cuenta antes de iniciar sesión.',
+            confirmButtonText: 'Entendido'
+            });
+        });
+    </script>
+<% } %>
+
+<% if (completedverify) { %>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Verificación completada',
+                text: '¡Gracias por registrarte!',
+                showConfirmButton: false,
+                timer: 10000,
+                timerProgressBar: true,
+            })
+        });
+    </script>
+<% } %>
+
+<% if (pleaseverify) { %>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            Swal.fire({
+            icon: 'info',
+            title: '¡Gracias por registrarte!',
+            text: 'Por favor, revisa tu correo y verifica tu cuenta antes de iniciar sesión.',
+            confirmButtonText: 'Entendido'
+            });
+        });
+    </script>
+<% } %>
 
 <%- include("partials/end.ejs") -%>

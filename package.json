@@ -23,6 +23,8 @@
     "multer": "^2.0.1",
     "mysql2": "^3.14.1",
     "nanoid": "^3.3.11",
-    "sweetalert2": "^11.6.13"
+    "nodemailer": "^7.0.3",
+    "sweetalert2": "^11.6.13",
+    "uuid": "^11.1.0"
   }
 }
