@@ -1,47 +1,89 @@
 <%- include("../partials/start.ejs") -%>
 <%- include("../partials/header.ejs") -%>
+<link rel="stylesheet" href="/stylesheets/group.css" class="css">
+<div class="global">
+    <div id="portada">
+        <div class="banner_shadowable">
+            <div class="title">
+                <h1><%= group.title %></h1>
+            </div>
+            <div class="subtitle">
+                <% if(group.description == ""){  %> 
+                    <!--Sugerencia: ¿Y si no mostramos la descripción si no la hay? puede que haya gente que no quiera descripcion pero tampoco querría que pusiera "sin descripcion" por que queda cutre-->
+                <h2 class="sin_descripcion">Sin descripción</h2>
+                <% }else{ %>
+                <h2><%= group.description %></h2>
+                <% } %>
+            </div>
+            <% if (isadmin){ %>
+            <div class="functions">
+                <form method="GET" action="/group/<%=encrypted_id%>/newelement">
+                    <button type="submit">Crear nueva galería o evento</button>
+                </form>
 
-<h1><%= group.title %></h1>
+                <form method="GET" action="/group/<%=encrypted_id%>/members">
+                    <button type="submit">Miembros</button>
+                </form>
 
-<% if(group.description == ""){  %>
-<p style="color:gray">Sin descripción</p>
-<% }else{ %>
-<%= group.description %>
-<% } %>
+                <form method="GET" action="/group/<%=encrypted_id%>/getlinks">
+                    <button type="submit">Compartir</button>
+                </form>
+            </div>
+            <% }%>
+        </div>
+    </div>
 
-
-<% if (isadmin){ %>
-    <form method="GET" action="/group/<%=encrypted_id%>/newelement">
-        <button type="submit">Crear nueva galería o evento</button>
-    </form>
-<% }%>
-
-<form method="GET" action="/group/<%=encrypted_id%>/members">
-    <button type="submit">Miembros</button>
-</form>
-
-<form method="GET" action="/group/<%=encrypted_id%>/getlinks">
-    <button type="submit">Compartir</button>
-</form>
-
-<% if (sections.length>0){%>
-    <% sections.forEach((section,index) => { %>
-    <form method="GET" action="/group/<%=encrypted_id%>/<%= section.section_type %>/<%=section.id%>" class="section_forms" id="section_form_<%= index %>">
-        <% if (section.section_type == "event") {%>
-        <h3>Evento</h2>
-        <% }else if(section.section_type == "gallery"){ %>
-        <h3>Galería</h2>
-        <% }%>
-        <h2><%=section.title %></h2>
-        <p><%=section.description %></p>
-    </form>
-    <% }) %>
-<% }else if(sections.length==0 & isadmin){%>
-    <p><%= group.title %> está vacío por ahora ¿Que quieres crear?</p>
-    
-<% }else{ %>
-    <p><%= group.title %> está vacío por ahora</p>
-<% } %>
+    <div id="content">
+        <% if (sections.length>0){%>
+            <% sections.forEach((section,index) => { %>
+            <form method="GET" action="/group/<%=encrypted_id%>/<%= section.section_type %>/<%=section.id%>" class="section_forms" id="section_form_<%= index %>">
+                <div class="element">
+                    <div class="element_image">
+                        <img src="/images/default_group_photo.png" alt="Group Photo">
+                    </div>
+                    <div class="element_content">
+                        <div class="element_up">
+                            <h2 class="element_title"><%=section.title %></h2>
+                            <% if (section.section_type == "event") {%>
+                            <div class="chip evento">
+                                <h3 class="element_tipo">Evento</h3>
+                            </div>
+                            <% }else if(section.section_type == "gallery"){ %>
+                            <div class="chip galeria">
+                                <h3 class="element_tipo">Galería</h3>
+                            </div>
+                            <% }%>
+                        </div>
+                        <div class="element_middle">
+                            <p class="element_description"><%=section.description %></p>
+                        </div>
+                        <!--
+                        A futuro aquí irán:
+                        Finaliza el (fecha)
+                        ¡X personas están participando!
+                        -->
+                    </div>
+                </div>
+            </form>
+            <% if (sections.length != index+1) {%>
+            <hr>
+            <%}%>
+            <% }) %>
+        <% }else if(sections.length==0 & isadmin){%>
+            <div class="empty">
+                <p><%= group.title %> está vacío por ahora</p>
+                <p>¿Qué quieres crear?</p>
+            </div>
+            
+            
+        <% }else{ %>
+            <div class="empty">
+                <p><%= group.title %> está vacío por ahora</p>
+                <i class="fa-solid fa-heart-crack"></i>
+            </div>
+        <% } %>
+    </div>
+</div>
     
 
 <script>
@@ -55,6 +97,21 @@
     });
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const portada = document.getElementById('portada');
+        const content = document.getElementById('content');
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 25) {
+                portada.classList.add('recogido');
+                content.classList.add('recogido');
+            } else {
+                portada.classList.remove('recogido');
+                content.classList.remove('recogido');
+            }
+        });
+    });
+</script>
 
 <script src="/sweetalert2/sweetalert2.all.min.js"></script>
 
@@ -123,6 +180,7 @@ function copyToClipboard(id) {
         timer: 2000
     });
 }
+
 </script>
 <% } %>
 

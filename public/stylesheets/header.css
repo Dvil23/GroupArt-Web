@@ -1,6 +1,13 @@
 header {
   height: 10vh;
   width: 100vw;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+header .content {
+  height: 100%;
+  width: 100vw;
   background-color: var(--color-dark);
   color: var(--color-cream);
   display: flex;
@@ -8,7 +15,7 @@ header {
   justify-content: space-between;
   align-items: center;
 }
-header .header_title {
+header .content .header_title {
   font-family: var(--font-cool);
   font-optical-sizing: auto;
   font-weight: 300;
@@ -16,10 +23,10 @@ header .header_title {
   width: 30%;
   margin-left: 3%;
 }
-header .header_title h1 {
+header .content .header_title h1 {
   cursor: pointer;
 }
-header .header_functions {
+header .content .header_functions {
   font-family: var(--font-main);
   width: 70%;
   margin-right: 3%;
@@ -28,11 +35,11 @@ header .header_functions {
   justify-content: flex-end;
   align-items: center;
 }
-header .header_functions div, header .header_functions form {
+header .content .header_functions div, header .content .header_functions form {
   margin-bottom: 10px;
   margin-top: 1vh;
 }
-header .header_functions div .header_button, header .header_functions form .header_button {
+header .content .header_functions div .header_button, header .content .header_functions form .header_button {
   color: var(--color-cream);
   background: none;
   border: none;
@@ -42,17 +49,17 @@ header .header_functions div .header_button, header .header_functions form .head
   display: inline-block;
   text-decoration: none;
 }
-header .header_functions div .header_button:hover, header .header_functions form .header_button:hover {
+header .content .header_functions div .header_button:hover, header .content .header_functions form .header_button:hover {
   color: var(--color-lightblue);
   cursor: pointer;
 }
-header .header_functions div .header_button:hover::after, header .header_functions form .header_button:hover::after {
+header .content .header_functions div .header_button:hover::after, header .content .header_functions form .header_button:hover::after {
   width: 100%;
   margin-right: 0;
   margin-left: 0;
   background: var(--color-lightblue);
 }
-header .header_functions div .header_button::after, header .header_functions form .header_button::after {
+header .content .header_functions div .header_button::after, header .content .header_functions form .header_button::after {
   content: "";
   display: block;
   width: 0;
@@ -62,17 +69,17 @@ header .header_functions div .header_button::after, header .header_functions for
   background: var(--color-cream);
   transition: width 0.3s, margin-left 0.3s, margin-right 0.3s;
 }
-header .header_functions div .profile_photo, header .header_functions form .profile_photo {
+header .content .header_functions div .profile_photo, header .content .header_functions form .profile_photo {
   height: 6vh;
   width: auto;
   border-radius: 300px;
   overflow: hidden;
 }
-header .header_functions div .profile_photo img, header .header_functions form .profile_photo img {
+header .content .header_functions div .profile_photo img, header .content .header_functions form .profile_photo img {
   height: 100%;
   width: auto;
 }
-header .profile_menu {
+header .content .profile_menu {
   display: none;
   position: absolute;
   top: 9vh;
@@ -84,7 +91,7 @@ header .profile_menu {
   border-radius: 0.5rem;
   z-index: 100;
 }
-header .profile_menu a, header .profile_menu button {
+header .content .profile_menu a, header .content .profile_menu button {
   display: block;
   background: none;
   border: none;
@@ -98,6 +105,6 @@ header .profile_menu a, header .profile_menu button {
   font-size: medium;
   font-style: normal;
 }
-header .profile_menu a:hover, header .profile_menu button:hover {
+header .content .profile_menu a:hover, header .content .profile_menu button:hover {
   color: #f6f4f1;
 }/*# sourceMappingURL=header.css.map */
