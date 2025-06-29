@@ -6,41 +6,65 @@
   display: flex;
   flex-direction: column;
 }
-.global #portada.recogido {
+.global .global_portada {
+  display: flex;
+  flex-direction: row;
+  position: sticky;
+  top: 10vh;
+}
+.global .global_portada #imagen.recogido {
+  height: 20vh;
+  aspect-ratio: 1/1;
+}
+.global .global_portada #imagen.recogido img {
   height: 20vh;
 }
-.global #portada.recogido .banner_shadowable {
+.global .global_portada #imagen {
+  height: 40vh;
+  position: sticky;
+  transition: 0.3s ease;
+  top: 10vh;
+  aspect-ratio: 1/1;
+}
+.global .global_portada #imagen img {
+  transition: 0.3s ease;
+  height: 40vh;
+}
+.global .global_portada #portada.recogido {
+  height: 20vh;
+}
+.global .global_portada #portada.recogido .banner_shadowable {
   background-color: rgba(4, 80, 67, 0.7137254902);
 }
-.global #portada.recogido .banner_shadowable .title {
+.global .global_portada #portada.recogido .banner_shadowable .title {
   margin-top: 0;
 }
-.global #portada.recogido .banner_shadowable .title h1 {
+.global .global_portada #portada.recogido .banner_shadowable .title h1 {
   font-size: 4.7vh;
 }
-.global #portada.recogido .banner_shadowable .subtitle {
+.global .global_portada #portada.recogido .banner_shadowable .subtitle {
   margin-top: 0vh;
 }
-.global #portada.recogido .banner_shadowable .subtitle h2 {
+.global .global_portada #portada.recogido .banner_shadowable .subtitle h2 {
   font-size: 0vh;
   opacity: 0;
 }
-.global #portada.recogido .banner_shadowable .functions {
+.global .global_portada #portada.recogido .banner_shadowable .functions {
   margin-top: 2vh;
 }
-.global #portada {
+.global .global_portada #portada {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  height: 34vh;
+  height: 40vh;
   width: 100%;
   position: sticky;
   transition: height 0.3s ease;
   top: 10vh;
 }
-.global #portada .banner_shadowable {
+.global .global_portada #portada .banner_shadowable {
   height: 100%;
-  width: 100vw;
+  width: 100%;
   background-color: rgba(0, 0, 0, 0.3294117647);
   display: flex;
   flex-direction: column;
@@ -49,50 +73,57 @@
   font-family: var(--font-cool);
   transition: background-color 0.3s ease;
 }
-.global #portada .banner_shadowable .title {
+.global .global_portada #portada .banner_shadowable .title {
   margin-top: 2vh;
   height: 4vh;
-  width: 100vw;
+  width: 100%;
   transition: margin-top 0.3s ease;
 }
-.global #portada .banner_shadowable .title h1 {
+.global .global_portada #portada .banner_shadowable .title h1 {
   margin-left: 5%;
   font-style: normal;
   font-size: 5vh;
   transition: font-size 0.3s ease;
 }
-.global #portada .banner_shadowable .subtitle {
+.global .global_portada #portada .banner_shadowable .subtitle {
   transition: margin-top 0.3s ease;
   margin-top: 4vh;
   height: 4vh;
-  width: 100vw;
+  width: 100%;
 }
-.global #portada .banner_shadowable .subtitle h2 {
+.global .global_portada #portada .banner_shadowable .subtitle h2 {
   opacity: 1;
   margin-left: 5%;
   font-style: normal;
   font-size: 3vh;
   transition: font-size, opacity 0.3s ease;
 }
-.global #portada .banner_shadowable .functions {
-  margin-top: 10vh;
+.global .global_portada #portada .banner_shadowable .functions {
+  margin-top: 16vh;
   height: 10vh;
-  width: 100vw;
+  width: 100%;
   background-color: var(--color-dark);
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
   transition: margin-top 0.3s ease;
 }
-.global #portada .banner_shadowable .functions form {
+.global .global_portada #portada .banner_shadowable .functions .text_functions {
+  width: 60%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.global .global_portada #portada .banner_shadowable .functions .text_functions form {
   height: 100%;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.global #portada .banner_shadowable .functions form button {
+.global .global_portada #portada .banner_shadowable .functions .text_functions form button {
   font-family: var(--font-cool);
   width: 80%;
   height: 65%;
@@ -106,12 +137,47 @@
   border-radius: 15px;
   transition: 0.3s ease;
 }
-.global #portada .banner_shadowable .functions form button:hover {
+.global .global_portada #portada .banner_shadowable .functions .text_functions form button:hover {
   cursor: pointer;
   background-color: var(--color-hover-blue);
   box-shadow: 2px 2px 16px var(--color-shadow-blue);
   width: 85%;
   height: 70%;
+  font-size: 2.15vh;
+}
+.global .global_portada #portada .banner_shadowable .functions .icon_functions {
+  width: 30%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+.global .global_portada #portada .banner_shadowable .functions .icon_functions form {
+  height: 5vw;
+  width: 5vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.global .global_portada #portada .banner_shadowable .functions .icon_functions form button {
+  font-family: var(--font-cool);
+  width: 75%;
+  height: 75%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2vh;
+  border: none;
+  background-color: var(--color-blue);
+  color: var(--color-cream);
+  border-radius: 150px;
+  transition: 0.3s ease;
+}
+.global .global_portada #portada .banner_shadowable .functions .icon_functions form button:hover {
+  cursor: pointer;
+  background-color: var(--color-hover-blue);
+  box-shadow: 2px 2px 16px var(--color-shadow-blue);
+  width: 85%;
+  height: 85%;
   font-size: 2.15vh;
 }
 .global #content.recogido {
@@ -161,35 +227,48 @@
 .global #content form .element {
   height: 90%;
   width: 95%;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  border-radius: 30px;
   cursor: pointer;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  box-sizing: content-box;
 }
 .global #content form .element:hover {
-  background-color: var(--color-hover-cream);
+  border: 2px solid var(--color-blue);
 }
-.global #content form .element .element_image {
+.global #content form .element .element_shadow {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.4509803922);
+  transition: 0.3s ease;
+}
+.global #content form .element .element_shadow:hover {
+  background-color: rgba(0, 0, 0, 0.7607843137);
+}
+.global #content form .element .element_shadow .element_image {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
-  width: 30%;
 }
-.global #content form .element .element_image img {
-  height: 95%;
-}
-.global #content form .element .element_content {
+.global #content form .element .element_shadow .element_image img {
   height: 100%;
-  width: 70%;
+}
+.global #content form .element .element_shadow .element_content {
+  height: 100%;
+  flex: 1;
+  padding-left: 5%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
 }
-.global #content form .element .element_content .element_up {
+.global #content form .element .element_shadow .element_content .element_up {
   width: 100%;
   height: 30%;
   display: flex;
@@ -197,12 +276,12 @@
   justify-content: space-between;
   align-items: center;
 }
-.global #content form .element .element_content .element_up .element_title {
+.global #content form .element .element_shadow .element_content .element_up .element_title {
   font-size: 3.2vh;
   font-family: var(--font-cool);
-  color: var(--color-dark);
+  color: var(--color-cream);
 }
-.global #content form .element .element_content .element_up .chip {
+.global #content form .element .element_shadow .element_content .element_up .chip {
   height: 40%;
   width: 12%;
   display: flex;
@@ -211,19 +290,19 @@
   border-radius: 200px;
   margin-right: 3%;
 }
-.global #content form .element .element_content .element_up .chip h3 {
+.global #content form .element .element_shadow .element_content .element_up .chip h3 {
   font-size: 2vh;
 }
-.global #content form .element .element_content .element_up .galeria {
+.global #content form .element .element_shadow .element_content .element_up .galeria {
   background-color: var(--color-chip-green);
 }
-.global #content form .element .element_content .element_up .evento {
+.global #content form .element .element_shadow .element_content .element_up .evento {
   background-color: var(--color-chip-blue);
 }
-.global #content form .element .element_content .element_middle {
+.global #content form .element .element_shadow .element_content .element_middle {
   width: 100%;
   height: 15%;
-  color: var(--color-dark);
+  color: var(--color-cream);
   font-size: 2.2vh;
   display: flex;
   justify-content: flex-start;
