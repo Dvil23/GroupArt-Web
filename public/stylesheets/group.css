@@ -29,7 +29,6 @@
   margin-top: 2vh;
 }
 .global #portada {
-  background-image: url("/images/global_background.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

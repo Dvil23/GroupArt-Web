@@ -1,7 +1,9 @@
 <%- include("../partials/start.ejs") -%>
 <%- include("../partials/header.ejs") -%>
-<h1><%= element.title %></h1>
-<h3><%= element.description %></h1>
+<h1><%= event.title %></h1>
+<h3><%= event.description %></h3>
+<img src="<%= event.icon %>">
+<img src="<%= event.banner %>">
 <% if (isadmin){ %>
     <form method="GET" action="/group/<%=encrypted_id%>/event/<%= event_id %>/newsession">
         <button type="submit">Crear nueva sesión</button>
@@ -23,18 +25,18 @@
 
         <% if (session.has_started) { %>
             
-            <p>Empezó el <%= session.date_start_formatted %> a las <%= session.hour_start_formatted %></p>
+            <p>Empezó el <%= session.date_start_formatted %> a la/s <%= session.hour_start_formatted %></p>
         <% } else { %>
-            <p>Empieza en el <%= session.date_start_formatted %> a la hora <%= session.hour_start_formatted %></p>
+            <p>Empieza en el <%= session.date_start_formatted %> a la/s <%= session.hour_start_formatted %></p>
         <% } %>
 
         <% if (session.date_end_formatted && session.hour_end_formatted) { %>
             
             <% if (session.has_ended){ %>
-                <p>Finalizó el <%= session.date_end_formatted %> a las <%= session.hour_end_formatted %></p>
+                <p>Finalizó el <%= session.date_end_formatted %> a la/s <%= session.hour_end_formatted %></p>
                 <p>Finalizado</p>
             <% }else{%>
-                <p>Finaliza el <%= session.date_end_formatted %> a las <%= session.hour_end_formatted %></p>
+                <p>Finaliza el <%= session.date_end_formatted %> a la/s <%= session.hour_end_formatted %></p>
             <% } %>
         <% } %>
     <% if (session.has_started == true){ %>

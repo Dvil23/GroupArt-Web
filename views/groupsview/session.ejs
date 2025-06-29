@@ -9,5 +9,69 @@
     <h3><%= session.description %></h3> 
 <% } %>
 
-<% console.log(session) %>
+<button id="uploadImageBtn">Subir imagen</button>
+
+<script src="/sweetalert2/sweetalert2.all.min.js"></script>
+
+<script>
+  document.getElementById('uploadImageBtn').addEventListener('click', function() {
+
+    // ⏩ Declarar fuera para que exista en los dos handlers:
+    let selectedImg = null
+
+    Swal.fire({
+      title: 'Subir imagen',
+      html: `
+        <form id="uploadForm" method="POST" action="/group/<%= encrypted_id %>/event/<%= event_id %>/session/<%= sess_id %>/uploadimg" enctype="multipart/form-data">
+          <input type="file" name="image" id="imageInput" accept="image/*">
+          <input type="hidden" name="already_uploaded_image" id="alreadyUploadedImage">
+        </form>
+
+        <div id="imageGrid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px;">
+          <% user_uploaded_imgs.forEach(function(img) { %>
+            <img src="<%= img.image_name %>" data-image-name="<%= img.image_name.split('/').pop() %>" alt="User Image"
+              style="width: 100%; object-fit: cover; border: 2px solid transparent; border-radius: 4px; cursor: pointer;">
+          <% }) %>
+        </div>`,
+
+      showCancelButton: true,
+      confirmButtonText: 'Subir',
+      cancelButtonText: 'Cancelar',
+
+      didOpen: () => {
+        const imgs = document.querySelectorAll('#imageGrid img')
+        imgs.forEach(img => {
+          img.addEventListener('click', () => {
+            imgs.forEach(i => i.style.border = '2px solid transparent')
+            img.style.border = '2px solid #007bff'
+            selectedImg = img.getAttribute('data-image-name')
+            document.getElementById('imageInput').value = ''
+          })
+        })
+        document.getElementById('imageInput').addEventListener('change', () => {
+          if (document.getElementById('imageInput').files.length > 0) {
+            selectedImg = null
+            imgs.forEach(i => i.style.border = '2px solid transparent')
+          }
+        })
+      },
+
+      preConfirm: () => {
+        let fileInput = document.getElementById('imageInput')
+        if (!fileInput.files.length && !selectedImg) {
+          Swal.showValidationMessage('¡Selecciona una imagen o sube una nueva!')
+          return false
+        }
+        if (selectedImg) {
+          document.getElementById('alreadyUploadedImage').value = selectedImg
+          fileInput.value = ''
+        }
+        document.getElementById('uploadForm').submit()
+      },
+
+      width: '800px'
+    })
+  })
+</script>
+
 <%- include("../partials/end.ejs") -%>

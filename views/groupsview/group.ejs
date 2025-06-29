@@ -2,10 +2,15 @@
 <%- include("../partials/header.ejs") -%>
 <link rel="stylesheet" href="/stylesheets/group.css" class="css">
 <div class="global">
-    <div id="portada">
+    <div id="portada" style="background-image:url(<%= image_banner %>)">
         <div class="banner_shadowable">
             <div class="title">
                 <h1><%= group.title %></h1>
+                <% if (image_icon) { %>
+                    <img src="<%= image_icon %>" alt="Group Image" style="width: 200px;">
+                <% } else { %>
+                    <p>No hay imagen</p>
+                <% } %>
             </div>
             <div class="subtitle">
                 <% if(group.description == ""){  %> 
@@ -37,9 +42,9 @@
         <% if (sections.length>0){%>
             <% sections.forEach((section,index) => { %>
             <form method="GET" action="/group/<%=encrypted_id%>/<%= section.section_type %>/<%=section.id%>" class="section_forms" id="section_form_<%= index %>">
-                <div class="element">
+                <div class="element" style="background-image:url(<%= section.banner %>)">
                     <div class="element_image">
-                        <img src="/images/default_group_photo.png" alt="Group Photo">
+                        <img src="<%= section.icon %>" alt="Group Photo">
                     </div>
                     <div class="element_content">
                         <div class="element_up">

@@ -4,15 +4,17 @@ const db = require('../db')
 const path = require('path')
 const { nanoid } = require('nanoid')
 
+// Gestion de archivos en form
 const multer = require('multer')
-const upload = multer()
+const upload = multer({ storage: multer.memoryStorage() })
 
-// DAYJS HORARIO ACTUAL DE ESPAÑA
+// Subir archivos al servidor de imagenes local minio
+const minio= require('../minio')
+
+// Dayjs horario españa
 const dayjs = require('dayjs')
 const utc = require('dayjs/plugin/utc')
 const timezone = require('dayjs/plugin/timezone')
-
-
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -20,8 +22,7 @@ dayjs.extend(timezone)
 const Spain = dayjs().tz('Europe/Madrid')
 
 //Mailer
-
-const transporter = require("../mailer");
+const transporter = require("../mailer")
 
 //uuid para tokens
 const { v4: uuidv4 } = require('uuid')
@@ -29,13 +30,13 @@ const nodemailer = require("nodemailer")
 
 // --------------------------ENCRIPTAR DATOS --------------------------
 
-// Bcrypt
+// Bcrypt (Seguro, pero no desencriptable)
 const bcrypt = require('bcrypt')
 const saltRounds = 10
 const LessSaltRounds = 3
 require('dotenv').config()
 
-// crypto
+// crypto (Menos seguro, pero encriptable)
 const crypto = require('crypto')
 
 const CLAVE = process.env.ENCRYPTION_KEY 
@@ -51,7 +52,6 @@ function encriptar(texto) {
     console.error("Fallo al encriptar:", error)
     return null
   }
-  
 }
 
 function desencriptar(encriptado) {
@@ -74,16 +74,16 @@ router.use((req, res, next) => {
 //Check si estás logeado
 function isLoggedIn(req, res, next) {
   if (!req.session || !req.session.myuser) {
-    console.warn('Acceso no autorizado - sesión no válida');
-    return res.redirect('/login');
+    console.warn('Acceso no autorizado - sesión no válida')
+    return res.redirect('/login')
   }
 
   if (!req.session.myuser.id || !req.session.myuser.myusername) {
-    console.error('Sesión inválida o incompleta');
-    return res.redirect('/login');
+    console.error('Sesión inválida o incompleta')
+    return res.redirect('/login')
   }
 
-  next();
+  next()
 }
 
 
@@ -165,8 +165,8 @@ function ConvertToMinutes(timeStr) {
 function format_sessions(sessions, currentTime = dayjs().tz("Europe/Madrid")) {
   return sessions.map(s => {
     // Fecha y hora de inicio
-    const startDate = dayjs(`${dayjs(s.date_start).format("YYYY-MM-DD")} ${s.hour_start}`, "YYYY-MM-DD HH:mm").tz("Europe/Madrid")
-    const has_started = currentTime.isAfter(startDate)
+    let startDate = dayjs(`${dayjs(s.date_start).format("YYYY-MM-DD")} ${s.hour_start}`, "YYYY-MM-DD HH:mm").tz("Europe/Madrid")
+    let has_started = currentTime.isAfter(startDate)
 
     // Fecha y hora de fin, si existen
     let endDate = null
@@ -193,7 +193,45 @@ function format_sessions(sessions, currentTime = dayjs().tz("Europe/Madrid")) {
   })
 }
 
+//----------------------------MOSTRAR Y SUBIR IMAGENES---------------------------
+
+//Mostrar group picture y banner del grupo, eventos y galería
+router.get('/group/:id/image/:image_id',isLoggedIn,isMemberOfGroup(),(req, res) => {
+  let filename = req.params.image_id;
+  minio.getObject('images', filename, (err, dataStream) => {
+    if (err) return res.status(500).send('Error obteniendo imagen');
+    res.setHeader('Content-Type', 'image/jpeg');
+    dataStream.pipe(res);
+  });
+});
+
+//Mostrar imagenes subidas por usuarios
+router.get('/group/:id/userimage/:image_id',isLoggedIn,isMemberOfGroup(),(req, res) => {
+  let filename = req.params.image_id;
+  minio.getObject('images', filename, (err, dataStream) => {
+    if (err) return res.status(500).send('Error obteniendo imagen');
+    res.setHeader('Content-Type', 'image/jpeg');
+    dataStream.pipe(res);
+  });
+});
+
+function upload_image_minio(bucket, objectName, buffer) {
+  return new Promise((resolve, reject) => {
+    minio.putObject(bucket, objectName, buffer, (err, etag) => {
+      if (err) {
+        console.log('ERROR SUBIENDO A MINIO:', err)
+        reject(err)
+        return
+      }
+      resolve(etag)
+    })
+  })
+}
+
 // -------------------------- INDISPENSABLES --------------------------
+
+
+
 
 // GET home page
 router.get('/', function(req, res, next) {
@@ -203,43 +241,46 @@ router.get('/', function(req, res, next) {
 
 // GET USER PAGE
 router.get('/user/:user_username', isLoggedIn, (req, res, next) => {
-  const find_user = `SELECT id, username, pfp FROM users WHERE username = ?`;
+  let find_user = `SELECT id, username, pfp FROM users WHERE username = ?`
 
   db.query(find_user, [req.params.user_username], (error, user_results) => {
 
     if (user_results.length === 0) {
-      return res.redirect("/");
+      return res.redirect("/")
     }
 
-    const userData = user_results[0];
+    let userData = user_results[0]
 
-    const user = {
+    let user = {
       username: userData.username,
       pfp: userData.pfp,
       isyou: userData.id === req.session.myuser.id
-    };
+    }
 
-    const find_groups = `
+    let find_groups = `
       SELECT art_groups.id AS group_id, art_groups.title, art_groups.description, art_groups.group_picture,members.type AS member_type
       FROM members
       JOIN art_groups ON members.art_group_id = art_groups.id
       WHERE members.users_id = ?
-      ORDER BY members.type DESC`;
+      ORDER BY members.type DESC`
 
     db.query(find_groups, [userData.id], (error, group_results) => {
 
-      const groups = group_results.map(r => ({
+      let groups = group_results.map(r => ({
         encrypted_id: encriptar(r.group_id),
         title: r.title,
         description: r.description,
         group_picture: r.group_picture,
         type: r.member_type
-      }));
+      }))
 
-      res.render("user", { user, groups });
-    });
-  });
-});
+      res.render("user", { user, groups })
+    })
+  })
+})
+
+
+
 // -------------------------- LOGIN Y REGISTER -------------------------- 
 
 // GET register 
@@ -308,7 +349,7 @@ router.post('/register',  function(req, res, next) {
         bcrypt.hash(password, salt, function(err, hash) {
           
           
-          const verify_token = uuidv4()
+          let verify_token = uuidv4()
 
           let save_token = "INSERT INTO email_verifications (email, token) VALUES (?, ?)"
           // Guardar el token temporalmente
@@ -317,12 +358,6 @@ router.post('/register',  function(req, res, next) {
             let consulta_insert = "INSERT INTO users (username,email,password) VALUES (?,?,?)"
           
             db.query(consulta_insert, [username, email, hash], function(err, insertResult) {
-              // req.session.myuser = {
-              //   id: insertResult.insertId,
-              //   myusername: username,
-              //   mypfp: 'default_pfp.jpg'
-              // }
-
 
               let mailOptions = {
                 from: '"Koraw" <Korawinformation@gmail.com>',
@@ -334,11 +369,11 @@ router.post('/register',  function(req, res, next) {
                   <a href="http://localhost:3000/verify?token=${verify_token}" style="padding:10px 15px;background:#228A78;color:white;text-decoration:none;border-radius:4px">Confirmar cuenta</a>
                   <p> Si no eres tú, por favor no haga click en el enlace</p>
                   `
-              };
+              }
 
               transporter.sendMail(mailOptions, (error, info) => {
-                console.log(error || 'Email enviado: ' + info.response);
-              });
+                console.log(error || 'Email enviado: ' + info.response)
+              })
 
               return res.redirect('/login?pleaseverify='+ encodeURIComponent(true))
             })
@@ -356,7 +391,7 @@ function saveDataRegister(req, username, email) {
 
 // GET VERIFY ACCOUNT
 router.get('/verify', (req, res) => {
-  let token = req.query.token;
+  let token = req.query.token
 
   //Si no has puesto token
   if (!token) {
@@ -372,7 +407,7 @@ router.get('/verify', (req, res) => {
       return res.redirect('/')
     }
 
-    let email = results[0].email;
+    let email = results[0].email
 
     //Marcar usuario como verificado
     let update_verify = "UPDATE users SET verified = true WHERE email = ?"
@@ -380,12 +415,12 @@ router.get('/verify', (req, res) => {
 
       // ELIMINAR TOKEN DE LA TABLA
       let delete_token = "DELETE FROM email_verifications WHERE token = ?"
-      db.query(delete_token, [token]);
+      db.query(delete_token, [token])
 
       res.redirect('/login?completedverify=' + encodeURIComponent(true))
-    });
-  });
-});
+    })
+  })
+})
 
 /* GET login */
 router.get('/login', function(req, res, next) {
@@ -460,7 +495,7 @@ router.post('/closession', isLoggedIn, function(req, res, next) {
     // ELIMINAR TAMBIEN COOKIE
     res.clearCookie('connect.sid') 
     res.redirect('/login')
-  });
+  })
 })
 
 // ----------------------------- GESTIÓN DE GRUPO -----------------------------
@@ -476,38 +511,68 @@ router.get('/creategroup', isLoggedIn, function(req, res, next) {
 })
 
 // POST CREATE GROUP
-router.post('/creategroup', isLoggedIn, upload.single('icon'), async function(req, res, next) {
+router.post('/creategroup', isLoggedIn, upload.fields([{ name: 'icon', maxCount: 1 }, { name: 'banner', maxCount: 1 }]), async function(req, res, next) {
 
-  let  { title, description, password, repeat_password, icon } = req.body
+  let { title, description, password, repeat_password } = req.body
+  let icon = req.files['icon'] ? req.files['icon'][0] : null
+  let banner = req.files['banner'] ? req.files['banner'][0] : null
 
-  if (password != repeat_password){
-    return res.redirect('/creategroup?error=' + encodeURIComponent(true))
+  console.log('FILES:', req.files)
+  console.log('ICON BUFFER?', icon && Buffer.isBuffer(icon.buffer))
+
+  // Ambas contraseñas introducidas deben ser iguales
+  if (password != repeat_password) return res.redirect('/creategroup?error=' + encodeURIComponent(true))
+
+  //Generar codigo unico para acceder al grupo
+  let uniqueCode = await new Promise((resolve, reject) => {
+    generateUniqueCode((err, code) => {
+      if (err) return res.redirect('/creategroup?error=' + encodeURIComponent(true))
+      resolve(code)
+    })
+  })
+
+  //Nombre default del icono
+  let icon_name="default_group_icon.jpg"
+
+  //Si has insertado icono, se inserta y renombra
+  if (icon){
+
+    icon_name = "Koraw-"+ req.session.myuser.myusername + "-" + Spain.format('YYYY-MM-DD') + '-' + Spain.format('HH-mm-ss') + '-' + (Math.floor(Math.random() * 1000) + 1) + '-group-icon.jpg'
+
+    await upload_image_minio('images', icon_name, icon.buffer)
   }
-  console.log('Password recibido:', password)
 
-  generateUniqueCode((err, uniqueCode) => {
+  //Nombre default del banner
+  let banner_name="default_group_banner.jpg"
 
-    // Encriptar la contraseña con bcrypt y continuar con el insert
-    bcrypt.hash(password, saltRounds, (err, hashed_password) => {
+  //Si has insertado banner, se inserta y renombra
+  if (banner){
+    banner_name = "Koraw-"+ req.session.myuser.myusername + "-" + Spain.format('YYYY-MM-DD') + '-' + Spain.format('HH-mm-ss') + '-' + (Math.floor(Math.random() * 1000) + 1) + '-group-banner.jpg'
 
-      let consulta_insert = "INSERT INTO art_groups (title, description, code, password) VALUES (?, ?, ?, ?)"
-      db.query(consulta_insert, [title, description, uniqueCode, hashed_password], (err, result) => {
-        
-        //Insertar al miembro que ha creado el grupo en la tabla members y darle acceso super admin
-        let new_group_id = result.insertId
+    await upload_image_minio('images',banner_name, banner.buffer)
+  }
 
-        let consulta_insert_member = "INSERT INTO members (users_id,art_group_id,type) VALUES (?, ?, ?)"
-        db.query(consulta_insert_member, [req.session.myuser.id,new_group_id,2], (err, member_result) => {
-          console.log(err)
-          //Redireccionar a la página del grupo
-          let encrypted_id = encriptar(new_group_id)
-          res.redirect('/group/'+ encrypted_id )
+  //Hashear la contraseña
+  let hashed_password = await bcrypt.hash(password, saltRounds)
 
-        })
-      })
+  let consulta_insert = "INSERT INTO art_groups (title, description, group_picture, code, password, banner) VALUES (?, ?, ?, ?, ?, ?)"
+  db.query(consulta_insert, [title, description, icon_name, uniqueCode, hashed_password, banner_name], (err, result) => {
+    
+    //Insertar al miembro que ha creado el grupo en la tabla members y darle acceso super admin
+    let new_group_id = result.insertId
+
+    let consulta_insert_member = "INSERT INTO members (users_id,art_group_id,type) VALUES (?, ?, ?)"
+    db.query(consulta_insert_member, [req.session.myuser.id,new_group_id,2], (err, member_result) => {
+      console.log(err)
+      //Redireccionar a la página del grupo
+      let encrypted_id = encriptar(new_group_id)
+      res.redirect('/group/'+ encrypted_id )
+
     })
   })
 })
+
+
 
 // GET ACCESS GROUP
 router.get('/accessgroup', isLoggedIn, function(req, res, next) {
@@ -543,26 +608,42 @@ router.get('/accessgroup', isLoggedIn, function(req, res, next) {
    })
 })
 
-// GET GROUP
-router.get('/group/:id', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), function(req, res, next) {
-  
-  let share = req.query.share === 'true'
 
-  let {created_element} = req.query
+// GET GROUP
+router.get('/group/:id', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), async function(req, res, next) {
+
+  let share = req.query.share === 'true'
+  let { created_element } = req.query
 
   //Display de secciones
   let consulta_check_section = "SELECT * FROM sections WHERE art_group_id = ? ORDER BY date_start"
+  let sections = await new Promise((resolve, reject) => {
+    db.query(consulta_check_section, [req.art_group.id], (error, sections) => resolve(sections))
+  })
 
-  db.query(consulta_check_section, [req.art_group.id], (error,sections) => {
-    res.render('groupsview/group',{
-      group:req.art_group,
-      sections,
-      encrypted_id:req.params.id, 
-      isadmin: req.isadmin,
-      created_element: created_element || false,
-      unique_code: share === true ? req.art_group.code : false,
-      unique_link: share === true ? "http://localhost:3000/group/"+req.params.id : false
-    })
+  // Mapear cada sección para cambiar icon y banner
+  let mapped_sections = sections.map(section => {
+    return {
+      ...section,
+      icon: `/group/${req.params.id}/image/${section.icon}`,
+      banner: `/group/${req.params.id}/image/${section.banner}`
+    }
+  })
+
+  // Nombre de la imagen del grupo que buscará en otro get y pondrá como setheader
+  let image_icon = `/group/${req.params.id}/image/${req.art_group.group_picture}`
+  let image_banner = `/group/${req.params.id}/image/${req.art_group.banner}`
+
+  res.render('groupsview/group', {
+    group: req.art_group,
+    sections: mapped_sections,
+    encrypted_id: req.params.id,
+    isadmin: req.isadmin,
+    created_element: created_element || false,
+    unique_code: share ? req.art_group.code : false,
+    unique_link: share ? `http://localhost:3000/group/${req.params.id}` : false,
+    image_icon,
+    image_banner
   })
 })
 
@@ -707,105 +788,151 @@ router.get('/group/:id/newelement', isLoggedIn, isMemberOfGroup(true), GetGroupI
 })
 
 //POST CREATE ELEMENT
-router.post('/group/:id/newelement', isLoggedIn, isMemberOfGroup(true), GetGroupInfo(), upload.fields([{ name: 'cover' }, { name: 'banner' }]), function(req, res, next) {
-  
-  let {title,description,section_type} = req.body
+router.post('/group/:id/newelement', isLoggedIn, isMemberOfGroup(true), GetGroupInfo(), upload.fields([{ name: 'icon' }, { name: 'banner' }]), async function(req, res, next) {
 
-  //Check de que el titulo NO esté vacio
-  if (title==""){
-    res.redirect('/group/'+ req.params.id +'/newelement?error=' + encodeURIComponent(1))
+  let {title, description, section_type} = req.body
+
+  let icon = req.files['icon'] ? req.files['icon'][0] : null
+  let banner = req.files['banner'] ? req.files['banner'][0] : null
+
+   // Check de que el titulo NO esté vacio
+  if (!title) {
+    res.redirect('/group/' + req.params.id + '/newelement?error=' + encodeURIComponent(1))
     return
   }
 
   let ended = null
 
-  //Check de que hayas escogido galería o evento. Si es evento, el ended se pone en 0 (false)
-  if (section_type !=="gallery" && section_type !=="event"){
-    res.redirect('/group/'+ req.params.id +'/newelement?error=' + encodeURIComponent(2))
+  // Check de que hayas escogido galería o evento. Si es evento, el ended se pone en 0 (false)
+  if (section_type !== "gallery" && section_type !== "event") {
+    res.redirect('/group/' + req.params.id + '/newelement?error=' + encodeURIComponent(2))
     return
-  } else if(section_type =="event"){
+  } else if (section_type == "event") {
     ended = 0
-  }else{
-    
   }
 
+  // Buscar que ese titulo no exita ya en el grupo
   let check_same_section_name = "SELECT * FROM sections WHERE title = ? and art_group_id = ?"
-
-  db.query(check_same_section_name, [title,req.art_group.id], (error,results) => {
-
-    //Check de que ese titulo ya existe
-    if (results.length > 0){
-      res.redirect('/group/'+ req.params.id +'/newelement?error=' + encodeURIComponent(3))
-      return
-    }else{
-      
-      let insert_gallery = "INSERT INTO sections (section_type, title, description, art_group_id,ended) VALUES (?,?,?,?,?)"
-
-      db.query(insert_gallery, [section_type,title,description,req.art_group.id,ended], (error,results) => {
-        
-        if(section_type=="gallery"){
-          res.redirect('/group/'+ req.params.id +'?created_element=' + encodeURIComponent(1))
-        }else if(section_type=="event"){
-          res.redirect('/group/'+ req.params.id +'?created_element=' + encodeURIComponent(2))
-        }
-        return
-      })
-    }
+  let results = await new Promise((resolve, reject) => {
+    db.query(check_same_section_name, [title, req.art_group.id], (error, results) => {
+      if (error) reject(error)
+      else resolve(results)
+    })
   })
+
+  if (results.length > 0) {
+    res.redirect('/group/' + req.params.id + '/newelement?error=' + encodeURIComponent(3))
+    return
+  }
+
+  //Nombre default del icono
+  let icon_name="default_element_icon.jpg"
+
+  //Si has insertado icono, se inserta y renombra
+  if (icon){
+
+    icon_name = "Koraw-"+ req.session.myuser.myusername + "-" + Spain.format('YYYY-MM-DD') + '-' + Spain.format('HH-mm-ss') + '-' + (Math.floor(Math.random() * 1000) + 1) + '-' +section_type +'-icon.jpg'
+
+    await upload_image_minio('images', icon_name, icon.buffer)
+  }
+
+  //Nombre default del banner
+  let banner_name="default_element_banner.jpg"
+
+  //Si has insertado banner, se inserta y renombra
+  if (banner){
+    banner_name = "Koraw-"+ req.session.myuser.myusername + "-" + Spain.format('YYYY-MM-DD') + '-' + Spain.format('HH-mm-ss') + '-'+ (Math.floor(Math.random() * 1000) + 1) + '-' +section_type + '-banner.jpg'
+
+    await upload_image_minio('images',banner_name, banner.buffer)
+  }
+
+
+  //Insertar a sección si todo ha ido bien
+  let insert_section = "INSERT INTO sections (section_type, title, description, icon, banner, art_group_id, ended) VALUES (?,?,?,?,?,?,?)"
+  await new Promise((resolve, reject) => {
+    db.query(insert_section, [section_type, title, description, icon_name, banner_name, req.art_group.id, ended], (error, results) => {
+      if (error) reject(error)
+      else resolve(results)
+    })
+  })
+
+  // Redirect con mensaje de success diferente para un grupo o galería
+  if (section_type == "gallery") {
+    res.redirect('/group/' + req.params.id + '?created_element=' + encodeURIComponent(1))
+  } else if (section_type == "event") {
+    res.redirect('/group/' + req.params.id + '?created_element=' + encodeURIComponent(2))
+  }
 })
 
 // ----------------------------- ACCESS EVENT OR GALLERY -----------------------------
 
 // GET VISTA GALERÍA
-router.get('/group/:id/gallery/:sect_id', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), function(req, res, next) {
+router.get('/group/:id/gallery/:sect_id', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), async function(req, res, next) {
 
   let find_section = "SELECT * FROM sections WHERE id = ?"
 
-  db.query(find_section, [req.params.sect_id], (error,results) => {
-
-    if(results.length > 0){
-      res.render('groupsview/gallery',{
-        element: results[0]
-      })
-    }else{
-      res.redirect('/group/'+ req.params.id)
-    }
+  let gallery_results = await new Promise((resolve, reject) => {
+    db.query(find_section, [req.params.sect_id], (error,gallery_results) => {
+      if (error) reject(error)
+      else resolve(gallery_results) 
+    })
   })
+
+  if(gallery_results.length > 0){
+    res.render('groupsview/gallery',{
+      gallery: gallery_results[0],
+      gallery_icon: `/group/${req.params.id}/image/${gallery_results[0].icon}`,
+      gallery_banner:`/group/${req.params.id}/image/${gallery_results[0].banner}`
+    })
+  }else{
+    res.redirect('/group/'+ req.params.id)
+  }
 })
 
 
 // GET VISTA EVENT
-router.get('/group/:id/event/:sect_id', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), function(req, res, next) {
+router.get('/group/:id/event/:sect_id', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), async function(req, res, next) {
 
+  // Miramos que exista el evento
   let find_section = "SELECT * FROM sections WHERE id = ?"
-
-  db.query(find_section, [req.params.sect_id], (error,results) => {
-
-    if(results.length > 0){
-      console.log(results[0].id)
-      let find_sessions = "SELECT * FROM sessions WHERE section_id = ? ORDER BY date_start ASC, hour_start ASC"
-
-      db.query(find_sessions, [results[0].id], (error,sessions) => {
-
-        //Formatear la session para añadir variables de has started, has ended o active
-        let formatted_sessions = format_sessions(sessions)
-
-        res.render('groupsview/event', {
-          encrypted_id: req.params.id,
-          event_id: req.params.sect_id,
-          isadmin: req.isadmin,
-          element: results[0],
-          sessions: formatted_sessions
-        })
-      })
-    }else{
-      console.log("fallado primero")
-      res.redirect('/group/'+ req.params.id)
-    }
+  let event = await new Promise((resolve, reject) => {
+    db.query(find_section, [req.params.sect_id], (error, results) => resolve(results))
   })
+
+  //Si existe, continuamos
+  if(event.length > 0) {
+
+    // Mapear para cambiar icon y banner
+    let mapped_event = event.map(e => {
+      return {
+        ...e,
+        icon: `/group/${req.params.id}/image/${e.icon}`,
+        banner: `/group/${req.params.id}/image/${e.banner}`
+      }
+    })
+
+    //Buscamos todas las sesiones del evento
+    let find_sessions = "SELECT * FROM sessions WHERE section_id = ? ORDER BY date_start ASC, hour_start ASC"
+    let sessions = await new Promise((resolve, reject) => {
+      db.query(find_sessions, [event[0].id], (error, sessions) => resolve(sessions))
+    })
+
+    //Formatear la session para añadir variables de has started, has ended o active
+    let formatted_sessions = format_sessions(sessions)
+
+    res.render('groupsview/event', {
+      encrypted_id: req.params.id,
+      event_id: req.params.sect_id,
+      isadmin: req.isadmin,
+      event: mapped_event[0],
+      sessions: formatted_sessions
+    })
+
+  } else {
+    console.log("fallado primero")
+    res.redirect('/group/' + req.params.id)
+  }
 })
-
-
 
 // ----------------------------- SESSIONS IN EVENT  -----------------------------
 
@@ -953,40 +1080,123 @@ router.post('/group/:id/event/:sect_id/newsession', isLoggedIn, isMemberOfGroup(
       db.query(insert_session, [topic,description,date_start,date_end,req.params.sect_id,final_max_images,hour_start,hour_end], (error,insert_results) => {
         if (error){ console.log(error)}
         console.log(insert_results)
-        res.redirect("/group/"+req.params.id+"/event/"+req.params.sect_id+"/newsession")
+        res.redirect("/group/"+req.params.id+"/event/"+req.params.sect_id)
       })
     }
   })  
 })
 
-// GET VISTA SESSION OF EVENT
-router.get('/group/:id/event/:sect_id/session/:sess_id', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), function(req, res, next) {
+// GET SESSION OF EVENT
+router.get('/group/:id/event/:sect_id/session/:sess_id', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), async function(req, res, next) {
   
   let find_session = "SELECT * FROM sessions WHERE id = ?"
 
-  db.query(find_session, [req.params.sess_id], (error,sess_result) => {
-    console.log(error,sess_result)
-    if (sess_result.length>0){
-      let formatted_session = format_sessions(sess_result)
-      if (formatted_session[0].has_started == false){
-        res.redirect("/group/"+req.params.id+"/event/"+req.params.sect_id)
-      }else{
-        res.render('groupsview/session',{
-          encrypted_id: req.params.id,
-          event_id: req.params.sect_id,
-          sess_id: req.params.sess_id,
-          session: formatted_session[0]
-        })
-      }
-      
-    }else{
-      res.redirect("/group/"+req.params.id+"/event/"+req.params.sect_id)
-    }
+  let sess_result = await new Promise((resolve, reject) => {
+    db.query(find_session, [req.params.sess_id], (error, results) => resolve(results))
   })
-      
 
+  console.log(sess_result[0])
+
+  if (sess_result.length > 0) {
+
+    let formatted_session = format_sessions(sess_result)
+
+    if (formatted_session[0].has_started == false) {
+      res.redirect("/group/" + req.params.id + "/event/" + req.params.sect_id)
+    } else {
+      
+      let find_user_uploaded_images = "SELECT * FROM user_images WHERE user_id = ? "
+
+      let user_uploaded_imgs = await new Promise((resolve, reject) => {
+        db.query(find_user_uploaded_images, [req.session.myuser.id], (error, results) => resolve(results))
+      })
+
+      // Mapear cada sección para cambiar icon y banner
+      let formatted_user_uploaded_imgs = user_uploaded_imgs.map(images => {
+        return {
+          ...images,
+          image_name: `/group/${req.params.id}/userimage/${images.image_name}`,
+        }
+      })
+
+      res.render('groupsview/session', {
+        encrypted_id: req.params.id,
+        event_id: req.params.sect_id,
+        sess_id: req.params.sess_id,
+        session: formatted_session[0],
+        user_uploaded_imgs: formatted_user_uploaded_imgs
+      })
+    }
+
+  } else {
+    res.redirect("/group/" + req.params.id + "/event/" + req.params.sect_id)
+  }
 })
 
+// POST UPLOAD IMAGE ON SESSION
+router.post('/group/:id/event/:sect_id/session/:sess_id/uploadimg', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), upload.single('image'), async function(req, res, next) {
+
+  let already_uploaded_image = req.body.already_uploaded_image
+  let new_image = req.file 
+
+  // Si hay archivo subido Y foto seleccionada, error
+  if (new_image && already_uploaded_image) {
+    return res.redirect(`/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}?error=1`)
+  }
+
+  // Si seleccionó imagen ya subida
+  if (already_uploaded_image && !new_image) {
+    let insert_sql = `
+      INSERT INTO user_images (user_id, image_name, group_id, session_id)
+      VALUES (?, ?, ?, ?)
+    `
+    await new Promise((resolve, reject) => {
+      db.query(insert_sql, [
+        req.session.myuser.id,
+        already_uploaded_image,
+        req.art_group.id,
+        req.params.sess_id
+      ], (err, result) => resolve(result))
+    })
+
+    return res.redirect(`/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}`)
+  }
+
+  // Si subió imagen nueva
+  if (new_image && !already_uploaded_image) {
+    // Contar cuántas imágenes tiene este user
+    let count_sql = `SELECT COUNT(*) AS count FROM user_images WHERE user_id = ?`
+    let count_result = await new Promise((resolve, reject) => {
+      db.query(count_sql, [req.session.myuser.id], (err, result) => resolve(result))
+    })
+    let addingnumber = count_result[0].count + 1
+
+
+    let final_name = `Koraw-${req.session.myuser.myusername}-${Spain.format('YYYY-MM-DD')}-${Spain.format('HH-mm-ss')}-${Math.floor(Math.random() * 1000) + 1 + addingnumber}-uploaded-image.jpg`
+
+    // Subir a MinIO
+    await minio.putObject('images', final_name, new_image.buffer)
+
+    // Insertar registro en DB
+    let insert_sql = `
+      INSERT INTO user_images (user_id, image_name, group_id, session_id)
+      VALUES (?, ?, ?, ?)
+    `
+    await new Promise((resolve, reject) => {
+      db.query(insert_sql, [
+        req.session.myuser.id,
+        final_name,
+        req.art_group.id,
+        req.params.sess_id
+      ], (err, result) => resolve(result))
+    })
+
+    return res.redirect(`/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}`)
+  }
+
+  // Si no hizo nada, redirigir igual
+  return res.redirect(`/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}`)
+})
 
 module.exports = router;
 
@@ -1000,3 +1210,8 @@ module.exports = router;
 //cambiar fotos y banners de secciones y grupos
 //Comentarios, a nivel de la imagen a nivel de usuario
 
+// let find_images = "SELECT * FROM sessions WHERE id = ?"
+
+// let uploaded_images = await new Promise((resolve, reject) => {
+//   db.query(find_images, [], (error, results) => resolve(results))
+// })

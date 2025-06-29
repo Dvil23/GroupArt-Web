@@ -9,10 +9,10 @@
         <% if (typeof myuser!=='undefined'){ %>
             <div class="header_functions">
                 <div>
-                    <button class="header_button" type="submit">Inicio</button>
+                    <a class="header_button" onclick="window.location.href='/'">Inicio</a>
                 </div>
                 <div>
-                    <button class="header_button" type="submit">Acceder Grupo</button>
+                    <a class="header_button" onclick="window.location.href='/'">Acceder Grupo</a>
                 </div>
                 <form method="GET" action="/user/<%= myuser.myusername%>" class="profile_photo_div" id="profile_onclick">
                     <div class="profile_photo" id="profile_photo_hover">
