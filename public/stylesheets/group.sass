@@ -1,270 +1,298 @@
-.global
-    background-color: var(--color-cream)
-    width: 100vw
-    color: var(--color-cream)
-    font-family: var(--font-main)
+.contain_global
+    width: 100%
+    background-color: #171F1F
     display: flex
     flex-direction: column
-    .global_portada
-        display: flex
-        flex-direction: row
-        position: sticky
-        top: 10vh
-        #imagen.recogido
-            height: 20vh
-            aspect-ratio: 1 / 1
-            img
-                height: 20vh
-        #imagen
-            height: 40vh
-            position: sticky
-            transition: 0.3s ease
-            top: 10vh
-            aspect-ratio: 1 / 1
-            img
-                transition: 0.3s ease
-                height: 40vh
-        #portada.recogido
-            height: 20vh
-            .banner_shadowable
-                background-color: #045043b6
-                .title
-                    margin-top: 0
-                    h1
-                        font-size: 4.7vh
-                .subtitle
-                    margin-top: 0vh
-                    h2
-                        font-size: 0vh
-                        opacity: 0
-                .functions
-                    margin-top: 2vh
-        #portada
-            background-size: cover
-            background-repeat: no-repeat
-            background-position: center
-            height: 40vh
-            width: 100%
-            position: sticky
-            transition: height 0.3s ease
-            top: 10vh
-            .banner_shadowable
-                height: 100%
-                width: 100%
-                background-color: #00000054
-                display: flex
-                flex-direction: column
-                justify-content: flex-start
-                align-items: center
-                font-family: var(--font-cool)
-                transition: background-color 0.3s ease
-                .title
-                    margin-top: 2vh
-                    height: 4vh
-                    width: 100%
-                    transition: margin-top 0.3s ease
-                    h1
-                        margin-left: 5%
-                        font-style: normal
-                        font-size: 5vh
-                        transition: font-size 0.3s ease
-                .subtitle
-                    transition: margin-top 0.3s ease
-                    margin-top: 4vh
-                    height: 4vh
-                    width: 100%
-                    h2
-                        opacity: 1
-                        margin-left: 5%
-                        font-style: normal
-                        font-size: 3vh
-                        transition: font-size, opacity 0.3s ease
-                .functions
-                    margin-top: 16vh
-                    height: 10vh
-                    width: 100%
-                    background-color: var(--color-dark)
-                    display: flex
-                    flex-direction: row
-                    justify-content: center
-                    align-items: center
-                    transition: margin-top 0.3s ease
-                    .text_functions
-                        width: 60%
-                        height: 100%
-                        display: flex
-                        flex-direction: row
-                        justify-content: space-evenly
-                        form
-                            height: 100%
-                            width: 100%
-                            display: flex
-                            justify-content: center
-                            align-items: center
-                            button
-                                font-family: var(--font-cool)
-                                width: 80%
-                                height: 65%
-                                display: flex
-                                justify-content: center
-                                align-items: center
-                                font-size: 2vh
-                                border: none
-                                background-color: var(--color-blue)
-                                color: var(--color-cream)
-                                border-radius: 15px
-                                transition: 0.3s ease
-                                &:hover
-                                    cursor: pointer
-                                    background-color: var(--color-hover-blue)
-                                    box-shadow: 2px 2px 16px var(--color-shadow-blue)
-                                    width: 85%
-                                    height: 70%
-                                    font-size: 2.15vh
-                    .icon_functions
-                        width: 30%
-                        display: flex
-                        flex-direction: row
-                        justify-content: flex-end
-                        form
-                            height: 5vw
-                            width: 5vw
-                            display: flex
-                            justify-content: center
-                            align-items: center
-                            button
-                                font-family: var(--font-cool)
-                                width: 75%
-                                height: 75%
-                                display: flex
-                                justify-content: center
-                                align-items: center
-                                font-size: 2vh
-                                border: none
-                                background-color: var(--color-blue)
-                                color: var(--color-cream)
-                                border-radius: 150px
-                                transition: 0.3s ease
-                                &:hover
-                                    cursor: pointer
-                                    background-color: var(--color-hover-blue)
-                                    box-shadow: 2px 2px 16px var(--color-shadow-blue)
-                                    width: 85%
-                                    height: 85%
-                                    font-size: 2.15vh
-                        
-    #content.recogido
-        margin-top: 8vh
-    #content
-        margin-top: 0
-        height: 100%
-        width: 100vw
+    align-items: center
+    .global
+        background-color: var(--color-cream)
+        width: 1000px
+        color: var(--color-cream)
+        font-family: var(--font-main)
         display: flex
         flex-direction: column
-        justify-content: flex-start
         align-items: center
         background-color: var(--color-cream)
-        transition: margin-top 0.3s ease
 
-        hr
-            width: 100%
-            border: 0
-            height: 1px
-            background-image: -webkit-linear-gradient(left, var(--color-cream), var(--color-darker-cream), var(--color-cream))
-        .empty
+        .global_portada
             display: flex
-            flex-direction: column
-            justify-content: center
-            align-items: center
+            flex-direction: row
+            position: sticky
+            top: 10vh
             width: 100%
-            height: 56vh
-            background-color: var(--color-dark-cream)
-            p, i
-                text-align: center
-                color: var(--color-darker-cream)
-                font-size: 3vh
-            p
-                font-family: var(--font-cool)
-        form
-            width: 100%
-            height: 35vh
-            display: flex
-            justify-content: center
-            align-items: center
-            .element
-                height: 90%
-                width: 95%
-                cursor: pointer
+            min-width: 100%
+            z-index: 3
+            // margin-left: 0.3%
+            background-color: var(--color-dark)
+            #imagen.recogido
+                height: 20vh
+                aspect-ratio: 1 / 1
+                img
+                    height: 20vh
+            #imagen
+                height: 40vh
+                position: sticky
+                transition: 0.3s ease
+                top: 10vh
+                aspect-ratio: 1 / 1
+                img
+                    transition: 0.3s ease
+                    height: 40vh
+            #portada.recogido
+                height: 20vh
+                .banner_shadowable
+                    background-color: #045043
+                    .title
+                        margin-top: 0
+                        h1
+                            font-size: 4.7vh
+                    .subtitle
+                        margin-top: 0vh
+                        h2
+                            font-size: 0vh
+                            opacity: 0
+                    .functions
+                        margin-top: 2vh
+                .imagen_portada
+                    height: 10vh
+            #portada
                 background-size: cover
                 background-repeat: no-repeat
                 background-position: center
-                box-sizing: content-box
-                &:hover
-                    border: 2px solid var(--color-blue)
-                .element_shadow
+                height: 40vh
+                width: 100%
+                position: sticky
+                transition: height 0.3s ease
+                top: 10vh
+                .imagen_portada
+                    transition: height 0.3s ease
+                    position: absolute
+                    z-index: -1
+                    height: 30vh
+                    width: 100%
+                    overflow: hidden
+                    img
+                        width: 100%
+                        
+                .banner_shadowable
                     height: 100%
                     width: 100%
+                    background-color: #00000054
                     display: flex
-                    flex-direction: row
+                    flex-direction: column
                     justify-content: flex-start
                     align-items: center
-                    cursor: pointer
-                    background-color: #00000073
-                    transition: 0.3s ease
-                    &:hover
-                        background-color: #000000c2
-                    .element_image
+                    font-family: var(--font-cool)
+                    transition: background-color 0.3s ease
+                    .title
+                        margin-top: 2vh
+                        height: 4vh
+                        width: 100%
+                        transition: margin-top 0.3s ease
+                        h1
+                            margin-left: 5%
+                            font-style: normal
+                            font-size: 5vh
+                            transition: font-size 0.3s ease
+                    .subtitle
+                        transition: margin-top 0.3s ease
+                        margin-top: 4vh
+                        height: 4vh
+                        width: 100%
+                        h2
+                            opacity: 1
+                            margin-left: 5%
+                            font-style: normal
+                            font-size: 3vh
+                            transition: font-size, opacity 0.3s ease
+                    .functions
+                        margin-top: 16vh
+                        height: 10vh
+                        width: 100%
+                        background-color: var(--color-dark)
                         display: flex
+                        flex-direction: row
                         justify-content: center
                         align-items: center
-                        height: 100%
-                        img
+                        transition: margin-top 0.3s ease
+                        .text_functions
+                            width: 60%
                             height: 100%
-                    .element_content
-                        height: 100%
-                        flex: 1
-                        padding-left: 5%
-                        display: flex
-                        flex-direction: column
-                        justify-content: flex-start
-                        align-items: center
-                        
-                        .element_up
-                            width: 100%
-                            height: 30%
                             display: flex
                             flex-direction: row
-                            justify-content: space-between
-                            align-items: center
-                            .element_title
-                                font-size: 3.2vh
-                                font-family: var(--font-cool)
-                                color: var(--color-cream)
-                            .chip
-                                height: 40%
-                                width: 12%
+                            justify-content: space-evenly
+                            form
+                                height: 100%
+                                width: 100%
+                                display: flex
+                                justify-content: left
+                                align-items: center
+                                margin-right: 5%
+                                button
+                                    font-family: var(--font-cool)
+                                    width: 200px
+                                    height: 60%
+                                    display: flex
+                                    justify-content: center
+                                    align-items: center
+                                    font-size: 2vh
+                                    border: none
+                                    background-color: var(--color-blue)
+                                    color: var(--color-cream)
+                                    border-radius: 15px
+                                    transition: 0.3s ease
+                                    &:hover
+                                        cursor: pointer
+                                        background-color: var(--color-hover-blue)
+                                        box-shadow: 2px 2px 16px var(--color-shadow-blue)
+                                        
+                                        font-size: 2.15vh
+                        .icon_functions
+                            width: 30%
+                            display: flex
+                            flex-direction: row
+                            justify-content: flex-end
+                            form
+                                height: 5vw
+                                width: 5vw
                                 display: flex
                                 justify-content: center
                                 align-items: center
-                                border-radius: 200px
-                                margin-right: 3%
-                                h3
+                                button
+                                    font-family: var(--font-cool)
+                                    width: 75%
+                                    height: 75%
+                                    display: flex
+                                    justify-content: center
+                                    align-items: center
                                     font-size: 2vh
-                            .galeria
-                                background-color: var(--color-chip-green)
-                            .evento
-                                background-color: var(--color-chip-blue)
-                        .element_middle
-                            width: 100%
-                            height: 15%
-                            color: var(--color-cream)
-                            font-size: 2.2vh
+                                    border: none
+                                    background-color: var(--color-blue)
+                                    color: var(--color-cream)
+                                    border-radius: 150px
+                                    transition: 0.3s ease
+                                    &:hover
+                                        cursor: pointer
+                                        background-color: var(--color-hover-blue)
+                                        box-shadow: 2px 2px 16px var(--color-shadow-blue)
+                                        width: 85%
+                                        height: 85%
+                                        font-size: 2.15vh
+                            
+        #content.recogido
+            margin-top: 8vh
+        #content
+            margin-top: 0
+            height: 100%
+            width: 100%
+            display: flex
+            flex-direction: column
+            justify-content: flex-start
+            align-items: center
+            background-color: var(--color-cream)
+            transition: margin-top 0.3s ease
+            margin-left: 0
+            margin-right: 0
+            z-index: 1
+            hr
+                width: 100%
+                border: 0
+                height: 1px
+                background-image: -webkit-linear-gradient(left, var(--color-cream), var(--color-darker-cream), var(--color-cream))
+            .empty
+                display: flex
+                flex-direction: column
+                justify-content: center
+                align-items: center
+                width: 100%
+                height: 56vh
+                background-color: var(--color-dark-cream)
+                p, i
+                    text-align: center
+                    color: var(--color-darker-cream)
+                    font-size: 3vh
+                p
+                    font-family: var(--font-cool)
+            form
+                width: 100%
+                height: 35vh
+                display: flex
+                justify-content: center
+                align-items: center
+                .element
+                    height: 90%
+                    width: 95%
+                    cursor: pointer
+                    background-size: cover
+                    background-repeat: no-repeat
+                    background-position: center
+                    box-sizing: content-box
+                    &:hover
+                        border: 2px solid var(--color-blue)
+                    .element_shadow
+                        height: 100%
+                        width: 100%
+                        display: flex
+                        flex-direction: row
+                        justify-content: flex-start
+                        align-items: center
+                        cursor: pointer
+                        background-color: #00000073
+                        transition: 0.3s ease
+                        &:hover
+                            background-color: #000000c2
+                        .element_image
                             display: flex
+                            justify-content: center
+                            align-items: center
+                            height: 100%
+                            img
+                                height: 100%
+                        .element_content
+                            height: 100%
+                            flex: 1
+                            padding-left: 5%
+                            display: flex
+                            flex-direction: column
                             justify-content: flex-start
-                            align-items: flex-start
-        
+                            align-items: center
+                            
+                            .element_up
+                                width: 100%
+                                height: 30%
+                                display: flex
+                                flex-direction: row
+                                justify-content: space-between
+                                align-items: center
+                                .element_title
+                                    font-size: 3.2vh
+                                    font-family: var(--font-cool)
+                                    color: var(--color-cream)
+                                .chip
+                                    height: 40%
+                                    width: 12%
+                                    display: flex
+                                    justify-content: center
+                                    align-items: center
+                                    border-radius: 200px
+                                    margin-right: 3%
+                                    h3
+                                        font-size: 2vh
+                                .galeria
+                                    background-color: var(--color-chip-green)
+                                .evento
+                                    background-color: var(--color-chip-blue)
+                            .element_middle
+                                width: 100%
+                                height: 15%
+                                color: var(--color-cream)
+                                font-size: 2.2vh
+                                display: flex
+                                justify-content: flex-start
+                                align-items: flex-start
             
+                
 
-        
-        
-        
+            
+            
+            

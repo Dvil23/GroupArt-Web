@@ -1,58 +1,74 @@
-.global {
+.contain_global {
+  width: 100%;
+  background-color: #171F1F;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.contain_global .global {
   background-color: var(--color-cream);
-  width: 100vw;
+  width: 1000px;
   color: var(--color-cream);
   font-family: var(--font-main);
   display: flex;
   flex-direction: column;
+  align-items: center;
+  background-color: var(--color-cream);
 }
-.global .global_portada {
+.contain_global .global .global_portada {
   display: flex;
   flex-direction: row;
   position: sticky;
   top: 10vh;
+  width: 100%;
+  min-width: 100%;
+  z-index: 3;
+  background-color: var(--color-dark);
 }
-.global .global_portada #imagen.recogido {
+.contain_global .global .global_portada #imagen.recogido {
   height: 20vh;
   aspect-ratio: 1/1;
 }
-.global .global_portada #imagen.recogido img {
+.contain_global .global .global_portada #imagen.recogido img {
   height: 20vh;
 }
-.global .global_portada #imagen {
+.contain_global .global .global_portada #imagen {
   height: 40vh;
   position: sticky;
   transition: 0.3s ease;
   top: 10vh;
   aspect-ratio: 1/1;
 }
-.global .global_portada #imagen img {
+.contain_global .global .global_portada #imagen img {
   transition: 0.3s ease;
   height: 40vh;
 }
-.global .global_portada #portada.recogido {
+.contain_global .global .global_portada #portada.recogido {
   height: 20vh;
 }
-.global .global_portada #portada.recogido .banner_shadowable {
-  background-color: rgba(4, 80, 67, 0.7137254902);
+.contain_global .global .global_portada #portada.recogido .banner_shadowable {
+  background-color: #045043;
 }
-.global .global_portada #portada.recogido .banner_shadowable .title {
+.contain_global .global .global_portada #portada.recogido .banner_shadowable .title {
   margin-top: 0;
 }
-.global .global_portada #portada.recogido .banner_shadowable .title h1 {
+.contain_global .global .global_portada #portada.recogido .banner_shadowable .title h1 {
   font-size: 4.7vh;
 }
-.global .global_portada #portada.recogido .banner_shadowable .subtitle {
+.contain_global .global .global_portada #portada.recogido .banner_shadowable .subtitle {
   margin-top: 0vh;
 }
-.global .global_portada #portada.recogido .banner_shadowable .subtitle h2 {
+.contain_global .global .global_portada #portada.recogido .banner_shadowable .subtitle h2 {
   font-size: 0vh;
   opacity: 0;
 }
-.global .global_portada #portada.recogido .banner_shadowable .functions {
+.contain_global .global .global_portada #portada.recogido .banner_shadowable .functions {
   margin-top: 2vh;
 }
-.global .global_portada #portada {
+.contain_global .global .global_portada #portada.recogido .imagen_portada {
+  height: 10vh;
+}
+.contain_global .global .global_portada #portada {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -62,7 +78,18 @@
   transition: height 0.3s ease;
   top: 10vh;
 }
-.global .global_portada #portada .banner_shadowable {
+.contain_global .global .global_portada #portada .imagen_portada {
+  transition: height 0.3s ease;
+  position: absolute;
+  z-index: -1;
+  height: 30vh;
+  width: 100%;
+  overflow: hidden;
+}
+.contain_global .global .global_portada #portada .imagen_portada img {
+  width: 100%;
+}
+.contain_global .global .global_portada #portada .banner_shadowable {
   height: 100%;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.3294117647);
@@ -73,32 +100,32 @@
   font-family: var(--font-cool);
   transition: background-color 0.3s ease;
 }
-.global .global_portada #portada .banner_shadowable .title {
+.contain_global .global .global_portada #portada .banner_shadowable .title {
   margin-top: 2vh;
   height: 4vh;
   width: 100%;
   transition: margin-top 0.3s ease;
 }
-.global .global_portada #portada .banner_shadowable .title h1 {
+.contain_global .global .global_portada #portada .banner_shadowable .title h1 {
   margin-left: 5%;
   font-style: normal;
   font-size: 5vh;
   transition: font-size 0.3s ease;
 }
-.global .global_portada #portada .banner_shadowable .subtitle {
+.contain_global .global .global_portada #portada .banner_shadowable .subtitle {
   transition: margin-top 0.3s ease;
   margin-top: 4vh;
   height: 4vh;
   width: 100%;
 }
-.global .global_portada #portada .banner_shadowable .subtitle h2 {
+.contain_global .global .global_portada #portada .banner_shadowable .subtitle h2 {
   opacity: 1;
   margin-left: 5%;
   font-style: normal;
   font-size: 3vh;
   transition: font-size, opacity 0.3s ease;
 }
-.global .global_portada #portada .banner_shadowable .functions {
+.contain_global .global .global_portada #portada .banner_shadowable .functions {
   margin-top: 16vh;
   height: 10vh;
   width: 100%;
@@ -109,24 +136,25 @@
   align-items: center;
   transition: margin-top 0.3s ease;
 }
-.global .global_portada #portada .banner_shadowable .functions .text_functions {
+.contain_global .global .global_portada #portada .banner_shadowable .functions .text_functions {
   width: 60%;
   height: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
 }
-.global .global_portada #portada .banner_shadowable .functions .text_functions form {
+.contain_global .global .global_portada #portada .banner_shadowable .functions .text_functions form {
   height: 100%;
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
+  margin-right: 5%;
 }
-.global .global_portada #portada .banner_shadowable .functions .text_functions form button {
+.contain_global .global .global_portada #portada .banner_shadowable .functions .text_functions form button {
   font-family: var(--font-cool);
-  width: 80%;
-  height: 65%;
+  width: 200px;
+  height: 60%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -137,28 +165,26 @@
   border-radius: 15px;
   transition: 0.3s ease;
 }
-.global .global_portada #portada .banner_shadowable .functions .text_functions form button:hover {
+.contain_global .global .global_portada #portada .banner_shadowable .functions .text_functions form button:hover {
   cursor: pointer;
   background-color: var(--color-hover-blue);
   box-shadow: 2px 2px 16px var(--color-shadow-blue);
-  width: 85%;
-  height: 70%;
   font-size: 2.15vh;
 }
-.global .global_portada #portada .banner_shadowable .functions .icon_functions {
+.contain_global .global .global_portada #portada .banner_shadowable .functions .icon_functions {
   width: 30%;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
 }
-.global .global_portada #portada .banner_shadowable .functions .icon_functions form {
+.contain_global .global .global_portada #portada .banner_shadowable .functions .icon_functions form {
   height: 5vw;
   width: 5vw;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.global .global_portada #portada .banner_shadowable .functions .icon_functions form button {
+.contain_global .global .global_portada #portada .banner_shadowable .functions .icon_functions form button {
   font-family: var(--font-cool);
   width: 75%;
   height: 75%;
@@ -172,7 +198,7 @@
   border-radius: 150px;
   transition: 0.3s ease;
 }
-.global .global_portada #portada .banner_shadowable .functions .icon_functions form button:hover {
+.contain_global .global .global_portada #portada .banner_shadowable .functions .icon_functions form button:hover {
   cursor: pointer;
   background-color: var(--color-hover-blue);
   box-shadow: 2px 2px 16px var(--color-shadow-blue);
@@ -180,27 +206,30 @@
   height: 85%;
   font-size: 2.15vh;
 }
-.global #content.recogido {
+.contain_global .global #content.recogido {
   margin-top: 8vh;
 }
-.global #content {
+.contain_global .global #content {
   margin-top: 0;
   height: 100%;
-  width: 100vw;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   background-color: var(--color-cream);
   transition: margin-top 0.3s ease;
+  margin-left: 0;
+  margin-right: 0;
+  z-index: 1;
 }
-.global #content hr {
+.contain_global .global #content hr {
   width: 100%;
   border: 0;
   height: 1px;
   background-image: -webkit-linear-gradient(left, var(--color-cream), var(--color-darker-cream), var(--color-cream));
 }
-.global #content .empty {
+.contain_global .global #content .empty {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -209,22 +238,22 @@
   height: 56vh;
   background-color: var(--color-dark-cream);
 }
-.global #content .empty p, .global #content .empty i {
+.contain_global .global #content .empty p, .contain_global .global #content .empty i {
   text-align: center;
   color: var(--color-darker-cream);
   font-size: 3vh;
 }
-.global #content .empty p {
+.contain_global .global #content .empty p {
   font-family: var(--font-cool);
 }
-.global #content form {
+.contain_global .global #content form {
   width: 100%;
   height: 35vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.global #content form .element {
+.contain_global .global #content form .element {
   height: 90%;
   width: 95%;
   cursor: pointer;
@@ -233,10 +262,10 @@
   background-position: center;
   box-sizing: content-box;
 }
-.global #content form .element:hover {
+.contain_global .global #content form .element:hover {
   border: 2px solid var(--color-blue);
 }
-.global #content form .element .element_shadow {
+.contain_global .global #content form .element .element_shadow {
   height: 100%;
   width: 100%;
   display: flex;
@@ -247,19 +276,19 @@
   background-color: rgba(0, 0, 0, 0.4509803922);
   transition: 0.3s ease;
 }
-.global #content form .element .element_shadow:hover {
+.contain_global .global #content form .element .element_shadow:hover {
   background-color: rgba(0, 0, 0, 0.7607843137);
 }
-.global #content form .element .element_shadow .element_image {
+.contain_global .global #content form .element .element_shadow .element_image {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
 }
-.global #content form .element .element_shadow .element_image img {
+.contain_global .global #content form .element .element_shadow .element_image img {
   height: 100%;
 }
-.global #content form .element .element_shadow .element_content {
+.contain_global .global #content form .element .element_shadow .element_content {
   height: 100%;
   flex: 1;
   padding-left: 5%;
@@ -268,7 +297,7 @@
   justify-content: flex-start;
   align-items: center;
 }
-.global #content form .element .element_shadow .element_content .element_up {
+.contain_global .global #content form .element .element_shadow .element_content .element_up {
   width: 100%;
   height: 30%;
   display: flex;
@@ -276,12 +305,12 @@
   justify-content: space-between;
   align-items: center;
 }
-.global #content form .element .element_shadow .element_content .element_up .element_title {
+.contain_global .global #content form .element .element_shadow .element_content .element_up .element_title {
   font-size: 3.2vh;
   font-family: var(--font-cool);
   color: var(--color-cream);
 }
-.global #content form .element .element_shadow .element_content .element_up .chip {
+.contain_global .global #content form .element .element_shadow .element_content .element_up .chip {
   height: 40%;
   width: 12%;
   display: flex;
@@ -290,16 +319,16 @@
   border-radius: 200px;
   margin-right: 3%;
 }
-.global #content form .element .element_shadow .element_content .element_up .chip h3 {
+.contain_global .global #content form .element .element_shadow .element_content .element_up .chip h3 {
   font-size: 2vh;
 }
-.global #content form .element .element_shadow .element_content .element_up .galeria {
+.contain_global .global #content form .element .element_shadow .element_content .element_up .galeria {
   background-color: var(--color-chip-green);
 }
-.global #content form .element .element_shadow .element_content .element_up .evento {
+.contain_global .global #content form .element .element_shadow .element_content .element_up .evento {
   background-color: var(--color-chip-blue);
 }
-.global #content form .element .element_shadow .element_content .element_middle {
+.contain_global .global #content form .element .element_shadow .element_content .element_middle {
   width: 100%;
   height: 15%;
   color: var(--color-cream);

@@ -3,107 +3,117 @@
 <link rel="stylesheet" href="/stylesheets/group.css" class="css">
 
 
+<div class="contain_global">
 
-<div class="global">
-    <div class="global_portada">
-        <div id="imagen">
-            <% if (image_icon) { %>
-            <img src="<%= image_icon %>" alt="Group Image">
-            <% } else { %>
-            <p>No hay imagen</p>
+    <div class="global">
+
+        <div class="global_portada" id="global_portada_id">
+            <div id="imagen">
+                <% if (image_icon) { %>
+                <img src="<%= image_icon %>" alt="Group Image">
+                <% } else { %>
+                <p>No hay imagen</p>
+                <% } %>
+            </div>
+            <div id="portada" >
+                <div class="imagen_portada">
+                    <img src="<%= image_banner %>" alt="">
+                </div>
+                <div class="banner_shadowable">
+                    <div class="title">
+                        <h1><%= group.title %></h1>
+                    </div>
+                    <div class="subtitle">
+                        <% if(group.description == ""){  %> 
+                            <!--Sugerencia: ¿Y si no mostramos la descripción si no la hay? puede que haya gente que no quiera descripcion pero tampoco querría que pusiera "sin descripcion" por que queda cutre-->
+                        <h2 class="sin_descripcion">Sin descripción</h2>
+                        <% }else{ %>
+                        <h2><%= group.description %></h2>
+                        <% } %>
+                    </div>
+                    
+                    <div class="functions">
+                        <div class="text_functions">
+                            
+
+                            <form method="GET" action="/group/<%=encrypted_id%>/members">
+                                <button type="submit">Miembros</button>
+                            </form>
+                            <% if (isadmin){ %>
+                            <form method="GET" action="/group/<%=encrypted_id%>/newelement">
+                                <button type="submit">Crear elemento</button>
+                            </form>
+                            <% }%>
+                        </div>
+                        <div class="icon_functions">
+                            <form method="GET" action="/group/<%=encrypted_id%>/getlinks">
+                                <button type="submit">
+                                    <i class="fa-solid fa-share-nodes"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        
+
+        <div id="content">
+            <% if (sections.length>0){%>
+                <% sections.forEach((section,index) => { %>
+                <form method="GET" action="/group/<%=encrypted_id%>/<%= section.section_type %>/<%=section.id%>" class="section_forms" id="section_form_<%= index %>">
+                    <div class="element" style="background-image:url(<%= section.banner %>)">
+                        <div class="element_shadow">
+                            <div class="element_image">
+                                <img src="<%= section.icon %>" alt="Group Photo">
+                            </div>
+                            <div class="element_content">
+                                <div class="element_up">
+                                    <h2 class="element_title"><%=section.title %></h2>
+                                    <% if (section.section_type == "event") {%>
+                                    <div class="chip evento">
+                                        <h3 class="element_tipo">Evento</h3>
+                                    </div>
+                                    <% }else if(section.section_type == "gallery"){ %>
+                                    <div class="chip galeria">
+                                        <h3 class="element_tipo">Galería</h3>
+                                    </div>
+                                    <% }%>
+                                </div>
+                                <div class="element_middle">
+                                    <p class="element_description"><%=section.description %></p>
+                                </div>
+                                <!--
+                                A futuro aquí irán:
+                                Finaliza el (fecha)
+                                ¡X personas están participando!
+                                -->
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <% if (sections.length != index+1) {%>
+                <hr>
+                <%}%>
+                <% }) %>
+            <% }else if(sections.length==0 & isadmin){%>
+                <div class="empty">
+                    <p><%= group.title %> está vacío por ahora</p>
+                    <p>¿Qué quieres crear?</p>
+                </div>
+                
+                
+            <% }else{ %>
+                <div class="empty">
+                    <p><%= group.title %> está vacío por ahora</p>
+                    <i class="fa-solid fa-heart-crack"></i>
+                </div>
             <% } %>
         </div>
-        <div id="portada" style="background-image:url(<%= image_banner %>)">
-            <div class="banner_shadowable">
-                <div class="title">
-                    <h1><%= group.title %></h1>
-                </div>
-                <div class="subtitle">
-                    <% if(group.description == ""){  %> 
-                        <!--Sugerencia: ¿Y si no mostramos la descripción si no la hay? puede que haya gente que no quiera descripcion pero tampoco querría que pusiera "sin descripcion" por que queda cutre-->
-                    <h2 class="sin_descripcion">Sin descripción</h2>
-                    <% }else{ %>
-                    <h2><%= group.description %></h2>
-                    <% } %>
-                </div>
-                <% if (isadmin){ %>
-                <div class="functions">
-                    <div class="text_functions">
-                        <form method="GET" action="/group/<%=encrypted_id%>/newelement">
-                            <button type="submit">Crear nueva galería o evento</button>
-                        </form>
-
-                        <form method="GET" action="/group/<%=encrypted_id%>/members">
-                            <button type="submit">Miembros</button>
-                        </form>
-                    </div>
-                    <div class="icon_functions">
-                        <form method="GET" action="/group/<%=encrypted_id%>/getlinks">
-                            <button type="submit">
-                                <i class="fa-solid fa-share-nodes"></i>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                <% }%>
-            </div>
-        </div>
-    </div>
-    
-
-    <div id="content">
-        <% if (sections.length>0){%>
-            <% sections.forEach((section,index) => { %>
-            <form method="GET" action="/group/<%=encrypted_id%>/<%= section.section_type %>/<%=section.id%>" class="section_forms" id="section_form_<%= index %>">
-                <div class="element" style="background-image:url(<%= section.banner %>)">
-                    <div class="element_shadow">
-                        <div class="element_image">
-                            <img src="<%= section.icon %>" alt="Group Photo">
-                        </div>
-                        <div class="element_content">
-                            <div class="element_up">
-                                <h2 class="element_title"><%=section.title %></h2>
-                                <% if (section.section_type == "event") {%>
-                                <div class="chip evento">
-                                    <h3 class="element_tipo">Evento</h3>
-                                </div>
-                                <% }else if(section.section_type == "gallery"){ %>
-                                <div class="chip galeria">
-                                    <h3 class="element_tipo">Galería</h3>
-                                </div>
-                                <% }%>
-                            </div>
-                            <div class="element_middle">
-                                <p class="element_description"><%=section.description %></p>
-                            </div>
-                            <!--
-                            A futuro aquí irán:
-                            Finaliza el (fecha)
-                            ¡X personas están participando!
-                            -->
-                        </div>
-                    </div>
-                </div>
-            </form>
-            <% if (sections.length != index+1) {%>
-            <hr>
-            <%}%>
-            <% }) %>
-        <% }else if(sections.length==0 & isadmin){%>
-            <div class="empty">
-                <p><%= group.title %> está vacío por ahora</p>
-                <p>¿Qué quieres crear?</p>
-            </div>
-            
-            
-        <% }else{ %>
-            <div class="empty">
-                <p><%= group.title %> está vacío por ahora</p>
-                <i class="fa-solid fa-heart-crack"></i>
-            </div>
-        <% } %>
     </div>
 </div>
+
     
 
 <script>
@@ -119,15 +129,18 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const portada = document.getElementById('portada');
-        const content = document.getElementById('content');
-        const imagen = document.getElementById('imagen');
+        let global_portada_id = document.getElementById('global_portada_id');
+        let portada = document.getElementById('portada');
+        let content = document.getElementById('content');
+        let imagen = document.getElementById('imagen');
         window.addEventListener('scroll', function () {
             if (window.scrollY > 25) {
+                global_portada_id.classList.add('recogido_global_portada');
                 portada.classList.add('recogido');
                 imagen.classList.add('recogido');
                 content.classList.add('recogido');
             } else {
+                global_portada_id.classList.remove('recogido_global_portada');
                 portada.classList.remove('recogido');
                 imagen.classList.remove('recogido');
                 content.classList.remove('recogido');
