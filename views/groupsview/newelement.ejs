@@ -1,54 +1,122 @@
 <%- include("../partials/start.ejs") -%>
 <%- include("../partials/header.ejs") -%>
+<link rel="stylesheet" href="/stylesheets/newelement.css" class="css">
 
-<form method="POST" enctype="multipart/form-data">
-    <h1>Escoge que crear</h1>
 
-    <input type="radio" name="section_type" value="gallery" id="radio_gallery" hidden>
-    <input type="radio" name="section_type" value="event" id="radio_event" hidden>
+<div class="contain_global">
 
-    <div id="choose_element">
-        <div id="choose_gallery" class="choose_box">
-            <h2>Galería</h2>
-            <p>Comparte y visualiza tu arte y el de tus amigos sin límites. </p>
+    <div class="global">
+
+        <div class="global_portada" id="global_portada_id">
+            <div id="imagen">
+                <!-- if (image_icon) { -->
+                    <img src="/images/default_group_photo.png" alt="Group Image"> <!-- aquí estaba la variable image_icon en el src -->
+                    <!-- } else { -->
+                    <!-- <img src="/images/default_group_photo.jpg" alt="Group Image"> -->
+                    <!-- } -->
+            </div>
+            <div id="portada" >
+                <div class="imagen_portada">
+                    <img src="/images/global_background.jpg" alt="Banner"> <!-- aquí estaba la variable image_banner en el src -->
+                </div>
+                <div class="banner_shadowable">
+                    <div class="title">
+                        <h1><!-- group.title -->Titulo Placeholder</h1>
+                    </div>
+                    <div class="subtitle">
+                        <!-- if(group.description != ""){  --> 
+                            <h2><!-- group.description --> Subtitulo Placeholder</h2>
+                        <!-- } -->
+                    </div>
+                    
+                    <div class="functions">
+                        <div class="text_functions">
+                        </div>
+                        <div class="icon_functions">
+                            <form method="GET"><!--<form method="GET" action="/group/%%encrypted_id%%/getlinks">-->
+                                <button type="submit">
+                                    <i class="fa-solid fa-share-nodes"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
         </div>
-        <div id="choose_event" class="choose_box">
-            <h2>Evento</h2>
-            <p>Crea sesiones de dibujo con o sin limite de tiempo que se desbloquean en las fechas acordadas.</p>
-            <span>Podras visualizar las imagenes incluso aunque acabe la sesión</span>
+        <div id="content">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="element_type">
+					<div class="title">
+						<h1>¿Qué quieres crear?</h1>
+					</div>
+					<input type="radio" name="section_type" value="gallery" id="radio_gallery" hidden>
+					<input type="radio" name="section_type" value="event" id="radio_event" hidden>
+
+					<div id="choose_element">
+						<div class="choose_content">
+							<div id="choose_gallery" class="choose_box">
+								<div class="title">
+									<i class="fa-solid fa-palette"></i>
+									<h2>Galería</h2>
+								</div>
+								<div class="description">
+									<p>Comparte y visualiza tu arte y el de tus amigos sin límites. </p>
+								</div>
+							</div>
+						</div>
+						
+						<div class="choose_content">
+							<div id="choose_event" class="choose_box">
+								<div class="title">
+									<i class="fa-solid fa-calendar-plus"></i>
+									<h2>Evento</h2>
+								</div>
+								<div class="description">
+									<p>Crea sesiones de dibujo con o sin límite de tiempo que se desbloquean en las fechas acordadas.</p>
+								</div>
+								
+							</div>
+						</div>
+					</div>
+                </div>
+                
+                <div class="datos">
+					<div class="textos">
+						<input type="text" name="title" placeholder="Título*" minlength="1" maxlength="30">
+						<textarea name="description" placeholder="Descripción" maxlength="250"></textarea>
+						<div>
+							<% if (error==1){ %>
+								<p class="error">Debe rellenar el campo de título</p>
+							<% }else if(error==2){ %>
+								<p class="error">Debe escoger entre galería o evento</p>
+							<% }else if(error == 3){ %>
+								<p class="error">Un evento o galería con el mismo nombre ya existe en tu grupo</p>
+							<% }  %>
+						</div>
+					</div>
+					
+					<div class="fotos">
+						<div class="foto_group">
+							<h3>Foto de Portada</h3>
+							<p>Solo se admiten .png y .jpg</p>
+							<input type="file" name="icon" id="cover">
+						</div>
+						<div class="foto_group">
+							<h3>Banner</h3>
+							<p>Solo se admiten .png y .jpg</p>
+							<input type="file" name="banner" id="banner">
+						</div>
+						<div class="actions">
+							<button type="submit">Crear</button>
+						</div>
+					</div>
+            </form>
         </div>
     </div>
-
-    <p>Título</p>
-    <input type="text" name="title" minlength="1" maxlength="30">
-    <p>Descripción (Opcional)</p>
-    <input type="text" name="description" maxlength="250">
-    <p>Imagen de portada</p>
-    <input type="file" name="icon" id="cover">
-    <p>Banner</p>
-    <input type="file" name="banner" id="banner">
-    <button type="submit">Crear</button>
-
-    <% if (error==1){ %>
-        <span>Debe rellenar el campo de título</span>
-    <% }else if(error==2){ %>
-        <span>Debe escoger entre galería o evento</span>
-    <% }else if(error == 3){ %>
-        <span>Un evento o galería con el mismo nombre ya existe en tu grupo</span>
-    <% }  %>
-</form>
-
+</div>
 
 <style>
-  .choose_box {
-    border: 2px solid transparent;
-    padding: 10px;
-    cursor: pointer;
-  }
-
-  .choose_box.selected {
-    border: 2px solid black;
-  }
 </style>
 
 <script>
