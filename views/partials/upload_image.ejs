@@ -1,0 +1,71 @@
+<script src="/sweetalert2/sweetalert2.all.min.js"></script>
+
+<script>
+  document.getElementById('upload_image_button').addEventListener('click', function() {
+
+    
+    let selected_img = null
+
+    
+    Swal.fire({
+        title: 'Subir imagen',
+        html: `
+            <form id="upload_image_form" method="POST" action="<%= form_action %> " enctype="multipart/form-data">
+            <input type="file" name="image" id="image_input" accept="image/*">
+            <input type="hidden" name="already_uploaded_image" id="already_uploaded_image">
+            <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" id="cancel_button">Cancelar</button>
+                <button type="submit">Subir</button>
+            </div>
+            </form>
+
+            <div id="image_grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px;">
+            <% user_uploaded_imgs.forEach(function(img) { %>
+                <img src="<%= img.image_name %>" data-image-name="<%= img.image_name.split('/').pop() %>" alt="User Image"
+                style="width: 100%; object-fit: cover; border: 2px solid transparent; border-radius: 4px; cursor: pointer;">
+            <% }) %>
+            </div>`,
+
+        showConfirmButton: false,
+        showCancelButton: false,
+
+        didOpen: () => {
+            let imgs = document.querySelectorAll('#image_grid img')
+            imgs.forEach(img => {
+            img.addEventListener('click', () => {
+                imgs.forEach(i => i.style.border = '2px solid transparent')
+                img.style.border = '2px solid #007bff'
+                selected_img = img.getAttribute('data-image-name')
+                document.getElementById('image_input').value = ''
+            })
+            })
+            document.getElementById('image_input').addEventListener('change', () => {
+            if (document.getElementById('image_input').files.length > 0) {
+                selected_img = null
+                imgs.forEach(i => i.style.border = '2px solid transparent')
+            }
+            })
+
+            document.getElementById('cancel_button').addEventListener('click', () => {
+            Swal.close()
+            })
+
+            document.getElementById('upload_image_form').addEventListener('submit', e => {
+            e.preventDefault()
+            let fileInput = document.getElementById('image_input')
+            if (!fileInput.files.length && !selected_img) {
+                Swal.showValidationMessage('¡Selecciona una imagen o sube una nueva!')
+                return false
+            }
+            if (selected_img) {
+                document.getElementById('already_uploaded_image').value = selected_img
+                fileInput.value = ''
+            }
+            document.getElementById('upload_image_form').submit()
+            })
+        },
+
+      width: '800px'
+    })
+  })
+</script>

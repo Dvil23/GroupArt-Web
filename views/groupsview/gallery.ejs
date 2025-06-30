@@ -4,4 +4,17 @@
 <h3><%= gallery.description %></h1>
 <img src="<%= gallery_icon %>" style="width: 200px;">
 <img src="<%= gallery_banner %>" style="width: 200px;">
+
+<button id="upload_image_button">Subir imagen</button>
+
+<% gallery_images.forEach((image,index) => { %>
+  <div>
+    <img src="<%= image.image_name %>" alt="User Image">
+    <p>Subida por: <%= image.uploader_name %></p>
+  </div>
+<% }) %>
+
+
+<%- include("../partials/upload_image.ejs") -%>
+
 <%- include("../partials/end.ejs") -%>

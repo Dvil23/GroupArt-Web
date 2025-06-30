@@ -169,6 +169,7 @@
   cursor: pointer;
   background-color: var(--color-hover-blue);
   box-shadow: 2px 2px 16px var(--color-shadow-blue);
+  height: 65%;
   font-size: 2.15vh;
 }
 .contain_global .global .global_portada #portada .banner_shadowable .functions .icon_functions {
@@ -186,8 +187,8 @@
 }
 .contain_global .global .global_portada #portada .banner_shadowable .functions .icon_functions form button {
   font-family: var(--font-cool);
-  width: 75%;
-  height: 75%;
+  width: 50px;
+  height: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -202,8 +203,8 @@
   cursor: pointer;
   background-color: var(--color-hover-blue);
   box-shadow: 2px 2px 16px var(--color-shadow-blue);
-  width: 85%;
-  height: 85%;
+  width: 55px;
+  height: 55px;
   font-size: 2.15vh;
 }
 .contain_global .global #content.recogido {
