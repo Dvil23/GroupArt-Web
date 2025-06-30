@@ -1,22 +1,110 @@
 <%- include("../partials/start.ejs") -%>
 <%- include("../partials/header.ejs") -%>
+<link rel="stylesheet" href="/stylesheets/members.css" class="css">
+
+<div class="contain_global">
+
+    <div class="global">
+
+        <div class="global_portada" id="global_portada_id">
+            <div id="imagen">
+                <!-- if (image_icon) { -->
+                    <img src="/images/default_group_photo.png" alt="Group Image"> <!-- aquí estaba la variable image_icon en el src -->
+                    <!-- } else { -->
+                    <!-- <img src="/images/default_group_photo.jpg" alt="Group Image"> -->
+                    <!-- } -->
+            </div>
+            <div id="portada" >
+                <div class="imagen_portada">
+                    <img src="/images/global_background.jpg" alt="Banner"> <!-- aquí estaba la variable image_banner en el src -->
+                </div>
+                <div class="banner_shadowable">
+                    <div class="title">
+                        <h1><!-- group.title -->Titulo Placeholder</h1>
+                    </div>
+                    <div class="subtitle">
+                        <!-- if(group.description != ""){  --> 
+                            <h2><!-- group.description --> Subtitulo Placeholder</h2>
+                        <!-- } -->
+                    </div>
+                    
+                    <div class="functions">
+                        <div class="text_functions">
+                        </div>
+                        <div class="icon_functions">
+                            <form method="GET" action="/group/<%=encrypted_id%>/getlinks">
+                                <button type="submit">
+                                    <i class="fa-solid fa-share-nodes"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <div id="content">
+            <% members.forEach((user) => { %>
+            <div class="element">
+                <div class="foto">
+                    <% if(user.image) {%>
+                        <img src="<%=user.image%>">
+                    <% }else{ %>
+                        <img src="/images/default_pfp.jpg">
+                    <% } %>
+                </div>
+                <div class="contenido">
+                    <h2><%=user.username%></h2>
+                    <% if(user.type=="2" ){ %>
+                        <h3 class="creador">Creador</h3>
+                    <%}else if(user.type=="1"){ %>
+                        <h3 class="admin">Administrador</h3>
+                    <%} else if(user.type=="0"){%>
+                        <h3 class="miembro">Miembro</h3>
+                    <%}%>
+                </div>
+                <div class="actions">
+                    <%if(user.type=="1"){ %>
+                        <% if (issuperadmin){ %>
+                            <form method="POST" action="/group/<%=encrypted_id%>/members/<%=user.id%>">
+                                <button>Quitar administrador</button>
+                            </form>
+                        <% } %>
+                    <%} else if(user.type=="0" && issuperadmin){%>
+                        <form method="POST" action="/group/<%=encrypted_id%>/members/<%=user.id%>">
+                            <button>Añadir administrador</button>
+                        </form>
+                    <%}%>
+                </div>
+                
+            </div>
+            <% }) %>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let global_portada_id = document.getElementById('global_portada_id');
+        let portada = document.getElementById('portada');
+        let content = document.getElementById('content');
+        let imagen = document.getElementById('imagen');
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 25) {
+                global_portada_id.classList.add('recogido_global_portada');
+                portada.classList.add('recogido');
+                imagen.classList.add('recogido');
+                content.classList.add('recogido');
+            } else {
+                global_portada_id.classList.remove('recogido_global_portada');
+                portada.classList.remove('recogido');
+                imagen.classList.remove('recogido');
+                content.classList.remove('recogido');
+            }
+        });
+    });
+</script>
 
 
-<% members.forEach((user) => { %>
-    <p><%=user.username%></p>
-    <% if(user.type=="2" ){ %>
-        <p>Creador</p>
-    <%}else if(user.type=="1"){ %>
-        <p>Admin</p>
-        <% if (issuperadmin){ %>
-            <form method="POST" action="/group/<%=encrypted_id%>/members/<%=user.id%>">
-                <button>Quitar admin</button>
-            </form>
-        <% } %>
-    <%} else if(user.type=="0" && issuperadmin){%>
-        <form method="POST" action="/group/<%=encrypted_id%>/members/<%=user.id%>">
-            <button>Añadir admin</button>
-        </form>
-    <%}%>
-<% }) %>
 <%- include("../partials/end.ejs") -%>

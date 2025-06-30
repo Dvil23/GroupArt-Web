@@ -1,5 +1,6 @@
 .contain_global {
   width: 100%;
+  min-height: 90vh;
   background-color: #171F1F;
   display: flex;
   flex-direction: column;
@@ -145,20 +146,20 @@
 }
 .contain_global .global .global_portada #portada .banner_shadowable .functions .text_functions form {
   height: 100%;
-  width: 100%;
+  width: 270px;
   display: flex;
-  justify-content: left;
+  justify-content: center;
   align-items: center;
   margin-right: 5%;
 }
 .contain_global .global .global_portada #portada .banner_shadowable .functions .text_functions form button {
   font-family: var(--font-cool);
-  width: 200px;
+  width: 90%;
   height: 60%;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 2vh;
+  font-size: 1.1rem;
   border: none;
   background-color: var(--color-blue);
   color: var(--color-cream);
@@ -170,7 +171,8 @@
   background-color: var(--color-hover-blue);
   box-shadow: 2px 2px 16px var(--color-shadow-blue);
   height: 65%;
-  font-size: 2.15vh;
+  width: 94%;
+  font-size: 1.15rem;
 }
 .contain_global .global .global_portada #portada .banner_shadowable .functions .icon_functions {
   width: 30%;
@@ -209,132 +211,114 @@
 }
 .contain_global .global #content.recogido {
   margin-top: 12vh;
+  margin-bottom: 10vh;
 }
 .contain_global .global #content {
   margin-top: 0;
-  height: 100%;
+  min-height: 50vh;
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   background-color: var(--color-cream);
-  transition: margin-top 0.3s ease;
+  transition: 0.3s ease;
   margin-left: 0;
   margin-right: 0;
   z-index: 1;
 }
-.contain_global .global #content hr {
+.contain_global .global #content .element {
+  height: 250px;
   width: 100%;
-  border: 0;
-  height: 1px;
-  background-image: -webkit-linear-gradient(left, var(--color-cream), var(--color-darker-cream), var(--color-cream));
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.contain_global .global #content .empty {
+.contain_global .global #content .element .element_content {
+  width: 80%;
+  height: 85%;
+  background: linear-gradient(to bottom, var(--color-dark), var(--color-darker));
+  margin: 3%;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 50vh;
-  background-color: var(--color-dark-cream);
-}
-.contain_global .global #content .empty p, .contain_global .global #content .empty i {
-  text-align: center;
-  color: var(--color-darker-cream);
-  font-size: 3vh;
-}
-.contain_global .global #content .empty p {
-  font-family: var(--font-cool);
-}
-.contain_global .global #content form {
-  width: 100%;
-  height: 35vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.contain_global .global #content form .element {
-  height: 90%;
-  width: 95%;
+  color: var(--color-cream);
   cursor: pointer;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  box-sizing: content-box;
-}
-.contain_global .global #content form .element:hover {
-  border: 2px solid var(--color-blue);
-}
-.contain_global .global #content form .element .element_shadow {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  cursor: pointer;
-  background-color: rgba(0, 0, 0, 0.4509803922);
   transition: 0.3s ease;
 }
-.contain_global .global #content form .element .element_shadow:hover {
-  background-color: rgba(0, 0, 0, 0.7607843137);
+.contain_global .global #content .element .element_content:hover {
+  background: linear-gradient(to bottom, var(--color-darkerblue), var(--color-darkblue));
+  border: 2px solid var(--color-blue);
+  width: 83%;
+  height: 90%;
+  box-shadow: 2px 2px 16px var(--color-shadow-blue);
 }
-.contain_global .global #content form .element .element_shadow .element_image {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
+.contain_global .global #content .element .element_content div, .contain_global .global #content .element .element_content form {
+  height: 85%;
+  width: 90%;
 }
-.contain_global .global #content form .element .element_shadow .element_image img {
-  height: 100%;
-}
-.contain_global .global #content form .element .element_shadow .element_content {
-  height: 100%;
-  flex: 1;
-  padding-left: 5%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-}
-.contain_global .global #content form .element .element_shadow .element_content .element_up {
+.contain_global .global #content .element .element_content div .top, .contain_global .global #content .element .element_content form .top {
   width: 100%;
-  height: 30%;
+  height: 20%;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
 }
-.contain_global .global #content form .element .element_shadow .element_content .element_up .element_title {
-  font-size: 3.2vh;
-  font-family: var(--font-cool);
-  color: var(--color-cream);
-}
-.contain_global .global #content form .element .element_shadow .element_content .element_up .chip {
-  height: 40%;
-  width: 12%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 200px;
-  margin-right: 3%;
-}
-.contain_global .global #content form .element .element_shadow .element_content .element_up .chip h3 {
-  font-size: 2vh;
-}
-.contain_global .global #content form .element .element_shadow .element_content .element_up .galeria {
-  background-color: var(--color-chip-green);
-}
-.contain_global .global #content form .element .element_shadow .element_content .element_up .evento {
-  background-color: var(--color-chip-blue);
-}
-.contain_global .global #content form .element .element_shadow .element_content .element_middle {
-  width: 100%;
-  height: 15%;
-  color: var(--color-cream);
-  font-size: 2.2vh;
+.contain_global .global #content .element .element_content div .top .title, .contain_global .global #content .element .element_content form .top .title {
+  height: 100%;
+  width: 70%;
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
-}/*# sourceMappingURL=group.css.map */
+}
+.contain_global .global #content .element .element_content div .top .title h1, .contain_global .global #content .element .element_content form .top .title h1 {
+  color: var(--color-lightblue);
+  font-family: var(--font-cool);
+  font-size: 1.7rem;
+}
+.contain_global .global #content .element .element_content div .top .status, .contain_global .global #content .element .element_content form .top .status {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
+  width: 30%;
+}
+.contain_global .global #content .element .element_content div .top .status h2, .contain_global .global #content .element .element_content form .top .status h2 {
+  font-family: var(--font-cool);
+  font-weight: normal;
+}
+.contain_global .global #content .element .element_content div .top .finalizado, .contain_global .global #content .element .element_content form .top .finalizado {
+  color: var(--color-error);
+}
+.contain_global .global #content .element .element_content div .top .normal, .contain_global .global #content .element .element_content form .top .normal {
+  color: var(--color-cream);
+}
+.contain_global .global #content .element .element_content div .top .en_curso, .contain_global .global #content .element .element_content form .top .en_curso {
+  color: var(--color-blue);
+}
+.contain_global .global #content .element .element_content div .middle, .contain_global .global #content .element .element_content form .middle {
+  width: 100%;
+  height: 45%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: justify;
+}
+.contain_global .global #content .element .element_content div .middle h3, .contain_global .global #content .element .element_content form .middle h3 {
+  font-weight: normal;
+  font-family: var(--font-cool);
+  font-size: 1rem;
+}
+.contain_global .global #content .element .element_content div .bottom, .contain_global .global #content .element .element_content form .bottom {
+  width: 100%;
+  height: 35%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+.contain_global .global #content .element .element_content div .bottom .finalizado, .contain_global .global #content .element .element_content form .bottom .finalizado {
+  color: var(--color-error);
+}/*# sourceMappingURL=event.css.map */

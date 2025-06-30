@@ -1,50 +1,118 @@
 <%- include("../partials/start.ejs") -%>
 <%- include("../partials/header.ejs") -%>
-<h1><%= event.title %></h1>
-<h3><%= event.description %></h3>
-<img src="<%= event.icon %>">
-<img src="<%= event.banner %>">
-<% if (isadmin){ %>
-    <form method="GET" action="/group/<%=encrypted_id%>/event/<%= event_id %>/newsession">
-        <button type="submit">Crear nueva sesión</button>
-    </form>
-<% } %>
-<% sessions.forEach((session) => { %>
-    
-    <% if (session.has_started == true){ %>
-    <form method="GET" action="/group/<%=encrypted_id%>/event/<%= event_id %>/session/<%=session.id%>" class="session_form">
-    <% }else{ %>
-    <div>
-    <% } %>
-        
-        <h1><%= session.topic %></h1>
+<link rel="stylesheet" href="/stylesheets/event.css" class="css">
 
-        <% if (session.description) { %>
-        <h3><%= session.description %></h3> 
-        <% } %>
+<div class="contain_global">
 
-        <% if (session.has_started) { %>
-            
-            <p>Empezó el <%= session.date_start_formatted %> a la/s <%= session.hour_start_formatted %></p>
-        <% } else { %>
-            <p>Empieza en el <%= session.date_start_formatted %> a la/s <%= session.hour_start_formatted %></p>
-        <% } %>
+    <div class="global">
 
-        <% if (session.date_end_formatted && session.hour_end_formatted) { %>
-            
-            <% if (session.has_ended){ %>
-                <p>Finalizó el <%= session.date_end_formatted %> a la/s <%= session.hour_end_formatted %></p>
-                <p>Finalizado</p>
-            <% }else{%>
-                <p>Finaliza el <%= session.date_end_formatted %> a la/s <%= session.hour_end_formatted %></p>
-            <% } %>
-        <% } %>
-    <% if (session.has_started == true){ %>
-    </form>
-    <% }else{ %>
+        <div class="global_portada" id="global_portada_id">
+            <div id="imagen">
+                <% if (event.icon) { %>
+                    <img src="<%= event.icon %>" alt="Event icon">
+                    <% } else { %>
+                    <img src="/images/default_group_photo.jpg" alt="Group Image">
+                    <% } %>
+            </div>
+            <div id="portada" >
+                <div class="imagen_portada">
+                    <img src="<%=event.banner %>" alt="Banner">
+                </div>
+                <div class="banner_shadowable">
+                    <div class="title">
+                        <h1><%= event.title %></h1>
+                    </div>
+                    <div class="subtitle">
+                        <% if(event.description != ""){ %>
+                            <h2><%= event.description %></h2>
+                        <% } %>
+                    </div>
+                    
+                    <div class="functions">
+                        <div class="text_functions">
+                            <% if (isadmin){ %>
+                                <form method="GET" action="/group/<%=encrypted_id%>/event/<%= event_id %>/newsession">
+                                    <button type="submit">Crear nueva sesión</button>
+                                </form>
+                            <% } %>
+                        </div>
+                        <div class="icon_functions">
+                            <form method="GET" action="/group/<%=encrypted_id%>/getlinks">
+                                <button type="submit">
+                                    <i class="fa-solid fa-share-nodes"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <div id="content">
+            <% sessions.forEach((session) => { %>
+                <div class="element">
+                    <div class="element_content">
+                        <% if (session.has_started == true){ %>
+                        <form method="GET" action="/group/<%=encrypted_id%>/event/<%= event_id %>/session/<%=session.id%>" class="session_form">
+                        <% }else{ %>
+                        <div>
+                        <% } %>
+                            <div class="top">
+                                <div class="title">
+                                    <h1><%= session.topic %></h1>
+                                </div>
+                                <div class="status">
+                                    <h2>
+                                        <% if (session.has_started && !session.date_end_formatted) { %>
+                                            <h2 class="normal">Siempre Activo</h2>
+                                        <% } else if(session.date_end_formatted && session.has_ended){ %>
+                                            <h2 class="finalizado">Finalizado</h2>
+                                        <% } else if(session.date_end_formatted && !session.has_ended && session.has_started){ %>
+                                            <h2 class="en_curso">En curso</h2>
+                                        <% } else if(!session.has_started){ %>
+                                            <h2 class="normal">Próximo</h2>
+                                        <% } else {%>
+                                            <h2 class="finalizado">Corrupto</h2> <!--Este estado solo aparece si el evento ha terminado pero no ha comenzado, es decir, que las fechas están invertidas por alguna razón-->
+                                        <% }%>
+                                    </h2>
+                                </div>
+                            </div>
+                            <div class="middle">
+                                <% if (session.description) { %>
+                                    <h3><%= session.description %></h3> 
+                                <% } %>
+                            </div>
+                            <div class="bottom">
+                                <% if (session.has_started) { %>
+                                    <p>Empezó el <b><%= session.date_start_formatted %></b> a la/s <b><%= session.hour_start_formatted %></b></p>
+                                <% } else { %>
+                                    <p>Empieza en el <b><%= session.date_start_formatted %></b> a la/s <b><%= session.hour_start_formatted %></b></p>
+                                <% } %>
+
+                                <% if (session.date_end_formatted && session.hour_end_formatted) { %>
+                                    
+                                    <% if (session.has_ended){ %>
+                                        <p>Finalizó el <b><%= session.date_end_formatted %></b> a la/s <b><%= session.hour_end_formatted %></b></p>
+                                        <p class="finalizado"><b>Finalizado</b></p>
+                                    <% }else{%>
+                                        <p>Finaliza el <b><%= session.date_end_formatted %></b> a la/s <b><%= session.hour_end_formatted %></b></p>
+                                    <% } %>
+                                <% } %>
+                            </div>
+                            
+                        <% if (session.has_started == true){ %>
+                        </form>
+                        <% }else{ %>
+                        </div>
+                        <% } %>
+                    </div>
+                    
+                </div>
+            <% }) %>
+        </div>
     </div>
-    <% } %>
-<% }) %>
+</div>
+
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         let session_forms = document.querySelectorAll('.session_form');
@@ -52,6 +120,28 @@
             form.addEventListener('click', () => {
                 form.submit();
             });
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let global_portada_id = document.getElementById('global_portada_id');
+        let portada = document.getElementById('portada');
+        let content = document.getElementById('content');
+        let imagen = document.getElementById('imagen');
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 25) {
+                global_portada_id.classList.add('recogido_global_portada');
+                portada.classList.add('recogido');
+                imagen.classList.add('recogido');
+                content.classList.add('recogido');
+            } else {
+                global_portada_id.classList.remove('recogido_global_portada');
+                portada.classList.remove('recogido');
+                imagen.classList.remove('recogido');
+                content.classList.remove('recogido');
+            }
         });
     });
 </script>

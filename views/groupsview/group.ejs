@@ -24,11 +24,8 @@
                         <h1><%= group.title %></h1>
                     </div>
                     <div class="subtitle">
-                        <% if(group.description == ""){  %> 
-                            <!--Sugerencia: ¿Y si no mostramos la descripción si no la hay? puede que haya gente que no quiera descripcion pero tampoco querría que pusiera "sin descripcion" por que queda cutre-->
-                        <h2 class="sin_descripcion">Sin descripción</h2>
-                        <% }else{ %>
-                        <h2><%= group.description %></h2>
+                        <% if(group.description != ""){  %> 
+                            <h2><%= group.description %></h2>
                         <% } %>
                     </div>
                     
