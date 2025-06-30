@@ -1,0 +1,136 @@
+.global {
+  height: 90vh;
+  width: 100vw;
+  background-color: var(--color-dark);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.global .borders {
+  height: 100%;
+  width: 1000px;
+  background-color: var(--color-cream);
+}
+.global .borders .title {
+  width: 100%;
+  height: 15vh;
+  background-image: linear-gradient(to bottom, var(--color-blue), var(--color-darkblue));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--color-cream);
+  font-size: 1.7rem;
+}
+.global .borders form {
+  width: 100%;
+  height: 75vh;
+  display: flex;
+  flex-direction: column;
+}
+.global .borders form .datos {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+.global .borders form .datos .textos, .global .borders form .datos .fotos {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.global .borders form .datos .textos .error {
+  height: 10%;
+  font-size: 1.3rem;
+  font-style: var(--font-main);
+  color: var(--color-error);
+}
+.global .borders form .datos .textos textarea {
+  resize: none;
+  height: 30%;
+}
+.global .borders form .datos .textos input, .global .borders form .datos .textos textarea {
+  color: var(--color-darker-cream);
+  background-color: var(--color-dark-cream);
+  padding: 0.6rem 1.2rem;
+  font-family: var(--font-cool);
+  font-size: 1.2rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+}
+.global .borders form .datos .textos input:focus, .global .borders form .datos .textos textarea:focus {
+  border-color: var(--color-blue);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(var(--color-dark), 0.2);
+}
+.global .borders form .datos .fotos .foto_group {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.global .borders form .datos .fotos .foto_group h3 {
+  font-size: 1.8rem;
+  font-family: var(--font-cool);
+  color: var(--color-dark);
+}
+.global .borders form .datos .fotos .foto_group p {
+  font-size: 1rem;
+  font-family: var(--font-main);
+  color: var(--color-dark);
+  margin-bottom: 10%;
+}
+.global .borders form .datos .fotos .foto_group input {
+  padding: 0.5rem 1rem;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  color: #333;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+}
+.global .borders form .datos .fotos .foto_group input::file-selector-button {
+  background: var(--color-darker-cream);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.global .borders form .datos .fotos .foto_group input::file-selector-button:hover {
+  background-color: var(--color-hover-darker-cream);
+}
+.global .borders form .datos .fotos .actions {
+  width: 100%;
+  height: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.global .borders form .datos .fotos .actions button {
+  font-family: var(--font-cool);
+  width: 30%;
+  height: 40%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-size: 2vh;
+  border: none;
+  background-color: var(--color-blue);
+  color: var(--color-cream);
+  border-radius: 15px;
+  transition: 0.3s ease;
+}
+.global .borders form .datos .fotos .actions button:hover {
+  cursor: pointer;
+  background-color: var(--color-hover-blue);
+  box-shadow: 2px 2px 16px var(--color-shadow-blue);
+  width: 34%;
+  height: 46%;
+  font-size: 2.15vh;
+}/*# sourceMappingURL=create.css.map */

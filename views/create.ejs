@@ -1,27 +1,45 @@
 <%- include("partials/start.ejs") -%>
 <%- include("partials/header.ejs")-%>
+<link rel="stylesheet" href="/stylesheets/create.css" class="css">
 
-<h1>Creación de grupo de arte</h1>
-<form method="POST" action="/creategroup" enctype="multipart/form-data">
-    <p>Título*</p>
-    <input type="text" minlength="1" maxlength="30" name="title" required>
-    <p>Descripción</p>
-    <input type="text" maxlength="250" name="description">
+<div class="global">
+    <div class="borders">
+        <div class="title">
+            <h1>Creación de grupo</h1>
+        </div>
+        <form method="POST" action="/creategroup" enctype="multipart/form-data">
+            <div class="datos">
+                <div class="textos">
+                    <input type="text" minlength="1" placeholder="Título" maxlength="30" name="title" required>
+                    <textarea maxlength="250" placeholder="Descripción" name="description" style="resize: none;"></textarea>
+                    <input type="password" minlength="5" placeholder="Contraseña" name="password" required>
+                    <input type="password" minlength="5" placeholder="Repetir contraseña" name="repeat_password" required>
+                    <div class="error">
+                        <% if (error) { %>
+                            <p>Las contraseñas no coinciden</p>
+                        <% } %>
+                    </div>
+                    
+                </div>
+                <div class="fotos">
+                    <div class="foto_group">
+                        <h3>Foto de Portada</h3>
+                        <p>Solo se admiten .png y .jpg</p>
+                        <input type="file" name="icon">
+                    </div>
+                    <div class="foto_group">
+                        <h3>Banner</h3>
+                        <p>Solo se admiten .png y .jpg</p>
+                        <input type="file" name="banner">
+                    </div>
+                    <div class="actions">
+                        <button type="submit">Crear</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
-    <p>Contraseña*</p>
-    <span>La contraseña debe ser de mínimo 5 carácteres</span>
-    <input type="password" minlength="5" name="password" required>
-    <p>Repetir contraseña*</p>
-    <input type="password" minlength="5" name="repeat_password" required>
-    <p>Icono del grupo</p>
-    <input type="file" name="icon">
-    <p>Banner del grupo</p>
-    <input type="file" name="banner">
-
-    <% if (error) { %>
-        <p>Las contraseñas no coinciden</p>
-    <% } %>
-    <button type="submit">Crear</button>
-</form>
 
 <%- include("partials/end.ejs") -%>
