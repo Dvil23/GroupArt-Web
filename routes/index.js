@@ -490,7 +490,7 @@ router.post('/login', function(req, res, next) {
 })
 
 // CLOSE SESION
-router.post('/closession', isLoggedIn, function(req, res, next) {
+router.post('/closesession', isLoggedIn, function(req, res, next) {
   req.session.destroy((err) => {
     // ELIMINAR TAMBIEN COOKIE
     res.clearCookie('connect.sid') 
@@ -878,15 +878,56 @@ router.get('/group/:id/gallery/:sect_id', isLoggedIn, isMemberOfGroup(), GetGrou
     })
   })
 
-  if(gallery_results.length > 0){
-    res.render('groupsview/gallery',{
-      gallery: gallery_results[0],
-      gallery_icon: `/group/${req.params.id}/image/${gallery_results[0].icon}`,
-      gallery_banner:`/group/${req.params.id}/image/${gallery_results[0].banner}`
-    })
-  }else{
+  //Que exista la galería y que sea de tipo galería
+  if(gallery_results == null || gallery_results== undefined || gallery_results.length == 0 || gallery_results[0].section_type!=="gallery"){
     res.redirect('/group/'+ req.params.id)
   }
+  
+
+  //Buscar todas las imagenes que ha subido el usuario, siempre y cuando no sean la misma imagen subida a diferentes sesiones. Ordenadas por fecha
+  let find_user_uploaded_images = "SELECT user_images.* FROM user_images user_images INNER JOIN (SELECT image_name, MAX(uploaded_at) as max_uploaded FROM user_images WHERE user_id = ? GROUP BY image_name) grouped_ui ON user_images.image_name = grouped_ui.image_name AND user_images.uploaded_at = grouped_ui.max_uploaded AND user_images.user_id = ? ORDER BY user_images.uploaded_at DESC"
+
+  let user_uploaded_imgs = await new Promise((resolve, reject) => {
+    db.query(find_user_uploaded_images, [req.session.myuser.id, req.session.myuser.id], (error, results) => resolve(results))
+  })
+
+  
+  let formatted_user_uploaded_imgs = user_uploaded_imgs.map(images => {
+    return {
+      ...images,
+      image_name: `/group/${req.params.id}/userimage/${images.image_name}`,
+    }
+  })
+
+
+  let find_gallery_images = "SELECT user_images.*, u.username as uploader_name FROM user_images user_images JOIN users u ON user_images.user_id = u.id WHERE user_images.group_id = ? AND gallery_id = ? ORDER BY user_images.uploaded_at ASC"
+
+  let gallery_images = await new Promise((resolve, reject) => {
+    db.query(find_gallery_images, [req.art_group.id,req.params.sect_id], (error,gallery_images) => {
+      if (error) reject(error)
+      else resolve(gallery_images) 
+    })
+  })
+
+  console.log("Imagenes DE LA GALERIA",gallery_images)
+
+  let formatted_gallery_images = gallery_images.map(images => {
+    return {
+      ...images,
+      image_name: `/group/${req.params.id}/userimage/${images.image_name}`,
+    }
+  })
+
+
+  let form_action=`/group/${req.params.id}/gallery/${req.params.sect_id}/gallery_uploadimg`
+  res.render('groupsview/gallery',{
+    form_action,
+    gallery: gallery_results[0],
+    gallery_icon: `/group/${req.params.id}/image/${gallery_results[0].icon}`,
+    gallery_banner:`/group/${req.params.id}/image/${gallery_results[0].banner}`,
+    gallery_images: formatted_gallery_images,
+    user_uploaded_imgs:formatted_user_uploaded_imgs
+  })
 })
 
 
@@ -933,6 +974,74 @@ router.get('/group/:id/event/:sect_id', isLoggedIn, isMemberOfGroup(), GetGroupI
     res.redirect('/group/' + req.params.id)
   }
 })
+// ----------------------------- UPLOAD TO GALLERY  -----------------------------
+
+// POST UPLOAD TO GALLERY
+router.post('/group/:id/gallery/:sect_id/gallery_uploadimg', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), upload.single('image'), async function(req, res, next) {
+
+  let already_uploaded_image = req.body.already_uploaded_image
+  let new_image = req.file 
+
+  // Si hay archivo subido Y foto seleccionada, error
+  if (new_image && already_uploaded_image) {
+    return res.redirect(`/group/${req.params.id}/gallery/${req.params.sect_id}?error=1`)
+  }
+
+  // Si seleccionó imagen ya subida
+  if (already_uploaded_image && !new_image) {
+
+    let find_image_in_same_session = "SELECT * FROM user_images WHERE user_id = ? AND image_name = ? AND group_id = ? AND gallery_id = ? "
+
+    let found_same_img=await new Promise((resolve, reject) => {
+      db.query(find_image_in_same_session, [req.session.myuser.id,already_uploaded_image,req.art_group.id,req.params.sect_id], (err, result) => resolve(result))
+    })
+
+    if(found_same_img.length > 0){
+      console.log("Esa ya la has subido a esta sesión!")
+      return res.redirect(`/group/${req.params.id}/gallery/${req.params.sect_id}`)
+    }
+
+    let insert_sql = "INSERT INTO user_images (user_id, image_name, group_id, gallery_id) VALUES (?, ?, ?, ?) "
+    await new Promise((resolve, reject) => {
+      db.query(insert_sql, [req.session.myuser.id,already_uploaded_image,req.art_group.id,req.params.sect_id], (err, result) => resolve(result))
+    })
+
+    return res.redirect(`/group/${req.params.id}/gallery/${req.params.sect_id}`)
+  }
+
+  // Si subió imagen nueva
+  if (new_image && !already_uploaded_image) {
+    // Contar cuántas imágenes tiene este user
+    let count_sql = "SELECT COUNT(*) AS count FROM user_images WHERE user_id = ?"
+    let count_result = await new Promise((resolve, reject) => {
+      db.query(count_sql, [req.session.myuser.id], (err, result) => resolve(result))
+    })
+
+    let addingnumber = count_result[0].count + 1
+
+    //Nombre imposible de replicar
+    let final_name = `Koraw-${req.session.myuser.myusername}-${Spain.format('YYYY-MM-DD')}-${Spain.format('HH-mm-ss')}-${Math.floor(Math.random() * 1000) + 1 + addingnumber}-uploaded-image.jpg`
+
+    // Subir a MinIO
+    await minio.putObject('images', final_name, new_image.buffer)
+
+    // Insertar nombre de imagenes y keys en BD
+    let insert_sql = "INSERT INTO user_images (user_id, image_name, group_id, gallery_id)VALUES (?, ?, ?, ?)"
+    await new Promise((resolve, reject) => {
+      db.query(insert_sql, [req.session.myuser.id,final_name,req.art_group.id,req.params.sect_id], (err, result) => resolve(result))
+    })
+
+    return res.redirect(`/group/${req.params.id}/gallery/${req.params.sect_id}`)
+  }
+
+  // Si no hizo nada, redirigir igual
+  return res.redirect(`/group/${req.params.id}/gallery/${req.params.sect_id}`)
+
+
+  
+})
+
+
 
 // ----------------------------- SESSIONS IN EVENT  -----------------------------
 
@@ -1095,23 +1204,25 @@ router.get('/group/:id/event/:sect_id/session/:sess_id', isLoggedIn, isMemberOfG
     db.query(find_session, [req.params.sess_id], (error, results) => resolve(results))
   })
 
-  console.log(sess_result[0])
 
+  //Si la sesion existe, adelante
   if (sess_result.length > 0) {
 
     let formatted_session = format_sessions(sess_result)
 
+    // Si la sesion no ha empezado, te redirije
     if (formatted_session[0].has_started == false) {
       res.redirect("/group/" + req.params.id + "/event/" + req.params.sect_id)
     } else {
       
-      let find_user_uploaded_images = "SELECT * FROM user_images WHERE user_id = ? "
-
+      //Buscar todas las imagenes que ha subido el usuario, siempre y cuando no sean la misma imagen subida a diferentes sesiones. Ordenadas por fecha
+      let find_user_uploaded_images = "SELECT user_images.* FROM user_images user_images INNER JOIN (SELECT image_name, MAX(uploaded_at) as max_uploaded FROM user_images WHERE user_id = ? GROUP BY image_name) grouped_ui ON user_images.image_name = grouped_ui.image_name AND user_images.uploaded_at = grouped_ui.max_uploaded AND user_images.user_id = ? ORDER BY user_images.uploaded_at DESC"
+    
       let user_uploaded_imgs = await new Promise((resolve, reject) => {
-        db.query(find_user_uploaded_images, [req.session.myuser.id], (error, results) => resolve(results))
+        db.query(find_user_uploaded_images, [req.session.myuser.id, req.session.myuser.id], (error, results) => resolve(results))
       })
 
-      // Mapear cada sección para cambiar icon y banner
+      
       let formatted_user_uploaded_imgs = user_uploaded_imgs.map(images => {
         return {
           ...images,
@@ -1119,12 +1230,33 @@ router.get('/group/:id/event/:sect_id/session/:sess_id', isLoggedIn, isMemberOfG
         }
       })
 
+
+      //Buscar todas las imagenes subidas a la sesión
+      let find_session_images = "SELECT user_images.*, u.username as uploader_name FROM user_images user_images JOIN users u ON user_images.user_id = u.id WHERE user_images.group_id = ? AND user_images.session_id = ? ORDER BY user_images.uploaded_at ASC"
+    
+      let session_images = await new Promise((resolve, reject) => {
+        db.query(find_session_images, [req.art_group.id,req.params.sess_id], (error, results) => 
+        {
+          if (error) reject(error)
+          else resolve(results)
+        })
+      })
+      console.log(session_images)
+
+
+      let formatted_session_images = session_images.map(images => {
+        return {
+          ...images,
+          image_name: `/group/${req.params.id}/userimage/${images.image_name}`,
+        }
+      })
+
+      let form_action= `/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}/uploadimg`
       res.render('groupsview/session', {
-        encrypted_id: req.params.id,
-        event_id: req.params.sect_id,
-        sess_id: req.params.sess_id,
+        form_action,
         session: formatted_session[0],
-        user_uploaded_imgs: formatted_user_uploaded_imgs
+        user_uploaded_imgs: formatted_user_uploaded_imgs,
+        session_images: formatted_session_images
       })
     }
 
@@ -1146,17 +1278,21 @@ router.post('/group/:id/event/:sect_id/session/:sess_id/uploadimg', isLoggedIn, 
 
   // Si seleccionó imagen ya subida
   if (already_uploaded_image && !new_image) {
-    let insert_sql = `
-      INSERT INTO user_images (user_id, image_name, group_id, session_id)
-      VALUES (?, ?, ?, ?)
-    `
+
+    let find_image_in_same_session = "SELECT * FROM user_images WHERE user_id = ? AND image_name = ? AND group_id = ? AND session_id = ? "
+
+    let found_same_img=await new Promise((resolve, reject) => {
+      db.query(find_image_in_same_session, [req.session.myuser.id,already_uploaded_image,req.art_group.id,req.params.sess_id], (err, result) => resolve(result))
+    })
+
+    if(found_same_img.length > 0){
+      console.log("Esa ya la has subido a esta sesión!")
+       return res.redirect(`/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}`)
+    }
+
+    let insert_sql = "INSERT INTO user_images (user_id, image_name, group_id, session_id) VALUES (?, ?, ?, ?) "
     await new Promise((resolve, reject) => {
-      db.query(insert_sql, [
-        req.session.myuser.id,
-        already_uploaded_image,
-        req.art_group.id,
-        req.params.sess_id
-      ], (err, result) => resolve(result))
+      db.query(insert_sql, [req.session.myuser.id,already_uploaded_image,req.art_group.id,req.params.sess_id], (err, result) => resolve(result))
     })
 
     return res.redirect(`/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}`)
@@ -1165,30 +1301,23 @@ router.post('/group/:id/event/:sect_id/session/:sess_id/uploadimg', isLoggedIn, 
   // Si subió imagen nueva
   if (new_image && !already_uploaded_image) {
     // Contar cuántas imágenes tiene este user
-    let count_sql = `SELECT COUNT(*) AS count FROM user_images WHERE user_id = ?`
+    let count_sql = "SELECT COUNT(*) AS count FROM user_images WHERE user_id = ?"
     let count_result = await new Promise((resolve, reject) => {
       db.query(count_sql, [req.session.myuser.id], (err, result) => resolve(result))
     })
+
     let addingnumber = count_result[0].count + 1
 
-
+    //Nombre imposible de replicar
     let final_name = `Koraw-${req.session.myuser.myusername}-${Spain.format('YYYY-MM-DD')}-${Spain.format('HH-mm-ss')}-${Math.floor(Math.random() * 1000) + 1 + addingnumber}-uploaded-image.jpg`
 
     // Subir a MinIO
     await minio.putObject('images', final_name, new_image.buffer)
 
-    // Insertar registro en DB
-    let insert_sql = `
-      INSERT INTO user_images (user_id, image_name, group_id, session_id)
-      VALUES (?, ?, ?, ?)
-    `
+    // Insertar nombre de imagenes y keys en BD
+    let insert_sql = "INSERT INTO user_images (user_id, image_name, group_id, session_id)VALUES (?, ?, ?, ?)"
     await new Promise((resolve, reject) => {
-      db.query(insert_sql, [
-        req.session.myuser.id,
-        final_name,
-        req.art_group.id,
-        req.params.sess_id
-      ], (err, result) => resolve(result))
+      db.query(insert_sql, [req.session.myuser.id,final_name,req.art_group.id,req.params.sess_id], (err, result) => resolve(result))
     })
 
     return res.redirect(`/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}`)
