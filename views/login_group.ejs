@@ -1,15 +1,25 @@
 <%- include("partials/start.ejs") -%>
 <%- include("partials/header.ejs")-%>
+<link rel="stylesheet" href="/stylesheets/login_group.css" class="css">
 
-<h1>Acceder a <%= title %></h1>
-<form method="POST">
-    <input type="hidden" name="group_title" value="<%= title %>">
-    <p>Contraseña</p>
-    <input type="password" name="password" required>
-    <button type="submit">Acceder</button>
-    <% if (error) { %>
-        <p>Contraseña incorrecta</p>
-    <% } %>
-</form>
+<div class="global">
+    <div class="shadow">
+        <form class="container" method="POST">
+            <h1>Acceder a:</h1>
+            <h2><%= title %></h2>
+            <input type="hidden" name="group_title" value="<%= title %>">
+            <input class="input_field" type="password" placeholder="Contraseña" name="password" required>
+            <div class="error">
+                <% if (error) { %>
+                    <p>Contraseña incorrecta</p>
+                <% } %>
+            </div>
+            <div class="button_container">
+                <button type="submit">Acceder</button>
+            </div>
+            
+        </form>
+    </div>
+</div>
 
 <%- include("partials/end.ejs") -%>
