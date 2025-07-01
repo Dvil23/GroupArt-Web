@@ -1,42 +1,77 @@
 <%- include("partials/start.ejs") -%>
 <%- include("partials/header.ejs")-%>
-
-<h1><%=user.username%></h1>
-<p><%=user.pfp%></p>
-
-<% var first_member_iteration=true %>
-
-<% groups.forEach((group,index) => { %>
-    <% if (group.type==2 && index == 0){ %>
-        <div style="background-color:antiquewhite">
-            <h1>Creador:</h1>
-    <% }%>
-    <% if (group.type==1 || group.type == 0  && first_member_iteration){ %>
-        <% first_member_iteration=false %>
+<link rel="stylesheet" href="/stylesheets/user.css" class="css">
+<div class="global">
+    <div class="bordes">
+        <div class="portada">
+            <img src="/images/<%=user.pfp%>" alt="Foto de usuario"></img>
+            <h1><%=user.username%></h1>
+            
         </div>
-        <div style="background-color:rgb(174, 209, 167)">
-            <h1>Miembro:</h1>
-    <% }%>
 
-    <% if (user.isyou){ %>
-        <form method="GET" action="/group/<%=group.encrypted_id%>">
-    <% }else{ %>
-        <div>
-    <% } %>
 
-        <h3><%= group.title %></h3>
-        <p><%= group.description %></p>
+        <% var first_member_iteration=true %>
+        <div class="contenido">
+            <% groups.forEach((group,index) => { %>
 
-    <% if (user.isyou){ %>
-        <button type="access">Acceder</button>
-        </form>
-    <% }else{ %>
+                <% if (group.type==2 && index == 0){ %>
+                    <div class="categoria" id="creador">
+                        <div class="title">
+                            <h1>Creador</h1>
+                            <% if (user.isyou){ %>
+                            <h2>Grupos que has creado tú</h2>
+                            <% } else { %>
+                            <h2>Grupos que ha creado <%=user.username%></h2>
+                            <% } %>
+                        </div>
+                <% }%>
+                <% if (group.type==1 || group.type == 0  && first_member_iteration){ %>
+                    <% first_member_iteration=false %>
+                    </div>
+                    <div class="categoria" id="miembro">
+                        <div class="title">
+                            <h1>Miembro</h1>
+                            <% if (user.isyou){ %>
+                            <h2>Grupos de los que eres miembro</h2>
+                            <% } else { %>
+                            <h2>Grupos de los que <%=user.username%> es miembro</h2>
+                            <% } %>
+                        </div>
+                        
+                <% }%>
+
+                <% if (user.isyou){ %>
+                    <form class="group" method="GET" action="/group/<%=group.encrypted_id%>">
+                <% }else{ %>
+                    <div class="group">
+                <% } %>
+                    <div class="image">
+                        <img src="<%=group.image%>">
+                    </div>
+                    <div class="content">
+                        <h2><%= group.title %></h2>
+                        <h3><%= group.description %></h3>
+                        <% if (user.isyou){ %>
+                        <button type="access">Acceder</button>
+                        <% } %>
+                    </div>
+                    
+
+                <% if (user.isyou){ %>
+                    </form>
+                <% }else{ %>
+                    </div>
+                <% } %>
+
+                <% if (index === groups.length - 1) { %>
+                    </div>
+                <% } %>
+
+            <% }) %>
         </div>
-    <% } %>
+    </div>
+</div>
 
-    <% if (index === groups.length - 1) { %>
-        </div>
-    <% } %>
 
-<% }) %>
+
 <%- include("partials/end.ejs") -%>
