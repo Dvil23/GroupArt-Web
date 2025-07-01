@@ -8,28 +8,25 @@
 
         <div class="global_portada" id="global_portada_id">
             <div id="imagen">
-                <!-- if (image_icon) { -->
-                    <img src="/images/default_group_photo.png" alt="Group Image"> <!-- aquí estaba la variable image_icon en el src -->
-                    <!-- } else { -->
-                    <!-- <img src="/images/default_group_photo.jpg" alt="Group Image"> -->
-                    <!-- } -->
+                <img src="<%= image_icon %>" alt="Group Image">
             </div>
             <div id="portada" >
                 <div class="imagen_portada">
-                    <img src="/images/global_background.jpg" alt="Banner"> <!-- aquí estaba la variable image_banner en el src -->
+                    <img src="<%= image_banner %>" alt="">
                 </div>
                 <div class="banner_shadowable">
                     <div class="title">
-                        <h1><!-- group.title -->Titulo Placeholder</h1>
+                        <h1><%= group_title %></h1>
                     </div>
                     <div class="subtitle">
-                        <!-- if(group.description != ""){  --> 
-                            <h2><!-- group.description --> Subtitulo Placeholder</h2>
-                        <!-- } -->
+
+                            <h2>Miembros</h2>
+
                     </div>
                     
                     <div class="functions">
                         <div class="text_functions">
+                            
                         </div>
                         <div class="icon_functions">
                             <form method="GET" action="/group/<%=encrypted_id%>/getlinks">
@@ -67,7 +64,7 @@
                     <%if(user.type=="1"){ %>
                         <% if (issuperadmin){ %>
                             <form method="POST" action="/group/<%=encrypted_id%>/members/<%=user.id%>">
-                                <button>Quitar administrador</button>
+                                <button>Eliminar administrador</button>
                             </form>
                         <% } %>
                     <%} else if(user.type=="0" && issuperadmin){%>
@@ -84,26 +81,9 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        let global_portada_id = document.getElementById('global_portada_id');
-        let portada = document.getElementById('portada');
-        let content = document.getElementById('content');
-        let imagen = document.getElementById('imagen');
-        window.addEventListener('scroll', function () {
-            if (window.scrollY > 25) {
-                global_portada_id.classList.add('recogido_global_portada');
-                portada.classList.add('recogido');
-                imagen.classList.add('recogido');
-                content.classList.add('recogido');
-            } else {
-                global_portada_id.classList.remove('recogido_global_portada');
-                portada.classList.remove('recogido');
-                imagen.classList.remove('recogido');
-                content.classList.remove('recogido');
-            }
-        });
-    });
+<script type="module">
+  import { setupScrollHandler } from '/javascripts/open_close_group_header.js'
+  setupScrollHandler()
 </script>
 
 

@@ -1,6 +1,5 @@
 .contain_global {
   width: 100%;
-  min-height: 90vh;
   background-color: #171F1F;
   display: flex;
   flex-direction: column;
@@ -9,6 +8,7 @@
 .contain_global .global {
   background-color: var(--color-cream);
   width: 1000px;
+  max-width: 1000px;
   color: var(--color-cream);
   font-family: var(--font-main);
   display: flex;
@@ -54,7 +54,8 @@
   margin-top: 0;
 }
 .contain_global .global .global_portada #portada.recogido .banner_shadowable .title h1 {
-  font-size: 4.7vh;
+  margin-top: 3vh;
+  font-size: 2vh;
 }
 .contain_global .global .global_portada #portada.recogido .banner_shadowable .subtitle {
   margin-top: 0vh;
@@ -64,7 +65,7 @@
   opacity: 0;
 }
 .contain_global .global .global_portada #portada.recogido .banner_shadowable .functions {
-  margin-top: 2vh;
+  margin-top: 6vh;
 }
 .contain_global .global .global_portada #portada.recogido .imagen_portada {
   height: 10vh;
@@ -75,9 +76,9 @@
   background-position: center;
   height: 40vh;
   width: 100%;
+  max-width: 100%;
   position: sticky;
   transition: height 0.3s ease;
-  top: 10vh;
 }
 .contain_global .global .global_portada #portada .imagen_portada {
   transition: height 0.3s ease;
@@ -100,34 +101,38 @@
   align-items: center;
   font-family: var(--font-cool);
   transition: background-color 0.3s ease;
+  position: relative;
 }
 .contain_global .global .global_portada #portada .banner_shadowable .title {
   margin-top: 2vh;
   height: 4vh;
-  width: 100%;
+  width: 90%;
   transition: margin-top 0.3s ease;
+  word-wrap: break-word;
+  word-break: break-all;
 }
 .contain_global .global .global_portada #portada .banner_shadowable .title h1 {
-  margin-left: 5%;
-  font-style: normal;
-  font-size: 5vh;
-  transition: font-size 0.3s ease;
+  font-size: 2vh;
 }
 .contain_global .global .global_portada #portada .banner_shadowable .subtitle {
-  transition: margin-top 0.3s ease;
+  position: absolute;
   margin-top: 4vh;
-  height: 4vh;
-  width: 100%;
+  height: auto;
+  width: 90%;
+  word-wrap: break-word;
+  word-break: break-all;
+  bottom: 12vh;
+  left: 5%;
 }
 .contain_global .global .global_portada #portada .banner_shadowable .subtitle h2 {
   opacity: 1;
-  margin-left: 5%;
-  font-style: normal;
-  font-size: 3vh;
+  font-style: small;
+  font-weight: normal;
+  font-size: 5vh;
   transition: font-size, opacity 0.3s ease;
 }
 .contain_global .global .global_portada #portada .banner_shadowable .functions {
-  margin-top: 16vh;
+  margin-top: 24vh;
   height: 10vh;
   width: 100%;
   background-color: var(--color-dark);
@@ -210,18 +215,18 @@
 }
 .contain_global .global #content.recogido {
   margin-top: 12vh;
-  margin-bottom: 10vh;
 }
 .contain_global .global #content {
   margin-top: 0;
-  min-height: 50vh;
+  height: 100%;
+  min-height: 70vh;
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   background-color: var(--color-cream);
-  transition: 0.3s ease;
+  transition: margin-top 0.3s ease;
   margin-left: 0;
   margin-right: 0;
   z-index: 1;
@@ -231,7 +236,7 @@
   height: 200px;
   background-color: var(--color-cream);
   margin: 3%;
-  border-radius: 10px;
+  border-radius: 50px;
   border: 2px solid var(--color-dark);
   display: flex;
   flex-direction: row;
@@ -265,7 +270,6 @@
 }
 .contain_global .global #content .element .contenido h3 {
   font-size: 1.6rem;
-  font-family: var(--font-cool);
   font-style: normal;
 }
 .contain_global .global #content .element .contenido .creador {
@@ -301,7 +305,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.13rem;
+  font-size: 1.3vh;
   border: none;
   background-color: var(--color-blue);
   color: var(--color-cream);
@@ -311,8 +315,8 @@
 .contain_global .global #content .element .actions form button:hover {
   cursor: pointer;
   background-color: var(--color-hover-blue);
-  box-shadow: 2px 2px 16px var(--color-shadow-blue);
+  box-shadow: 2px 2px 6px var(--color-shadow-blue);
   height: 76%;
   width: 84%;
-  font-size: 1.2rem;
+  font-size: 1.4vh;
 }/*# sourceMappingURL=members.css.map */

@@ -51,7 +51,12 @@
         <div id="content">
             <% sessions.forEach((session) => { %>
                 <div class="element">
-                    <div class="element_content">
+                    <div class="element_content <% if(!session.has_started){ %> locked_session <% } %> ">
+                        <% if(!session.has_started){ %> 
+                            <div class="locked_session_icon">
+                                <i class="fa-solid fa-lock"></i>
+                            </div> 
+                        <% } %>
                         <% if (session.has_started == true){ %>
                         <form method="GET" action="/group/<%=encrypted_id%>/event/<%= event_id %>/session/<%=session.id%>" class="session_form">
                         <% }else{ %>
@@ -62,19 +67,15 @@
                                     <h1><%= session.topic %></h1>
                                 </div>
                                 <div class="status">
-                                    <h2>
-                                        <% if (session.has_started && !session.date_end_formatted) { %>
-                                            <h2 class="normal">Siempre Activo</h2>
-                                        <% } else if(session.date_end_formatted && session.has_ended){ %>
-                                            <h2 class="finalizado">Finalizado</h2>
-                                        <% } else if(session.date_end_formatted && !session.has_ended && session.has_started){ %>
-                                            <h2 class="en_curso">En curso</h2>
-                                        <% } else if(!session.has_started){ %>
-                                            <h2 class="normal">Próximo</h2>
-                                        <% } else {%>
-                                            <h2 class="finalizado">Corrupto</h2> <!--Este estado solo aparece si el evento ha terminado pero no ha comenzado, es decir, que las fechas están invertidas por alguna razón-->
-                                        <% }%>
-                                    </h2>
+                                    <% if (session.has_started && !session.date_end_formatted) { %>
+                                        <h2 class="normal">Siempre Activo</h2>
+                                    <% } else if(session.date_end_formatted && session.has_ended){ %>
+                                        <h2 class="finalizado">Finalizado</h2>
+                                    <% } else if(session.date_end_formatted && !session.has_ended && session.has_started){ %>
+                                        <h2 class="en_curso">En curso</h2>
+                                    <% } else if(!session.has_started){ %>
+                                        <h2 class="normal">Próximo</h2>
+                                    <% } %>
                                 </div>
                             </div>
                             <div class="middle">
@@ -93,7 +94,7 @@
                                     
                                     <% if (session.has_ended){ %>
                                         <p>Finalizó el <b><%= session.date_end_formatted %></b> a la/s <b><%= session.hour_end_formatted %></b></p>
-                                        <p class="finalizado"><b>Finalizado</b></p>
+                                        
                                     <% }else{%>
                                         <p>Finaliza el <b><%= session.date_end_formatted %></b> a la/s <b><%= session.hour_end_formatted %></b></p>
                                     <% } %>

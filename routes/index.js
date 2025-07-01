@@ -662,13 +662,19 @@ router.get('/group/:id/members', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), 
 
     let find_superadmin = "SELECT * FROM members WHERE users_id = ?"
 
+    let image_icon = `/group/${req.params.id}/image/${req.art_group.group_picture}`
+    let image_banner = `/group/${req.params.id}/image/${req.art_group.banner}`
+
     db.query(find_superadmin, [req.session.myuser.id], (error,current_user) => {
       res.render("groupsview/members", {
         encrypted_id: req.params.id,
         isadmin: req.isadmin,
         issuperadmin: (current_user[0].type == 2),
-        members: users
-    })
+        members: users,
+        image_icon,
+        image_banner,
+        group_title: req.art_group.title
+      })
     })
   })
 })
@@ -781,9 +787,18 @@ router.get('/group/:id/newelement', isLoggedIn, isMemberOfGroup(true), GetGroupI
   
   let {error} = req.query
 
+  // Nombre de la imagen del grupo que buscará en otro get y pondrá como setheader
+  let image_icon = `/group/${req.params.id}/image/${req.art_group.group_picture}`
+  let image_banner = `/group/${req.params.id}/image/${req.art_group.banner}`
+
   res.render('groupsview/newelement',{
     error: error || false,
-    group_title: req.art_group.id
+    group_title: req.art_group.id,
+    image_icon,
+    image_banner,
+    encrypted_id: req.params.id,
+    group_title: req.art_group.title
+
   })
 })
 
@@ -1050,10 +1065,18 @@ router.get('/group/:id/event/:sect_id/newsession', isLoggedIn, isMemberOfGroup(t
 
   let {error} = req.query
 
+  // Nombre de la imagen del grupo que buscará en otro get y pondrá como setheader
+  let image_icon = `/group/${req.params.id}/image/${req.art_group.group_picture}`
+  let image_banner = `/group/${req.params.id}/image/${req.art_group.banner}`
+
   res.render('groupsview/newsession',{
     encrypted_id: req.params.id,
     event_id: req.params.sect_id,
-    error: error || false
+    error: error || false,
+    group_title: req.art_group.title,
+    image_icon,
+    image_banner,
+    group_title: req.art_group.title
   })
 
 })

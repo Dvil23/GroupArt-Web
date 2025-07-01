@@ -196,8 +196,10 @@
         #content.recogido
             margin-top: 12vh
         #content
-            margin-top: 0
-            min-height: 50vh
+            padding-top: 3vh
+            top: 30
+            height: auto
+            min-height: 70vh
             width: 100%
             display: flex
             flex-direction: column
@@ -208,176 +210,142 @@
             margin-left: 0
             margin-right: 0
             z-index: 1
-            .element
-                height: auto
-                min-height: 270px
-                width: 100%
+            color: black
+            #content_container
+                width: 70%
+                height: 100%
                 display: flex
-                justify-content: center
                 align-items: center
-                .element_content
-                    width: 80%
-                    height: 85%
-                    background: linear-gradient(to bottom, var(--color-dark), var(--color-darker))
-                    margin: 3%
-                    border-radius: 10px
+                flex-direction: column
+                .input_container
+                    margin-top: 2vh
+                    width: 100%
+                    height: 5vh
+                    input, textarea 
+                        width: 100%
+                        height: 100%            
+                        padding: 0.5rem 1rem
+                        border: 2px solid #ccc
+                        border-radius: 15px
+                        background-color: #f9f9f9
+                        color: #333
+                        cursor: pointer
+                        font-family: inherit
+                        font-size: 1rem
+                #description
+                    height: 15vh
+                .choose_container
+                    margin-top: 4vh
+                    width: 100%
+                    height: auto
                     display: flex
-                    flex-direction: column
-                    justify-content: center
                     align-items: center
-                    color: var(--color-cream)
-                    cursor: pointer
-                    transition: background-color 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease, font-size 0.3s ease
-                    box-sizing: content-box
-                    &:hover
-                        
-                        background: linear-gradient(to bottom, var(--color-dark), var(--color-darkerblue))
-                        padding-left: 1%
-                        padding-right: 1%
-                        box-shadow: 1px 1px 12px var(--color-shadow-blue)
-                        div, form
-                            .top
-                                .title
-                                    h1
-                                        font-size: 30px
-                                .status
-                                    h2
-                                        font-size: 21px
-                            
-                    div, form
-                        height: 85%
-                        width: 90%
-                        .top
-                            margin-top: 1vh
-                            margin-bottom: 1vh
-                            height: 50px
-                            width: 100%
-                            display: flex
-                            flex-direction: row
-                            justify-content: space-between
-                            .title
-                                height: 100%
-                                width: auto
-                                display: flex
-                                justify-content: flex-start
-                                align-items: flex-start
-                                h1
-                                    height: 100%
-                                    font-family: var(--font-cool)
-                                    font-size: 28px
-                                    transition: 0.3s ease
-                                    color: #F3C57E
-                                    
-                            .status
-                                display: flex
-                                justify-content: flex-end
-                                align-items: flex-end
-                                height: 100%
-                                width: auto
-                                text-align: end
-                                transition: 0.3s ease
-                                h2
-                                    display: flex
-                                    align-items: flex-end
-                                    justify-content: flex-end
-                                    align-items: flex-end
-                                    text-align: end
-                                    transition: 0.3s ease
-                                    font-size: 20px
-                                    font-family: var(--font-cool)
-                                    font-weight: normal
-                            .finalizado
-                                color: var(--color-error)
-                            .normal
-                                color: var(--color-cream)
-                            .en_curso
-                                color: var(--color-blue)
-                        .middle
-                            margin-bottom: 1vh
-                            min-height: 7vh
-                            height: 45%
-                            min-width: 100%
-                            display: flex
-                            flex-direction: column
-                            justify-content: flex-start
-                            align-items: flex-start
-                            text-align: justify
-                            word-wrap: break-word
-                            word-break: break-al
-                            text-overflow: ellipsis
-                            h3
-                                width: 100%
-                                font-weight: normal
-                                font-size: 4vh
-                                font-family: var(--font-cool)
-                                font-size: 1rem
-                        .bottom
-
-                            width: 100%
-                            height: 35%
-                            display: flex
-                            flex-direction: column
-                            justify-content: flex-end
-                            align-items: flex-start
-                            padding-bottom: 3vh
-                            .finalizado
-                                color: var(--color-error)   
-                .locked_session
-                    position: relative
-                    
-                    div, form   
-                        .top
-                            
-                            .title
-                                
-                                h1
-                                    font-size: 28px
-                                    filter: brightness(60%)
-                            .status
-                                h2
-                                    filter: brightness(90%)
-                                    font-size: 20px
-                        .middle
-                            transition: 0.3s ease
-                            filter: brightness(60%)
-                        .bottom
-                            filter: brightness(90%)
-                            transition: 0.3s ease
-                    .locked_session_icon
-                        position: absolute
-                        z-index: 9
-                        width: 50%
-                        aspect-ratio: 1/1
+                    flex-direction: column
+                    .title
+                        height: auto
+                        width: 100%
+                        text-align: center
+                        font-weight: bold
+                        font-size: larger
+                        margin-bottom: 2vh
+                    .start_titles
+                        color: var(--color-blue)
+                    .end_titles
+                        color: var(--color-error)
+                    .description
+                        height: auto
+                        width: 100%
+                        text-align: center
+                        font-size: small
+                    .selector_container
+                        width: 100%
+                        height: 100%
                         display: flex
                         align-items: center
                         justify-content: center
-                        transition: 0.3s ease
-                        i, .fa-solid, .fa-lock
-                            color: #F3C57E
-                            opacity: 80%
-                            text-align: center
-                            font-size: 100px
-                            
-                    &:hover
-                        padding-left: 0%
-                        padding-right: 0%
-                        box-shadow: none
-                        background: linear-gradient(to bottom, var(--color-dark), var(--color-darker))
-                        div, form
-                            .top
+                        flex-direction: row
+                        .selector_radios
+                            width: 50%
+                            height: 100%
+                            display: flex
+                            align-items: center
+                            flex-direction: column
+                            .selectors
+                                margin-bottom: 1vh
+                                width: 100%
+                                height: 100%
+                                display: flex
+                                align-items: center
+                                justify-content: flex-start
+                                flex-direction: row
+                                p
+                                    font-size: large
+                                    width: 100%
+                                    margin-left: 3%
+                        .selector_date
+                            width: 50%
+                            height: 100%
+                            display: flex
+                            align-items: center
+                            justify-content: center
+                            div
+                                width: 88%
+                                height: 100%            
                                 
-                                .title
-                                    h1
-                                        filter: brightness(70%)
-                                        font-size: 28px
-                                .status
-                                    h2
-                                        filter: brightness(100%)
-                                        font-size: 20px
-                            .middle
-                                filter: brightness(70%)
-                            .bottom
-                                filter: brightness(100%)
-                        .locked_session_icon
-                            opacity: 40%
+                                input
+                                    width: 100%
+                                    height: 100%  
+                                    padding: 0.5rem 1rem
+                                    border: 2px solid #ccc
+                                    border-radius: 15px
+                                    background-color: #f9f9f9
+                                    color: #333
+                                    cursor: pointer
+
+                            #custom_image_limit
+                                display: flex
+                                align-items: center
+                                justify-content: center
+                                flex-direction: column
+                                text-align: center
+                                p
+                                    width: 100%
+                                    margin-bottom: 1vh
+                                #custom_images_count
+                                    display: flex
+                                    align-items: center
+                                    justify-content: center
+                                    width: 30%
+                                    height: 30%
+                                    margin-left: 30%
+            button
+                margin-top: 5vh
+                margin-bottom: 10vh
+                font-family: var(--font-cool)
+                width: 30%
+                height: 5vh
+                display: flex
+                flex-direction: row
+                justify-content: center
+                align-items: center
+                font-size: 2vh
+                border: none
+                background-color: var(--color-blue)
+                color: var(--color-cream)
+                border-radius: 15px
+                transition: 0.3s ease
+                &:hover
                     
+                    cursor: pointer
+                    background-color: var(--color-hover-blue)
+                    box-shadow: 2px 2px 5px var(--color-shadow-blue)
+                    pheight: 6vh
+                    width: 32%
+                    box-sizing: content-box
+                    font-size: 2.15vh
+            .error_message
+                color: var(--color-error)
+                margin-top: 3vh
+                font-weight: bold
+                font-size: large
+

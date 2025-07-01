@@ -13,7 +13,7 @@
         display: flex
         flex-direction: column
         align-items: center
-        background-color: var(--color-cream)
+        background-color: var(--color-dark)
 
         .global_portada
             display: flex
@@ -25,29 +25,52 @@
             z-index: 3
             // margin-left: 0.3%
             background-color: var(--color-dark)
-            #imagen
+            #imagen.recogido
                 height: 20vh
+                aspect-ratio: 1 / 1
+                img
+                    height: 20vh
+            #imagen
+                height: 40vh
                 position: sticky
                 transition: 0.3s ease
                 top: 10vh
                 aspect-ratio: 1 / 1
                 img
                     transition: 0.3s ease
-                    height: 20vh
+                    height: 40vh
+            #portada.recogido
+                height: 20vh
+                .banner_shadowable
+                    background-color: #045043
+                    .title
+                        margin-top: 0
+                        h1
+                            margin-top: 3vh
+                            font-size: 2vh
+                    .subtitle
+                        margin-top: 0vh
+                        h2
+                            font-size: 0vh
+                            opacity: 0
+                    .functions
+                        margin-top: 6vh
+                .imagen_portada
+                    height: 10vh
             #portada
                 background-size: cover
                 background-repeat: no-repeat
                 background-position: center
-                height: 20vh
+                height: 40vh
                 width: 100%
+                max-width: 100%
                 position: sticky
                 transition: height 0.3s ease
-                top: 10vh
                 .imagen_portada
                     transition: height 0.3s ease
                     position: absolute
                     z-index: -1
-                    height: 10vh
+                    height: 30vh
                     width: 100%
                     overflow: hidden
                     img
@@ -56,35 +79,50 @@
                 .banner_shadowable
                     height: 100%
                     width: 100%
-                    background: linear-gradient(to bottom, var(--color-darkblue), var(--color-darkerblue))
+                    background-color: #00000054
                     display: flex
                     flex-direction: column
                     justify-content: flex-start
                     align-items: center
                     font-family: var(--font-cool)
                     transition: background-color 0.3s ease
+                    position: relative
+                    
                     .title
+                        margin-top: 2vh
                         height: 4vh
-                        width: 100%
+                        width: 90%
                         transition: margin-top 0.3s ease
+                        word-wrap: break-word
+                        word-break: break-all
+
                         h1
-                            margin-left: 5%
-                            font-style: normal
-                            font-size: 4.7vh
-                            transition: font-size 0.3s ease
+                            font-size: 2vh
                     .subtitle
-                        transition: margin-top 0.3s ease
-                        height: 4vh
-                        width: 100%
+                        position: absolute
+                        // transition: margin-top 0.3s ease
+                        margin-top: 4vh
+                        height: auto
+                        width: 90%
+                        word-wrap: break-word
+                        word-break: break-all
+                        bottom: 12vh
+                        left: 5%
                         h2
-                            opacity: 0
-                            margin-left: 5%
-                            font-style: normal
+                            
+
+                            // display: none
+                            opacity: 1
+                            font-style: small
+                            font-weight: normal
+                            font-size: 1.8vh
                             transition: font-size, opacity 0.3s ease
                     .functions
-                        margin-top: 2vh
+                        
+                        margin-top: 24vh
                         height: 10vh
                         width: 100%
+                        background-color: var(--color-dark)
                         display: flex
                         flex-direction: row
                         justify-content: center
@@ -110,7 +148,7 @@
                                     display: flex
                                     justify-content: center
                                     align-items: center
-                                    font-size: 2vh
+                                    font-size: 1.5vh
                                     border: none
                                     background-color: var(--color-blue)
                                     color: var(--color-cream)
@@ -122,7 +160,7 @@
                                         box-shadow: 2px 2px 16px var(--color-shadow-blue)
                                         height: 65%
                                         
-                                        font-size: 2.15vh
+                                        font-size: 1.8vh
                         .icon_functions
                             width: 30%
                             display: flex
@@ -154,6 +192,9 @@
                                         width: 55px
                                         height: 55px
                                         font-size: 2.15vh
+                            
+        #content.recogido
+            margin-top: 12vh
         #content
             top: 30
             height: 70vh
@@ -175,21 +216,27 @@
                 .element_type
                     width: 100%
                     height: 45%
+                    max-height: 45%
                     display: flex
                     flex-direction: column
-                    justify-content: center
+                    // justify-content: center
                     align-items: center
                     background-color: var(--color-dark)
+                    
                     .title 
-                        height: 20%
+                        margin-top: 3%
+                        height: auto
                         width: 100%
                         display: flex
                         justify-content: center
                         align-items: center
+                        font-size: xx-small
                     input
                         height: 0px
                     #choose_element
-                        height: 80%
+                        margin-top: 2%
+                        margin-bottom: 3%
+                        height: 100%
                         width: 100%
                         display: flex
                         flex-direction: row
@@ -202,7 +249,7 @@
                             justify-content: center
                             align-items: center
                             .choose_box
-                                height: 80%
+                                height: 100%
                                 width: 85%
                                 background-color: var(--color-cream)
                                 color: var(--color-dark)
@@ -214,25 +261,27 @@
                                 padding-right: 10px
                                 padding-left: 10px
                                 cursor: pointer
+
                                 &:hover
-                                    height: 85%
-                                    width: 88%
-                                    background-color: var(--color-hover-cream)      
+                                    *
+                                        transition: 0.3s ease
+
+                                    transition: background-color 0.2s ease
+                                    background-color: #F3C57E 
                                     .title
                                         i
                                             font-size: 3.7rem
                                         h2
-                                            font-size: 2.13rem
-                                    .description
-                                        p
-                                            font-size: 0.83rem
+                                            // font-size: 2.13rem
+                                    
                                 .title
-                                    height: 50%
+                                    height: auto
                                     width: 70%
                                     display: flex
                                     flex-direction: row
                                     justify-content: space-evenly
                                     align-items: center
+                                    margin-bottom: 5%
                                     i
                                         font-size: 3.5rem
                                     h2
@@ -240,13 +289,15 @@
                                         font-family: var(--font-cool)
                                         font-weight: normal
                                 .description
-                                    height: 50%
-                                    width: 100%
+                                    margin-bottom: 5%
+                                    height: auto
                                     display: flex
                                     justify-content: center
                                     align-items: center
                                     text-align: center
+                                    width: 90%
                                     p
+                                        widht: 100%
                                         font-size: 0.8rem
                                         font-family: var(--font-cool)
                                         font-weight: normal
@@ -257,18 +308,23 @@
                             
 
                 .datos
+                    
                     width: 100%
-                    height: 55%
+                    height: 100%
                     display: flex
                     flex-direction: row
+                    box-sizing: content-box
+
                     .textos, .fotos
-                        width: 50%
+                        
+                        width: 80%
                         height: 100%
                         display: flex
                         flex-direction: column
                         justify-content: space-evenly
                         align-items: center
                     .textos
+                        padding-top: 5%
                         .error
                             height: 10%
                             font-size: 1.3rem
@@ -278,13 +334,14 @@
                             resize: none
                             height: 30%
                         input, textarea
+                            width: 85%
                             color: var(--color-darker-cream)
                             background-color: var(--color-dark-cream)
                             padding: 0.6rem 1.2rem
                             font-family: var(--font-cool)
                             font-size: 1.2rem
                             border: 1px solid #ccc
-                            border-radius: 6px
+                            border-radius: 15px
                             outline: none
 
                             &:focus
@@ -293,12 +350,15 @@
                                 outline: none
                                 box-shadow: 0 0 0 3px rgba(var(--color-dark), 0.2)
                     .fotos
+                        
                         .foto_group
+                            margin-top: 4%
                             display: flex
                             flex-direction: column
                             justify-content: center
                             align-items: center
                             height: 35%
+                            
                             h3
                                 font-size: 1.4rem
                                 font-family: var(--font-cool)
@@ -309,14 +369,16 @@
                                 color: var(--color-dark)
                                 margin-bottom: 2%
                             input
+                                
                                 padding: 0.5rem 1rem
                                 border: 2px solid #ccc
-                                border-radius: 6px
+                                border-radius: 15px
                                 background-color: #f9f9f9
                                 color: #333
                                 cursor: pointer
                                 font-family: inherit
                                 font-size: 1rem
+
                             input::file-selector-button 
                                 background: var(--color-darker-cream)
                                 color: white
@@ -330,7 +392,8 @@
                             width: 100%
                             height: 30%
                             display: flex
-                            justify-content: center
+                            margin-right: 20%
+                            justify-content: flex-end
                             align-items: center
                             button
                                 font-family: var(--font-cool)
@@ -347,9 +410,10 @@
                                 border-radius: 15px
                                 transition: 0.3s ease
                                 &:hover
+                                    
                                     cursor: pointer
                                     background-color: var(--color-hover-blue)
-                                    box-shadow: 2px 2px 16px var(--color-shadow-blue)
-                                    width: 34%
-                                    height: 65%
+                                    box-shadow: 2px 2px 5px var(--color-shadow-blue)
+                                    padding: 0.5% 1% 0.5% 1%
+                                    box-sizing: content-box
                                     font-size: 2.15vh

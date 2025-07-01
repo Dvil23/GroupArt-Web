@@ -1,132 +1,199 @@
 <%- include("../partials/start.ejs") -%>
 <%- include("../partials/header.ejs") -%>
+<link rel="stylesheet" href="/stylesheets/newsession.css" class="css">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
-<h1>Crear nueva sesión de arte</h1>
-<form method="POST" action="/group/<%=encrypted_id%>/event/<%= event_id %>/newsession">
-    <p>Tema*</p>
-    <input type="text" name="topic" maxlength="30" required>
-    <p>Descripción</p>
-    <input type="text" name="description" maxlength="250" placeholder="Máximo 250 carácteres">
-    
-<!-- DATE START  -->
-<fieldset>
-    <legend>Inicio de la sesión</legend>
-    <label>
-      <input type="radio" name="start_date_option" value="now" checked>
-      Activar inmediatamente
-    </label>
-    <label>
-      <input type="radio" name="start_date_option" value="custom">
-      Elegir fecha personalizada
-    </label>
-        <!-- Calendario para empezar -->
-    <div id="start_picker_container" style="display: none">
-      <input type="text" id="start_date" name="date_start" placeholder="Selecciona una fecha">
-    </div>
+<div class="contain_global">
 
-    <!-- Escoger hora para empezar -->
-    <div id="start_hour_option_div" style="display:none">
-        <legend>Hora de inicio</legend>
-        <label>
-            <input type="radio" name="start_hour_option" value="start" checked>
-            Cuando empieza el dia
-        </label>
-        <label>
-            <input type="radio" name="start_hour_option" value="custom">
-            Elegir hora personalizada
-        </label>
-        <div id="start_hour_div" style="display: none">
-            <input type="text" id="start_hour" name="hour_start" placeholder="Selecciona una hora">
+    <div class="global">
+
+        <div class="global_portada" id="global_portada_id">
+            <div id="imagen">
+                <img src="<%= image_icon %>" alt="Group Image">
+            </div>
+            <div id="portada" >
+                <div class="imagen_portada">
+                    <img src="<%= image_banner %>" alt="">
+                </div>
+                <div class="banner_shadowable">
+                    <div class="title">
+                        <h1><%= group_title %></h1>
+                    </div>
+                    <div class="subtitle">
+                      <h2>Crear nueva sesión de arte</h2>
+                    </div>
+                    
+                    <div class="functions">
+                        <div class="text_functions">
+                            
+                        </div>
+                        <div class="icon_functions">
+                            <form method="GET" action="/group/<%=encrypted_id%>/getlinks">
+                                <button type="submit">
+                                    <i class="fa-solid fa-share-nodes"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
         </div>
-    </div>
-   
+        <div id="content">
 
-</fieldset>
+          <form method="POST" id="content_container" action="/group/<%=encrypted_id%>/event/<%= event_id %>/newsession">
+            <div class="input_container">
+              <input type="text" name="topic" maxlength="20" placeholder="Título*" required>
+            </div>
+            <div class="input_container" id="description">
+              <textarea  name="description" maxlength="250" placeholder="Descripción de máximo 250 carácteres"></textarea>
+            </div>
+              
+          <!-- DATE START  -->
+            <div class="choose_container">
+              <p class="title start_titles">Inicio de la sesión</p>
+              <div class="selector_container" id="selector_border_start" style="border-bottom: 2px solid black;">
+                <div class="selector_radios" >
+                  <div class="selectors">
+                    <input type="radio" name="start_date_option" value="now" checked>
+                    <p>Activar inmediatamente</p>
+                  </div>
+                  <div class="selectors">
+                    <input type="radio" name="start_date_option" value="custom">
+                    <p>Elegir fecha personalizada</p>
+                  </div>
+                </div>
+                <div class="selector_date">
+                  <div id="start_picker_container" style="display: none">
+                    <input type="text" id="start_date" name="date_start" placeholder="Selecciona una fecha">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="choose_container"  id="start_hour_option_div" style="display:none">
+              <p class="title start_titles">Hora de inicio</p>
+              <div class="selector_container">
+                <div class="selector_radios">
+                  <div class="selectors">
+                    <input type="radio" name="start_hour_option" value="start" checked>
+                    <p>Cuando empieza el dia</p>
+                  </div>
+                  <div class="selectors">
+                    <input type="radio" name="start_hour_option" value="custom">
+                    <p>Elegir hora personalizada</p>
+                  </div>
+                </div>
+                <div class="selector_date">
+                  <div id="start_hour_div" style="display: none">
+                    <input type="text" id="start_hour" name="hour_start" placeholder="Selecciona una hora">
+                  </div>
+                </div>
+              </div>
+            </div>
+            
 
-<!-- DATE END  -->
-<fieldset>
-    <legend>Final de la sesión</legend>
-    <p>Los usuarios no podrán publicar sus imagenes una vez la sesión termine.</p>
-    <p>(Aunque haya terminado, podrá permitir la publicación de imagenes de nuevo si así lo desea)</p>
+        
+          <!-- DATE END  -->
+            <div class="choose_container">
+              <p class="title end_titles">Final de la sesión</p>
+              <p class="description">Los usuarios no podrán publicar sus imagenes una vez la sesión termine.</p>
+              <p class="description" style="margin-bottom: 2vh">Aunque haya terminado, podrá permitir la publicación de imagenes de nuevo si así lo desea.</p>
 
-    
-    <label>
-      <input type="radio" name="end_date_option" value="none" checked>
-      Sin fecha de finalización
-    </label>
-    <label>
-      <input type="radio" name="end_date_option" value="custom">
-      Elegir fecha personalizada
-    </label>
+              <div class="selector_container" id="selector_border_end" style="border-bottom: 2px solid black;"">
+                <div class="selector_radios">
+                  <div class="selectors">
+                    <input type="radio" name="end_date_option" value="none" checked>
+                    <p>Sin fecha de finalización</p>
+                  </div>
+                  <div class="selectors">
+                    <input type="radio" name="end_date_option" value="custom">
+                    <p>Elegir fecha personalizada</p>
+                  </div>
+                </div>
+                <div class="selector_date">
+                  <!-- Calendario para acabar -->
+                  <div id="end_picker_container" style="display: none">
+                    <input type="text" id="end_date" name="date_end" placeholder="Selecciona una fecha">
+                  </div>
+                </div>
+              </div>
+            </div>
 
-      <!-- Calendario para acabar -->
-    <div id="end_picker_container" style="display: none">
-      <input type="text" id="end_date" name="date_end" placeholder="Selecciona una fecha">
-    </div>
+            <div class="choose_container"  id="end_hour_option_div" style="display: none">
+              <p class="title end_titles">Hora de finalización</p>
 
-    
-      <!-- Hora para finalizar -->
-    <div id="end_hour_option_div" style="display: none">
-        <legend>Hora de finalización</legend>
-        <label>
-            <input type="radio" name="end_hour_option" value="midnight" checked>
-            Al finalizar el dia
-        </label>
-        <label>
-            <input type="radio" name="end_hour_option" value="custom">
-            Elegir hora personalizada
-        </label>
-        <div id="end_hour_div" style="display: none">
-            <input type="text" id="end_hour" name="hour_end" placeholder="Selecciona una hora">
+              <div class="selector_container">
+                <div class="selector_radios">
+                  <div class="selectors">
+                    <input type="radio" name="end_hour_option" value="midnight" checked>
+                    <p>Al finalizar el dia</p>
+                  </div>
+                  <div class="selectors">
+                    <input type="radio" name="end_hour_option" value="custom">
+                    <p>Elegir hora personalizada</p>
+                  </div>
+                </div>
+                <div class="selector_date">
+                  <div id="end_hour_div" style="display: none">
+                      <input type="text" id="end_hour" name="hour_end" placeholder="Selecciona una hora">
+                  </div>
+                </div>
+              </div>
+            </div>
+             
+              
+              
+
+          <!-- OPCIÓN DE LÍMITE DE IMÁGENES -->
+          
+            <div class="choose_container">
+              <p class="title">Máximo de imagenes permitidas por usuario</p>
+              <div class="selector_container" id="selector_border_start" style="border-bottom: 2px solid black;">
+                <div class="selector_radios" >
+                  <div class="selectors">
+                    <input type="radio" name="max_images_option" value="one" checked>
+                    <p>Una imagen por usuario</p>
+                  </div>
+                  <div class="selectors">
+                    <input type="radio" name="max_images_option" value="unlimited">
+                    <p>Ilimitadas</p>
+                  </div>
+                  <div class="selectors">
+                    <input type="radio" name="max_images_option" value="custom">
+                    <p>Personalizado</p>
+                  </div>
+                </div>
+                <div class="selector_date">
+                  <div id="custom_image_limit" style="display: none">
+                    <p>¿Cuántas imágenes por usuario?</p>
+                    <input type="number" id="custom_images_count" name="images_custom_count" min="2" max="20" value="2">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+              <% if (error == 1){ %>
+                  <p class="error_message">La fecha de inicio introducida es mayor o igual a la de finalización.</p>
+              <% } else if (error == 2){%>
+                  <p class="error_message"> La hora de inicio introducida es mayor o igual a la de finalización.</p>
+              <% } else if (error == 3){ %>
+                  <p class="error_message"> Una sesión de arte ya tiene ese tema</p>
+              <% } else if ( error == 4){ %>
+                  <p class="error_message">Porfavor, elija una hora si escoge la opción "Elegir hora personalizada". </p>
+              <% } else if ( error == 5){ %>
+                  <p class="error_message">Porfavor, elija una fecha si escoge la opción "Elegir fecha personalizada". </p>
+              <% } %>
+              <button type="submit">Crear</button>
+          </form>
+
+          
         </div>
-
+      </div>
     </div>
-</fieldset>
-
-
-
-<!-- OPCIÓN DE LÍMITE DE IMÁGENES -->
-<fieldset>
-    <legend>Máximo de imagenes permitidas por usuario</legend>
-    <label>
-    <input type="radio" name="max_images_option" value="one" checked>
-    Una imagen por usuario
-    </label>
-    <label>
-    <input type="radio" name="max_images_option" value="unlimited">
-    Ilimitadas
-    </label>
-    <label>
-    <input type="radio" name="max_images_option" value="custom">
-    Personalizado
-    </label>
-
-
-    <div id="custom_image_limit" style="display: none">
-    <label for="custom_images_count">¿Cuántas imágenes por usuario?</label>
-    <input type="number" id="custom_images_count" name="images_custom_count" min="2" max="20" value="2">
-    </div>
-
-
-    <% if (error == 1){ %>
-        <p>La fecha de inicio introducida es mayor o igual a la de finalización</p>
-    <% } else if (error == 2){%>
-        <p> La hora de inicio introducida es mayor o igual a la de finalización</p>
-    <% } else if (error == 3){ %>
-        <p> Una sesión de arte ya tiene ese tema</p>
-    <% } else if ( error == 4){ %>
-        <p>Porfavor, elija una hora si escoge la opción "Elegir hora personalizada" </p>
-    <% } else if ( error == 5){ %>
-        <p>Porfavor, elija una fecha si escoge la opción "Elegir fecha personalizada" </p>
-    <% } %>
-    <button type="submit">Crear</button>
-</form>
-
-</fieldset>
-
-
+</div>
 <!-- Flatpickr JS -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
@@ -153,6 +220,8 @@
             let is_custom = radio.value === "custom"
             document.getElementById("start_picker_container").style.display = is_custom  ? "block" : "none"
             document.getElementById("start_hour_option_div").style.display = is_custom ? "block" : "none"
+            document.getElementById("selector_border_start").style.borderBottom = is_custom ? "none" : "2px solid black"
+            document.getElementById("start_hour_option_div").style.borderBottom = is_custom ?  "2px solid black" : "none" 
             if (is_custom){
                 document.getElementById("start_hour").value = "12:00"
             }
@@ -164,6 +233,8 @@
             let is_custom = radio.value === "custom"
             document.getElementById("end_picker_container").style.display = is_custom  ? "block" : "none"
             document.getElementById("end_hour_option_div").style.display = is_custom  ? "block" : "none"
+            document.getElementById("selector_border_end").style.borderBottom = is_custom ? "none" : "2px solid black"
+            document.getElementById("end_hour_option_div").style.borderBottom = is_custom ?  "2px solid black" : "none"
             if (is_custom){
                 document.getElementById("end_hour").value = "12:00"
             }
@@ -212,5 +283,11 @@
     })
   })
 </script>
+
+<script type="module">
+  import { setupScrollHandler } from '/javascripts/open_close_group_header.js'
+  setupScrollHandler()
+</script>
+
 
 <%- include("../partials/end.ejs") -%>

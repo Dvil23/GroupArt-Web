@@ -9,11 +9,7 @@
 
         <div class="global_portada" id="global_portada_id">
             <div id="imagen">
-                <% if (image_icon) { %>
                 <img src="<%= image_icon %>" alt="Group Image">
-                <% } else { %>
-                <p>No hay imagen</p>
-                <% } %>
             </div>
             <div id="portada" >
                 <div class="imagen_portada">
@@ -60,12 +56,16 @@
             <% if (sections.length>0){%>
                 <% sections.forEach((section,index) => { %>
                 <form method="GET" action="/group/<%=encrypted_id%>/<%= section.section_type %>/<%=section.id%>" class="section_forms" id="section_form_<%= index %>">
-                    <div class="element" style="background-image:url(<%= section.banner %>)">
+                    <div class="element">
+                        
                         <div class="element_shadow">
                             <div class="element_image">
-                                <img src="<%= section.icon %>" alt="Group Photo">
+                                <img src="<%= section.icon %>">
                             </div>
                             <div class="element_content">
+                                <div class="background_element_banner">
+                                    <img src="<%= section.banner %>" >
+                                </div>
                                 <div class="element_up">
                                     <h2 class="element_title"><%=section.title %></h2>
                                     <% if (section.section_type == "event") {%>
@@ -124,26 +124,9 @@
     });
 </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        let global_portada_id = document.getElementById('global_portada_id');
-        let portada = document.getElementById('portada');
-        let content = document.getElementById('content');
-        let imagen = document.getElementById('imagen');
-        window.addEventListener('scroll', function () {
-            if (window.scrollY > 25) {
-                global_portada_id.classList.add('recogido_global_portada');
-                portada.classList.add('recogido');
-                imagen.classList.add('recogido');
-                content.classList.add('recogido');
-            } else {
-                global_portada_id.classList.remove('recogido_global_portada');
-                portada.classList.remove('recogido');
-                imagen.classList.remove('recogido');
-                content.classList.remove('recogido');
-            }
-        });
-    });
+<script type="module">
+  import { setupScrollHandler } from '/javascripts/open_close_group_header.js'
+  setupScrollHandler()
 </script>
 
 <script src="/sweetalert2/sweetalert2.all.min.js"></script>

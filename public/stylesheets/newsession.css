@@ -1,5 +1,6 @@
 .contain_global {
   width: 100%;
+  min-height: 90vh;
   background-color: #171F1F;
   display: flex;
   flex-direction: column;
@@ -8,7 +9,6 @@
 .contain_global .global {
   background-color: var(--color-cream);
   width: 1000px;
-  max-width: 1000px;
   color: var(--color-cream);
   font-family: var(--font-main);
   display: flex;
@@ -217,153 +217,175 @@
   margin-top: 12vh;
 }
 .contain_global .global #content {
-  margin-top: 0;
-  height: 100%;
-  min-height: 50vh;
+  padding-top: 3vh;
+  top: 30;
+  height: auto;
+  min-height: 70vh;
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   background-color: var(--color-cream);
-  transition: margin-top 0.3s ease;
+  transition: 0.3s ease;
   margin-left: 0;
   margin-right: 0;
   z-index: 1;
+  color: black;
 }
-.contain_global .global #content hr {
-  width: 100%;
-  border: 0;
-  height: 1px;
-  background-image: -webkit-linear-gradient(left, var(--color-cream), var(--color-darker-cream), var(--color-cream));
-}
-.contain_global .global #content .empty {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 50vh;
-  background-color: var(--color-dark-cream);
-}
-.contain_global .global #content .empty p, .contain_global .global #content .empty i {
-  text-align: center;
-  color: var(--color-darker-cream);
-  font-size: 3vh;
-}
-.contain_global .global #content .empty p {
-  font-family: var(--font-cool);
-}
-.contain_global .global #content form {
-  width: 100%;
-  height: 35vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.contain_global .global #content form .element {
-  height: 86%;
-  width: 92%;
-  cursor: pointer;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  box-sizing: content-box;
-  border-radius: 15px;
-  overflow: hidden;
-}
-.contain_global .global #content form .element .element_shadow {
+.contain_global .global #content #content_container {
+  width: 70%;
   height: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.contain_global .global #content #content_container .input_container {
+  margin-top: 2vh;
   width: 100%;
+  height: 5vh;
+}
+.contain_global .global #content #content_container .input_container input, .contain_global .global #content #content_container .input_container textarea {
+  width: 100%;
+  height: 100%;
+  padding: 0.5rem 1rem;
+  border: 2px solid #ccc;
+  border-radius: 15px;
+  background-color: #f9f9f9;
+  color: #333;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+}
+.contain_global .global #content #content_container #description {
+  height: 15vh;
+}
+.contain_global .global #content #content_container .choose_container {
+  margin-top: 4vh;
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.contain_global .global #content #content_container .choose_container .title {
+  height: auto;
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  font-size: larger;
+  margin-bottom: 2vh;
+}
+.contain_global .global #content #content_container .choose_container .start_titles {
+  color: var(--color-blue);
+}
+.contain_global .global #content #content_container .choose_container .end_titles {
+  color: var(--color-error);
+}
+.contain_global .global #content #content_container .choose_container .description {
+  height: auto;
+  width: 100%;
+  text-align: center;
+  font-size: small;
+}
+.contain_global .global #content #content_container .choose_container .selector_container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+}
+.contain_global .global #content #content_container .choose_container .selector_container .selector_radios {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.contain_global .global #content #content_container .choose_container .selector_container .selector_radios .selectors {
+  margin-bottom: 1vh;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: row;
+}
+.contain_global .global #content #content_container .choose_container .selector_container .selector_radios .selectors p {
+  font-size: large;
+  width: 100%;
+  margin-left: 3%;
+}
+.contain_global .global #content #content_container .choose_container .selector_container .selector_date {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.contain_global .global #content #content_container .choose_container .selector_container .selector_date div {
+  width: 88%;
+  height: 100%;
+}
+.contain_global .global #content #content_container .choose_container .selector_container .selector_date div input {
+  width: 100%;
+  height: 100%;
+  padding: 0.5rem 1rem;
+  border: 2px solid #ccc;
+  border-radius: 15px;
+  background-color: #f9f9f9;
+  color: #333;
+  cursor: pointer;
+}
+.contain_global .global #content #content_container .choose_container .selector_container .selector_date #custom_image_limit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+.contain_global .global #content #content_container .choose_container .selector_container .selector_date #custom_image_limit p {
+  width: 100%;
+  margin-bottom: 1vh;
+}
+.contain_global .global #content #content_container .choose_container .selector_container .selector_date #custom_image_limit #custom_images_count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30%;
+  height: 30%;
+  margin-left: 30%;
+}
+.contain_global .global #content button {
+  margin-top: 5vh;
+  margin-bottom: 10vh;
+  font-family: var(--font-cool);
+  width: 30%;
+  height: 5vh;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
-  cursor: pointer;
-  background-color: rgba(0, 0, 0, 0.4509803922);
+  font-size: 2vh;
+  border: none;
+  background-color: var(--color-blue);
+  color: var(--color-cream);
+  border-radius: 15px;
   transition: 0.3s ease;
 }
-.contain_global .global #content form .element .element_shadow:hover {
-  background-color: rgba(0, 0, 0, 0.7607843137);
+.contain_global .global #content button:hover {
+  cursor: pointer;
+  background-color: var(--color-hover-blue);
+  box-shadow: 2px 2px 5px var(--color-shadow-blue);
+  pheight: 6vh;
+  width: 32%;
+  box-sizing: content-box;
+  font-size: 2.15vh;
 }
-.contain_global .global #content form .element .element_shadow .element_image {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-.contain_global .global #content form .element .element_shadow .element_image img {
-  height: 100%;
-}
-.contain_global .global #content form .element .element_shadow .element_content {
-  height: 100%;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  position: relative;
-}
-.contain_global .global #content form .element .element_shadow .element_content .background_element_banner {
-  position: absolute;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
-.contain_global .global #content form .element .element_shadow .element_content .background_element_banner img {
-  width: 100%;
-}
-.contain_global .global #content form .element .element_shadow .element_content .element_up {
-  z-index: 2;
-  width: 100%;
-  height: 30%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  margin-left: 5%;
-}
-.contain_global .global #content form .element .element_shadow .element_content .element_up .element_title {
-  margin-top: 5%;
-  width: 70%;
-  font-size: 2vh;
-  font-family: var(--font-cool);
-  color: var(--color-cream);
-  word-wrap: break-word;
-  word-break: break-all;
-}
-.contain_global .global #content form .element .element_shadow .element_content .element_up .chip {
-  height: 40%;
-  width: 16%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 200px;
-  margin-right: 10%;
-}
-.contain_global .global #content form .element .element_shadow .element_content .element_up .chip h3 {
-  text-align: center;
-  width: 100%;
-  font-size: 2vh;
-}
-.contain_global .global #content form .element .element_shadow .element_content .element_up .galeria {
-  background-color: var(--color-chip-green);
-}
-.contain_global .global #content form .element .element_shadow .element_content .element_up .evento {
-  background-color: var(--color-chip-blue);
-}
-.contain_global .global #content form .element .element_shadow .element_content .element_middle {
-  z-index: 2;
-  margin-top: 2%;
-  margin-left: 5%;
-  width: 90%;
-  height: 15%;
-  color: var(--color-cream);
-  font-size: 1.8vh;
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  word-wrap: break-word;
-  word-break: break-all;
-}/*# sourceMappingURL=group.css.map */
+.contain_global .global #content .error_message {
+  color: var(--color-error);
+  margin-top: 3vh;
+  font-weight: bold;
+  font-size: large;
+}/*# sourceMappingURL=newsession.css.map */

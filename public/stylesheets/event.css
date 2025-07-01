@@ -54,7 +54,8 @@
   margin-top: 0;
 }
 .contain_global .global .global_portada #portada.recogido .banner_shadowable .title h1 {
-  font-size: 4.7vh;
+  margin-top: 3vh;
+  font-size: 2vh;
 }
 .contain_global .global .global_portada #portada.recogido .banner_shadowable .subtitle {
   margin-top: 0vh;
@@ -64,7 +65,7 @@
   opacity: 0;
 }
 .contain_global .global .global_portada #portada.recogido .banner_shadowable .functions {
-  margin-top: 2vh;
+  margin-top: 6vh;
 }
 .contain_global .global .global_portada #portada.recogido .imagen_portada {
   height: 10vh;
@@ -75,9 +76,9 @@
   background-position: center;
   height: 40vh;
   width: 100%;
+  max-width: 100%;
   position: sticky;
   transition: height 0.3s ease;
-  top: 10vh;
 }
 .contain_global .global .global_portada #portada .imagen_portada {
   transition: height 0.3s ease;
@@ -100,34 +101,38 @@
   align-items: center;
   font-family: var(--font-cool);
   transition: background-color 0.3s ease;
+  position: relative;
 }
 .contain_global .global .global_portada #portada .banner_shadowable .title {
   margin-top: 2vh;
   height: 4vh;
-  width: 100%;
+  width: 90%;
   transition: margin-top 0.3s ease;
+  word-wrap: break-word;
+  word-break: break-all;
 }
 .contain_global .global .global_portada #portada .banner_shadowable .title h1 {
-  margin-left: 5%;
-  font-style: normal;
-  font-size: 5vh;
-  transition: font-size 0.3s ease;
+  font-size: 2vh;
 }
 .contain_global .global .global_portada #portada .banner_shadowable .subtitle {
-  transition: margin-top 0.3s ease;
+  position: absolute;
   margin-top: 4vh;
-  height: 4vh;
-  width: 100%;
+  height: auto;
+  width: 90%;
+  word-wrap: break-word;
+  word-break: break-all;
+  bottom: 12vh;
+  left: 5%;
 }
 .contain_global .global .global_portada #portada .banner_shadowable .subtitle h2 {
   opacity: 1;
-  margin-left: 5%;
-  font-style: normal;
-  font-size: 3vh;
+  font-style: small;
+  font-weight: normal;
+  font-size: 1.8vh;
   transition: font-size, opacity 0.3s ease;
 }
 .contain_global .global .global_portada #portada .banner_shadowable .functions {
-  margin-top: 16vh;
+  margin-top: 24vh;
   height: 10vh;
   width: 100%;
   background-color: var(--color-dark);
@@ -146,20 +151,20 @@
 }
 .contain_global .global .global_portada #portada .banner_shadowable .functions .text_functions form {
   height: 100%;
-  width: 270px;
+  width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
   margin-right: 5%;
 }
 .contain_global .global .global_portada #portada .banner_shadowable .functions .text_functions form button {
   font-family: var(--font-cool);
-  width: 90%;
+  width: 200px;
   height: 60%;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.1rem;
+  font-size: 1.5vh;
   border: none;
   background-color: var(--color-blue);
   color: var(--color-cream);
@@ -171,8 +176,7 @@
   background-color: var(--color-hover-blue);
   box-shadow: 2px 2px 16px var(--color-shadow-blue);
   height: 65%;
-  width: 94%;
-  font-size: 1.15rem;
+  font-size: 1.8vh;
 }
 .contain_global .global .global_portada #portada .banner_shadowable .functions .icon_functions {
   width: 30%;
@@ -211,7 +215,6 @@
 }
 .contain_global .global #content.recogido {
   margin-top: 12vh;
-  margin-bottom: 10vh;
 }
 .contain_global .global #content {
   margin-top: 0;
@@ -228,7 +231,8 @@
   z-index: 1;
 }
 .contain_global .global #content .element {
-  height: 250px;
+  height: auto;
+  min-height: 270px;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -246,45 +250,65 @@
   align-items: center;
   color: var(--color-cream);
   cursor: pointer;
-  transition: 0.3s ease;
+  transition: background-color 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease, font-size 0.3s ease;
+  box-sizing: content-box;
 }
 .contain_global .global #content .element .element_content:hover {
-  background: linear-gradient(to bottom, var(--color-darkerblue), var(--color-darkblue));
-  border: 2px solid var(--color-blue);
-  width: 83%;
-  height: 90%;
-  box-shadow: 2px 2px 16px var(--color-shadow-blue);
+  background: linear-gradient(to bottom, var(--color-dark), var(--color-darkerblue));
+  padding-left: 1%;
+  padding-right: 1%;
+  box-shadow: 1px 1px 12px var(--color-shadow-blue);
+}
+.contain_global .global #content .element .element_content:hover div .top .title h1, .contain_global .global #content .element .element_content:hover form .top .title h1 {
+  font-size: 30px;
+}
+.contain_global .global #content .element .element_content:hover div .top .status h2, .contain_global .global #content .element .element_content:hover form .top .status h2 {
+  font-size: 21px;
 }
 .contain_global .global #content .element .element_content div, .contain_global .global #content .element .element_content form {
   height: 85%;
   width: 90%;
 }
 .contain_global .global #content .element .element_content div .top, .contain_global .global #content .element .element_content form .top {
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+  height: 50px;
   width: 100%;
-  height: 20%;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
 }
 .contain_global .global #content .element .element_content div .top .title, .contain_global .global #content .element .element_content form .top .title {
   height: 100%;
-  width: 70%;
+  width: auto;
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
 }
 .contain_global .global #content .element .element_content div .top .title h1, .contain_global .global #content .element .element_content form .top .title h1 {
-  color: var(--color-lightblue);
+  height: 100%;
   font-family: var(--font-cool);
-  font-size: 1.7rem;
+  font-size: 28px;
+  transition: 0.3s ease;
+  color: #F3C57E;
 }
 .contain_global .global #content .element .element_content div .top .status, .contain_global .global #content .element .element_content form .top .status {
   display: flex;
   justify-content: flex-end;
-  align-items: center;
+  align-items: flex-end;
   height: 100%;
-  width: 30%;
+  width: auto;
+  text-align: end;
+  transition: 0.3s ease;
 }
 .contain_global .global #content .element .element_content div .top .status h2, .contain_global .global #content .element .element_content form .top .status h2 {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  align-items: flex-end;
+  text-align: end;
+  transition: 0.3s ease;
+  font-size: 20px;
   font-family: var(--font-cool);
   font-weight: normal;
 }
@@ -298,16 +322,23 @@
   color: var(--color-blue);
 }
 .contain_global .global #content .element .element_content div .middle, .contain_global .global #content .element .element_content form .middle {
-  width: 100%;
+  margin-bottom: 1vh;
+  min-height: 7vh;
   height: 45%;
+  min-width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
   text-align: justify;
+  word-wrap: break-word;
+  word-break: break-al;
+  text-overflow: ellipsis;
 }
 .contain_global .global #content .element .element_content div .middle h3, .contain_global .global #content .element .element_content form .middle h3 {
+  width: 100%;
   font-weight: normal;
+  font-size: 4vh;
   font-family: var(--font-cool);
   font-size: 1rem;
 }
@@ -318,7 +349,66 @@
   flex-direction: column;
   justify-content: flex-end;
   align-items: flex-start;
+  padding-bottom: 3vh;
 }
 .contain_global .global #content .element .element_content div .bottom .finalizado, .contain_global .global #content .element .element_content form .bottom .finalizado {
   color: var(--color-error);
+}
+.contain_global .global #content .element .locked_session {
+  position: relative;
+}
+.contain_global .global #content .element .locked_session div .top .title h1, .contain_global .global #content .element .locked_session form .top .title h1 {
+  font-size: 28px;
+  filter: brightness(60%);
+}
+.contain_global .global #content .element .locked_session div .top .status h2, .contain_global .global #content .element .locked_session form .top .status h2 {
+  filter: brightness(90%);
+  font-size: 20px;
+}
+.contain_global .global #content .element .locked_session div .middle, .contain_global .global #content .element .locked_session form .middle {
+  transition: 0.3s ease;
+  filter: brightness(60%);
+}
+.contain_global .global #content .element .locked_session div .bottom, .contain_global .global #content .element .locked_session form .bottom {
+  filter: brightness(90%);
+  transition: 0.3s ease;
+}
+.contain_global .global #content .element .locked_session .locked_session_icon {
+  position: absolute;
+  z-index: 9;
+  width: 50%;
+  aspect-ratio: 1/1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s ease;
+}
+.contain_global .global #content .element .locked_session .locked_session_icon i, .contain_global .global #content .element .locked_session .locked_session_icon .fa-solid, .contain_global .global #content .element .locked_session .locked_session_icon .fa-lock {
+  color: #F3C57E;
+  opacity: 80%;
+  text-align: center;
+  font-size: 100px;
+}
+.contain_global .global #content .element .locked_session:hover {
+  padding-left: 0%;
+  padding-right: 0%;
+  box-shadow: none;
+  background: linear-gradient(to bottom, var(--color-dark), var(--color-darker));
+}
+.contain_global .global #content .element .locked_session:hover div .top .title h1, .contain_global .global #content .element .locked_session:hover form .top .title h1 {
+  filter: brightness(70%);
+  font-size: 28px;
+}
+.contain_global .global #content .element .locked_session:hover div .top .status h2, .contain_global .global #content .element .locked_session:hover form .top .status h2 {
+  filter: brightness(100%);
+  font-size: 20px;
+}
+.contain_global .global #content .element .locked_session:hover div .middle, .contain_global .global #content .element .locked_session:hover form .middle {
+  filter: brightness(70%);
+}
+.contain_global .global #content .element .locked_session:hover div .bottom, .contain_global .global #content .element .locked_session:hover form .bottom {
+  filter: brightness(100%);
+}
+.contain_global .global #content .element .locked_session:hover .locked_session_icon {
+  opacity: 40%;
 }/*# sourceMappingURL=event.css.map */

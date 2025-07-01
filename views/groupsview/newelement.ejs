@@ -9,31 +9,26 @@
 
         <div class="global_portada" id="global_portada_id">
             <div id="imagen">
-                <!-- if (image_icon) { -->
-                    <img src="/images/default_group_photo.png" alt="Group Image"> <!-- aquí estaba la variable image_icon en el src -->
-                    <!-- } else { -->
-                    <!-- <img src="/images/default_group_photo.jpg" alt="Group Image"> -->
-                    <!-- } -->
+                <img src="<%= image_icon %>" alt="Group Image">
             </div>
             <div id="portada" >
                 <div class="imagen_portada">
-                    <img src="/images/global_background.jpg" alt="Banner"> <!-- aquí estaba la variable image_banner en el src -->
+                    <img src="<%= image_banner %>" alt="">
                 </div>
                 <div class="banner_shadowable">
                     <div class="title">
-                        <h1><!-- group.title -->Titulo Placeholder</h1>
+                        <h1><%= group_title %></h1>
                     </div>
                     <div class="subtitle">
-                        <!-- if(group.description != ""){  --> 
-                            <h2><!-- group.description --> Subtitulo Placeholder</h2>
-                        <!-- } -->
+                        <h2>Crear nuevo elemento</h2>
                     </div>
                     
                     <div class="functions">
                         <div class="text_functions">
+                            
                         </div>
                         <div class="icon_functions">
-                            <form method="GET"><!--<form method="GET" action="/group/%%encrypted_id%%/getlinks">-->
+                            <form method="GET" action="/group/<%=encrypted_id%>/getlinks">
                                 <button type="submit">
                                     <i class="fa-solid fa-share-nodes"></i>
                                 </button>
@@ -61,7 +56,7 @@
 									<h2>Galería</h2>
 								</div>
 								<div class="description">
-									<p>Comparte y visualiza tu arte y el de tus amigos sin límites. </p>
+									<p>Comparte y visualiza tu arte y el de tus amigos. </p>
 								</div>
 							</div>
 						</div>
@@ -73,7 +68,7 @@
 									<h2>Evento</h2>
 								</div>
 								<div class="description">
-									<p>Crea sesiones de dibujo con o sin límite de tiempo que se desbloquean en las fechas acordadas.</p>
+									<p>Proponed temas y retos en sesiones de arte con fechas limite o indefinidas</p>
 								</div>
 								
 							</div>
@@ -102,7 +97,7 @@
 							<p>Solo se admiten .png y .jpg</p>
 							<input type="file" name="icon" id="cover">
 						</div>
-						<div class="foto_group">
+						<div class="foto_group" >
 							<h3>Banner</h3>
 							<p>Solo se admiten .png y .jpg</p>
 							<input type="file" name="banner" id="banner">
@@ -116,8 +111,11 @@
     </div>
 </div>
 
-<style>
-</style>
+<script type="module">
+  import { setupScrollHandler } from '/javascripts/open_close_group_header.js'
+  setupScrollHandler()
+</script>
+
 
 <script>
   let chooseGallery = document.getElementById('choose_gallery')
