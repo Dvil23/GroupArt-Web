@@ -1,22 +1,88 @@
 <%- include("../partials/start.ejs") -%>
 <%- include("../partials/header.ejs") -%>
-<h1>Estás en el sesioncita de artecita!</h1>
 
-<h1><%=session.topic%></h1>
+<link rel="stylesheet" href="/stylesheets/session.css" class="css">
 
+<div class="contain_global">
+  
+  <div class="global">
 
-<% if (session.description) { %>
-    <h3><%= session.description %></h3> 
-<% } %>
+    <div class="global_portada">
+      <div class="event_image">
+        <img src="<%= section_icon %>">
+      </div>
+      <div class="session_content">
+        <div class="session_title">
+          <h1><%=session.topic%></h1>
+          <% if (session.description) { %>
+              <h3><%= session.description %></h3> 
+          <% } %>
+        </div>
+        
+        <div class="upload_button">
+          <button class="upload_image_button">Subir imagen</button>
+        </div>
+      </div>
+    </div>
 
-<button id="upload_image_button">Subir imagen</button>
+    <div class="global_portada_responsive">
+      
+        <div class="event_image">
+          <div class="content_image">
+            <img src="<%= section_icon %>">
+          </div>
 
-<% session_images.forEach((image,index) => { %>
-  <div>
-    <img src="<%= image.image_name %>" data-image-name="<%= image.image_name.split('/').pop() %>" alt="User Image">
-    <p>Subida por: <%= image.uploader_name %></p>
+          <div class="session_title">
+            <h1><%=session.topic%></h1>
+            
+          </div>
+        </div>
+        <div class="session_description">
+          <% if (session.description) { %>
+            <h3><%= session.description %></h3> 
+          <% }else{ %>
+            <span>Sin descripción</span>
+          <% }%>
+        </div>
+        
+        
+        <div class="upload_button">
+          <button class="upload_image_button">Subir imagen</button>
+        </div>
+    </div>
+
+    <% session_images.forEach((image,index) => { %>
+    <div class="post_container">
+
+      <div class="image_info">
+        <div class="user_pfp">
+          <img src="/images/default_pfp.jpg" alt="Foto de perfil">
+        </div>
+        <div class="info_user">
+          <h2><%= image.uploader_name %></h2>
+          <h3>Hora de ejemplo</h3>
+          <!-- <h3><%= image.uploaded_at %></h3> -->
+        </div>
+        
+      </div>
+      
+      <div class="image_container">
+        <img src="<%= image.image_name %>" data-image-name="<%= image.image_name.split('/').pop() %>" alt="User Image">
+      </div>
+
+      <div class="image_description">
+        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+      </div>
+      
+    </div>
+
+  <% }) %>
+
   </div>
-<% }) %>
+</div>
+
+
+
 
 
 <%- include("../partials/upload_image.ejs") -%>

@@ -45,14 +45,33 @@
                 <% }else{ %>
                     <div class="group">
                 <% } %>
-                    <div class="image">
-                        <img src="<%=group.image%>">
+                    <div class="up">
+                        <div class="image_content">
+                            <img src="<%=group.group_picture%>">
+                        </div>
+                        <div class="content_title">
+                            <h2><%= group.title %></h2>
+                        </div>
                     </div>
-                    <div class="content">
-                        <h2><%= group.title %></h2>
-                        <h3><%= group.description %></h3>
+                    <div class="down">
+                        <div class="background_image_content">
+                            <img src="<%=group.banner%>">
+                        </div>
+                        
+                        <div class="content_description">
+                            <% if (!group.description || group.description ==null || group.description == ""){ %>
+                            
+                            <h3>Sin descripción</h3>
+                            <% } else{ %>
+                            <h3><%= group.description %></h3>
+                            <% } %>
+                        </div>
+                        
                         <% if (user.isyou){ %>
-                        <button type="access">Acceder</button>
+                        <div class="button_container">
+                            <button type="access">Acceder</button>
+                        </div>
+                        
                         <% } %>
                     </div>
                     

@@ -195,6 +195,8 @@ function format_sessions(sessions, currentTime = dayjs().tz("Europe/Madrid")) {
 
 //----------------------------MOSTRAR Y SUBIR IMAGENES---------------------------
 
+let sharp = require('sharp')
+
 //Mostrar group picture y banner del grupo, eventos y galería
 router.get('/group/:id/image/:image_id',isLoggedIn,isMemberOfGroup(),(req, res) => {
   let filename = req.params.image_id;
@@ -240,43 +242,56 @@ router.get('/', function(req, res, next) {
 })
 
 // GET USER PAGE
-router.get('/user/:user_username', isLoggedIn, (req, res, next) => {
+// GET USER PAGE
+router.get('/user/:user_username', isLoggedIn, async (req, res, next) => {
   let find_user = `SELECT id, username, pfp FROM users WHERE username = ?`
 
-  db.query(find_user, [req.params.user_username], (error, user_results) => {
-
-    if (user_results.length === 0) {
-      return res.redirect("/")
-    }
-
-    let userData = user_results[0]
-
-    let user = {
-      username: userData.username,
-      pfp: userData.pfp,
-      isyou: userData.id === req.session.myuser.id
-    }
-
-    let find_groups = `
-      SELECT art_groups.id AS group_id, art_groups.title, art_groups.description, art_groups.group_picture,members.type AS member_type
-      FROM members
-      JOIN art_groups ON members.art_group_id = art_groups.id
-      WHERE members.users_id = ?
-      ORDER BY members.type DESC`
-
-    db.query(find_groups, [userData.id], (error, group_results) => {
-
-      let groups = group_results.map(r => ({
-        encrypted_id: encriptar(r.group_id),
-        title: r.title,
-        description: r.description,
-        group_picture: r.group_picture,
-        type: r.member_type
-      }))
-
-      res.render("user", { user, groups })
+  let user_results = await new Promise((resolve, reject) => {
+    db.query(find_user, [req.params.user_username], (err, results) => {
+      if (err) return reject(err)
+      resolve(results)
     })
   })
+
+  if (user_results.length === 0) return res.redirect('/')
+
+  let userData = user_results[0]
+
+  let user = {
+    username: userData.username,
+    pfp: userData.pfp,
+    isyou: userData.id === req.session.myuser.id
+  }
+
+  let find_groups = `
+    SELECT art_groups.id AS group_id, art_groups.title, art_groups.description, 
+    art_groups.group_picture, art_groups.banner, art_groups.code,
+    members.type AS member_type
+    FROM members
+    JOIN art_groups ON members.art_group_id = art_groups.id
+    WHERE members.users_id = ?
+    ORDER BY members.type DESC
+  `
+
+  let group_results = await new Promise((resolve, reject) => {
+    db.query(find_groups, [userData.id], (err, results) => {
+      if (err) return reject(err)
+      resolve(results)
+    })
+  })
+
+  let groups = group_results.map(r => ({
+    encrypted_id: encriptar(r.group_id),
+    title: r.title,
+    description: r.description,
+    type: r.member_type,
+    code: r.code,
+    group_picture: `/group/${encriptar(r.group_id)}/image/${r.group_picture}`,
+    banner: `/group/${encriptar(r.group_id)}/image/${r.banner}`
+  }))
+
+  res.render('user', { user, groups })
+
 })
 
 
@@ -532,24 +547,44 @@ router.post('/creategroup', isLoggedIn, upload.fields([{ name: 'icon', maxCount:
   })
 
   //Nombre default del icono
-  let icon_name="default_group_icon.jpg"
+  let icon_name="default_group_icon.webp"
 
   //Si has insertado icono, se inserta y renombra
   if (icon){
 
-    icon_name = "Koraw-"+ req.session.myuser.myusername + "-" + Spain.format('YYYY-MM-DD') + '-' + Spain.format('HH-mm-ss') + '-' + (Math.floor(Math.random() * 1000) + 1) + '-group-icon.jpg'
+    icon_name = "Koraw-"+ req.session.myuser.myusername + "-" + Spain.format('YYYY-MM-DD') + '-' + Spain.format('HH-mm-ss') + '-' + (Math.floor(Math.random() * 1000) + 1) + '-group-icon.webp'
 
-    await upload_image_minio('images', icon_name, icon.buffer)
+    let square_icon = await sharp(icon.buffer)
+      .resize({
+        width: 500,
+        height: 500,
+        fit: sharp.fit.cover,
+        position: sharp.strategy.entropy 
+      })
+      .webp({ quality: 80 })
+      .toBuffer()
+
+    await upload_image_minio('images', icon_name, square_icon)
   }
 
   //Nombre default del banner
-  let banner_name="default_group_banner.jpg"
+  let banner_name="default_group_banner.webp"
 
   //Si has insertado banner, se inserta y renombra
   if (banner){
-    banner_name = "Koraw-"+ req.session.myuser.myusername + "-" + Spain.format('YYYY-MM-DD') + '-' + Spain.format('HH-mm-ss') + '-' + (Math.floor(Math.random() * 1000) + 1) + '-group-banner.jpg'
+    banner_name = "Koraw-"+ req.session.myuser.myusername + "-" + Spain.format('YYYY-MM-DD') + '-' + Spain.format('HH-mm-ss') + '-' + (Math.floor(Math.random() * 1000) + 1) + '-group-banner.webp'
 
-    await upload_image_minio('images',banner_name, banner.buffer)
+    let wide_banner = await sharp(banner.buffer)
+      .resize({
+        width: 619, // tamaño deseado, ajusta si quieres
+        height: 286,
+        fit: sharp.fit.cover,
+        position: sharp.strategy.entropy // recorta centrando en la parte "interesante"
+      })
+      .webp({ quality: 80 })
+      .toBuffer()
+
+    await upload_image_minio('images',banner_name, wide_banner)
   }
 
   //Hashear la contraseña
@@ -841,24 +876,44 @@ router.post('/group/:id/newelement', isLoggedIn, isMemberOfGroup(true), GetGroup
   }
 
   //Nombre default del icono
-  let icon_name="default_element_icon.jpg"
+  let icon_name="default_element_icon.webp"
 
   //Si has insertado icono, se inserta y renombra
   if (icon){
 
-    icon_name = "Koraw-"+ req.session.myuser.myusername + "-" + Spain.format('YYYY-MM-DD') + '-' + Spain.format('HH-mm-ss') + '-' + (Math.floor(Math.random() * 1000) + 1) + '-' +section_type +'-icon.jpg'
+    icon_name = "Koraw-"+ req.session.myuser.myusername + "-" + Spain.format('YYYY-MM-DD') + '-' + Spain.format('HH-mm-ss') + '-' + (Math.floor(Math.random() * 1000) + 1) + '-' +section_type +'-icon.webp'
 
-    await upload_image_minio('images', icon_name, icon.buffer)
+    let square_icon = await sharp(icon.buffer)
+      .resize({
+        width: 500, 
+        height: 500,
+        fit: sharp.fit.cover,
+        position: sharp.strategy.entropy 
+      })
+      .webp({ quality: 80 })
+      .toBuffer()
+
+    await upload_image_minio('images', icon_name, square_icon)
   }
 
   //Nombre default del banner
-  let banner_name="default_element_banner.jpg"
+  let banner_name="default_element_banner.webp"
 
   //Si has insertado banner, se inserta y renombra
   if (banner){
-    banner_name = "Koraw-"+ req.session.myuser.myusername + "-" + Spain.format('YYYY-MM-DD') + '-' + Spain.format('HH-mm-ss') + '-'+ (Math.floor(Math.random() * 1000) + 1) + '-' +section_type + '-banner.jpg'
+    banner_name = "Koraw-"+ req.session.myuser.myusername + "-" + Spain.format('YYYY-MM-DD') + '-' + Spain.format('HH-mm-ss') + '-'+ (Math.floor(Math.random() * 1000) + 1) + '-' +section_type + '-banner.webp'
 
-    await upload_image_minio('images',banner_name, banner.buffer)
+    let wide_banner = await sharp(banner.buffer)
+      .resize({
+        width: 500, 
+        height: 500,
+        fit: sharp.fit.cover,
+        position: sharp.strategy.entropy 
+      })
+      .webp({ quality: 80 })
+      .toBuffer()
+
+    await upload_image_minio('images',banner_name, wide_banner)
   }
 
 
@@ -1035,8 +1090,9 @@ router.post('/group/:id/gallery/:sect_id/gallery_uploadimg', isLoggedIn, isMembe
     let addingnumber = count_result[0].count + 1
 
     //Nombre imposible de replicar
-    let final_name = `Koraw-${req.session.myuser.myusername}-${Spain.format('YYYY-MM-DD')}-${Spain.format('HH-mm-ss')}-${Math.floor(Math.random() * 1000) + 1 + addingnumber}-uploaded-image.jpg`
+    let final_name = `Koraw-${req.session.myuser.myusername}-${Spain.format('YYYY-MM-DD')}-${Spain.format('HH-mm-ss')}-${Math.floor(Math.random() * 1000) + 1 + addingnumber}-uploaded-image.webp`
 
+    
     // Subir a MinIO
     await minio.putObject('images', final_name, new_image.buffer)
 
@@ -1221,6 +1277,19 @@ router.post('/group/:id/event/:sect_id/newsession', isLoggedIn, isMemberOfGroup(
 // GET SESSION OF EVENT
 router.get('/group/:id/event/:sect_id/session/:sess_id', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), async function(req, res, next) {
   
+  
+
+  //Buscar todas las imagenes subidas a la sesión
+  let find_section = "SELECT * FROM sections WHERE id = ?"
+
+  let section_result = await new Promise((resolve, reject) => {
+    db.query(find_section, [req.params.sect_id], (error, section_results) => 
+    {
+      if (error) reject(error)
+      else resolve(section_results)
+    })
+  })
+
   let find_session = "SELECT * FROM sessions WHERE id = ?"
 
   let sess_result = await new Promise((resolve, reject) => {
@@ -1229,7 +1298,7 @@ router.get('/group/:id/event/:sect_id/session/:sess_id', isLoggedIn, isMemberOfG
 
 
   //Si la sesion existe, adelante
-  if (sess_result.length > 0) {
+  if (sess_result.length > 0 || section_result.length>0) {
 
     let formatted_session = format_sessions(sess_result)
 
@@ -1264,7 +1333,7 @@ router.get('/group/:id/event/:sect_id/session/:sess_id', isLoggedIn, isMemberOfG
           else resolve(results)
         })
       })
-      console.log(session_images)
+
 
 
       let formatted_session_images = session_images.map(images => {
@@ -1274,12 +1343,20 @@ router.get('/group/:id/event/:sect_id/session/:sess_id', isLoggedIn, isMemberOfG
         }
       })
 
+      
+
+
+      let section_icon = section_result[0].icon
+      section_icon = `/group/${req.params.id}/image/${section_icon}`
+
       let form_action= `/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}/uploadimg`
       res.render('groupsview/session', {
         form_action,
         session: formatted_session[0],
         user_uploaded_imgs: formatted_user_uploaded_imgs,
-        session_images: formatted_session_images
+        session_images: formatted_session_images,
+        section_icon: section_icon
+
       })
     }
 
@@ -1332,7 +1409,7 @@ router.post('/group/:id/event/:sect_id/session/:sess_id/uploadimg', isLoggedIn, 
     let addingnumber = count_result[0].count + 1
 
     //Nombre imposible de replicar
-    let final_name = `Koraw-${req.session.myuser.myusername}-${Spain.format('YYYY-MM-DD')}-${Spain.format('HH-mm-ss')}-${Math.floor(Math.random() * 1000) + 1 + addingnumber}-uploaded-image.jpg`
+    let final_name = `Koraw-${req.session.myuser.myusername}-${Spain.format('YYYY-MM-DD')}-${Spain.format('HH-mm-ss')}-${Math.floor(Math.random() * 1000) + 1 + addingnumber}-uploaded-image.webp`
 
     // Subir a MinIO
     await minio.putObject('images', final_name, new_image.buffer)

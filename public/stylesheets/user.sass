@@ -3,7 +3,7 @@
     display: flex
     justify-content: center
     align-items: center
-    background-color: var(--color-dark)
+    background-color: #171F1F
     .bordes
         height: 100%
         width: 1000px
@@ -31,49 +31,129 @@
         .contenido
             width: 100%
             min-height: 60vh
-            background-image: url("/images/global_background.jpg")
-            background-size: cover
-            background-repeat: no-repeat
-            background-position: center
-            background-attachment: fixed
+            background-color: var(--color-dark)
             display: flex
             flex-direction: column
             align-items: center
+            padding-bottom: 10vh
             .categoria
                 width: 90%
                 margin-top: 40px
                 border-radius: 30px
-                padding: 20px
+                padding: 0% 4% 2% 4%
+                display: flex
+                align-items: center
+                justify-content: center
+                flex-direction: column
                 .title
                     display: flex
                     flex-direction: row
                     justify-content: space-between
+                    align-items: center
                     margin: 10px
+                    width: 88%
                     h1
                         font-family: var(--font-cool)
                     h2
+                        height: auto
                         font-family: var(--font-cool)
                         font-weight: normal
+                        font-size: small
+                        text-align: center
                 .group
                     margin: 10px
-                    height: 200px
+                    min-height: 20vh
                     border-radius: 30px
                     background-color: var(--color-dark)
                     color: var(--color-cream)
                     display: flex
-                    justify-content: center
-                    align-items: center
-                    .image
-                        width: 190px
-                        height: 190px
-                    .content
-                        width: 190px
-                        flex: 1
+                    width: 90%
+                    overflow: hidden
+                    flex-direction: column
+                    .up
+                        width: 100%
+                        height: 10vh
+                        max-height: 10vh
                         display: flex
-                        flex-direction: column
+                        align-items: center
                         justify-content: center
-                        align-items: flex-start
+                        flex-direction: row
+                        .image_content
+                            height: 100%
+                            aspect-ratio: 1/1
+                            img
+                                width: 100%
+                        .content_title
+                            height: 100%
+                            width: 100%
+                            margin-left: 5%
+                            margin-right: 5%
+                            word-break: break-all
+                            word-wrap: break-word
+                            display: flex
+                            align-items: center
+                            justify-content: flex-start
+                            h2
+                                text-align: center
+                    .down
+
+                        width: 100%
+                        height: auto
+                        position: relative
+                        display: flex
+                        align-items: center
+                        // justify-content: center
+                        flex-direction: column
+                        *
+                            z-index: 2
+                        .background_image_content
+                            position: absolute
+                            width: 100%
+                            height: 100%
+                            object-fit: cover
+                            overflow: hidden
+                            filter: brightness(80%)
+                            img
+                                width: 100%
+                                z-index: 1
+                                opacity: 60% 
+                        .content_description
+                            width: 95%
+                            height: auto
+                            margin-top: 2%
+                            word-break: break-all
+                            word-wrap: break-word
+                            h3
+                                font-weight: normal
+                        .button_container
+                            width: 95%
+                            height: 5vh
+                            margin-bottom: 2%
+                            display: flex
+                            align-items: center
+                            justify-content: center
+                            margin-top: 2vh
+                            button
+                                
+                                font-family: var(--font-cool)
+                                width: 20%
+                                height: 80%
+                                display: flex
+                                justify-content: center
+                                align-items: center
+                                font-size: 1.5vh
+                                border: none
+                                background-color: var(--color-blue)
+                                color: var(--color-cream)
+                                border-radius: 15px
+                                transition: 0.3s ease
+                                &:hover
+                                    cursor: pointer
+                                    background-color: var(--color-hover-blue)
+                                    box-shadow: 2px 2px 8px var(--color-shadow-blue)
+                                    font-size: 1.7vh
+
             #miembro
-                background-color: var(--color-apple-transparent)
+                background-color: var(--color-cream)
             #creador
-                background-color: var(--color-peach-transparent)
+                background-color: var(--color-bright-yellow)
