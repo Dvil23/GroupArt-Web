@@ -108,7 +108,7 @@
   background-color: var(--color-cream);
   border-radius: 30px;
   margin-bottom: 2vh;
-  padding-bottom: 4vh;
+  padding-bottom: 20px;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -136,7 +136,17 @@
   align-items: center;
   justify-content: space-between;
 }
-.contain_global .global .post_container .image_info .info_user h2, .contain_global .global .post_container .image_info .info_user h3 {
+.contain_global .global .post_container .image_info .info_user .info_date {
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  flex-direction: column;
+}
+.contain_global .global .post_container .image_info .info_user .info_date * {
+  font-weight: 500;
+}
+.contain_global .global .post_container .image_info .info_user h2, .contain_global .global .post_container .image_info .info_user h3, .contain_global .global .post_container .image_info .info_user h5 {
   color: var(--color-even-darker);
 }
 .contain_global .global .post_container .image_container {
@@ -149,6 +159,29 @@
   width: 90%;
   margin-top: 1vh;
   color: var(--color-darker);
+}
+.contain_global .global .post_container .image_description i {
+  margin-right: 5px;
+}
+.contain_global .global .post_container .edit_image {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 90%;
+  margin-top: 1vh;
+  color: var(--color-darker);
+}
+.contain_global .global .post_container .edit_image button {
+  padding: 10px;
+  cursor: pointer;
+  width: 15%;
+  height: 100%;
+  border: none;
+  background: none;
+  text-align: center;
+  color: var(--color-even-darker);
+  font-size: 1.5vh;
+  font-style: var(--font-cool);
 }
 
 @media (max-width: 1200px) {

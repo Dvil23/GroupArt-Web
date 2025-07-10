@@ -217,6 +217,20 @@ router.get('/group/:id/userimage/:image_id',isLoggedIn,isMemberOfGroup(),(req, r
   });
 });
 
+router.get('/pfp/:pfp_name', (req, res) => {
+  let filename = req.params.pfp_name
+
+  minio.getObject('pfp', filename, (err, dataStream) => {
+    if (err) {
+      console.log('Error obteniendo PFP:', err)
+      return res.status(500).send('Error obteniendo foto de perfil')
+    }
+
+    res.setHeader('Content-Type', 'image/webp')
+    dataStream.pipe(res)
+  })
+})
+
 function upload_image_minio(bucket, objectName, buffer) {
   return new Promise((resolve, reject) => {
     minio.putObject(bucket, objectName, buffer, (err, etag) => {
@@ -241,7 +255,7 @@ router.get('/', function(req, res, next) {
   res.render('inicio',{invalidcode})
 })
 
-// GET USER PAGE
+
 // GET USER PAGE
 router.get('/user/:user_username', isLoggedIn, async (req, res, next) => {
   let find_user = `SELECT id, username, pfp FROM users WHERE username = ?`
@@ -294,7 +308,40 @@ router.get('/user/:user_username', isLoggedIn, async (req, res, next) => {
 
 })
 
+router.post('/changeimg/:username', isLoggedIn, upload.single('new_pfp'), async function(req, res, next) {
 
+  let username = req.params.username
+  let pfp_file = req.file
+
+  if (!pfp_file) return res.redirect(`/user/${username}`)
+
+  let pfp_name = "PFP-" + req.session.myuser.myusername + '.webp'
+
+  let sharp = require('sharp')
+  let processed_pfp = await sharp(pfp_file.buffer)
+    .resize({
+      width: 500,
+      height: 500,
+      fit: sharp.fit.cover,
+      position: sharp.strategy.entropy
+    })
+    .webp({ quality: 80 })
+    .toBuffer()
+
+  await upload_image_minio('pfp', pfp_name, processed_pfp)
+
+  let update_sql = "UPDATE users SET pfp = ? WHERE username = ?"
+  await new Promise((resolve, reject) => {
+    db.query(update_sql, ['/pfp/'+pfp_name, username], (err, result) => {
+      if (err) console.log('Error:', err)
+      resolve(result)
+    })
+  })
+
+  req.session.myuser.mypfp = '/pfp/'+pfp_name
+  return res.redirect(`/user/${username}`)
+
+})
 
 // -------------------------- LOGIN Y REGISTER -------------------------- 
 
@@ -476,7 +523,7 @@ router.post('/login', function(req, res, next) {
             req.session.myuser= {
               id: results[0].id,
               myusername: results[0].username,
-              mypfp: results[0].pfp,
+              mypfp: `${results[0].pfp}`,
             }
             res.redirect('/')
             return
@@ -970,7 +1017,7 @@ router.get('/group/:id/gallery/:sect_id', isLoggedIn, isMemberOfGroup(), GetGrou
   })
 
 
-  let find_gallery_images = "SELECT user_images.*, u.username as uploader_name FROM user_images user_images JOIN users u ON user_images.user_id = u.id WHERE user_images.group_id = ? AND gallery_id = ? ORDER BY user_images.uploaded_at ASC"
+  let find_gallery_images = "SELECT user_images.*, u.pfp as user_pfp, u.username as uploader_name FROM user_images user_images JOIN users u ON user_images.user_id = u.id WHERE user_images.group_id = ? AND gallery_id = ? ORDER BY user_images.uploaded_at ASC"
 
   let gallery_images = await new Promise((resolve, reject) => {
     db.query(find_gallery_images, [req.art_group.id,req.params.sect_id], (error,gallery_images) => {
@@ -981,17 +1028,30 @@ router.get('/group/:id/gallery/:sect_id', isLoggedIn, isMemberOfGroup(), GetGrou
 
   console.log("Imagenes DE LA GALERIA",gallery_images)
 
+
   let formatted_gallery_images = gallery_images.map(images => {
+    dayjs(images.uploaded_at).tz('Europe/Madrid')
+    let date = dayjs(images.uploaded_at).tz('Europe/Madrid').format('DD/MM/YYYY')
+    let hour = dayjs(images.uploaded_at).tz('Europe/Madrid').format('HH:mm')
+
+    let { uploaded_at, ...rest } = images
     return {
-      ...images,
+      ...rest,
+      date: date,
+      hour: hour,
       image_name: `/group/${req.params.id}/userimage/${images.image_name}`,
+      is_you: images.user_id === req.session.myuser.id 
     }
   })
 
-
   let form_action=`/group/${req.params.id}/gallery/${req.params.sect_id}/gallery_uploadimg`
+  let form_action_edit= `/group/${req.params.id}/gallery/${req.params.sect_id}/editimg`
+  let form_action_delete= `/group/${req.params.id}/gallery/${req.params.sect_id}/deleteimg`
+
   res.render('groupsview/gallery',{
     form_action,
+    form_action_edit,
+    form_action_delete,
     gallery: gallery_results[0],
     gallery_icon: `/group/${req.params.id}/image/${gallery_results[0].icon}`,
     gallery_banner:`/group/${req.params.id}/image/${gallery_results[0].banner}`,
@@ -1049,12 +1109,19 @@ router.get('/group/:id/event/:sect_id', isLoggedIn, isMemberOfGroup(), GetGroupI
 // POST UPLOAD TO GALLERY
 router.post('/group/:id/gallery/:sect_id/gallery_uploadimg', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), upload.single('image'), async function(req, res, next) {
 
+  let description = req.body.description
   let already_uploaded_image = req.body.already_uploaded_image
   let new_image = req.file 
 
   // Si hay archivo subido Y foto seleccionada, error
   if (new_image && already_uploaded_image) {
     return res.redirect(`/group/${req.params.id}/gallery/${req.params.sect_id}?error=1`)
+  }
+
+  // Si la descripcion es mayor de 2000
+  if (description && description.length > 2000) {
+    console.log("DESCRIPTION------------------------------------------")
+    return res.redirect(`/group/${req.params.id}/gallery/${req.params.sect_id}`)
   }
 
   // Si seleccionó imagen ya subida
@@ -1071,9 +1138,9 @@ router.post('/group/:id/gallery/:sect_id/gallery_uploadimg', isLoggedIn, isMembe
       return res.redirect(`/group/${req.params.id}/gallery/${req.params.sect_id}`)
     }
 
-    let insert_sql = "INSERT INTO user_images (user_id, image_name, group_id, gallery_id) VALUES (?, ?, ?, ?) "
+    let insert_sql = "INSERT INTO user_images (user_id, image_name, group_id, gallery_id,description) VALUES (?, ?, ?, ?, ?) "
     await new Promise((resolve, reject) => {
-      db.query(insert_sql, [req.session.myuser.id,already_uploaded_image,req.art_group.id,req.params.sect_id], (err, result) => resolve(result))
+      db.query(insert_sql, [req.session.myuser.id,already_uploaded_image,req.art_group.id,req.params.sect_id, description], (err, result) => resolve(result))
     })
 
     return res.redirect(`/group/${req.params.id}/gallery/${req.params.sect_id}`)
@@ -1097,9 +1164,9 @@ router.post('/group/:id/gallery/:sect_id/gallery_uploadimg', isLoggedIn, isMembe
     await minio.putObject('images', final_name, new_image.buffer)
 
     // Insertar nombre de imagenes y keys en BD
-    let insert_sql = "INSERT INTO user_images (user_id, image_name, group_id, gallery_id)VALUES (?, ?, ?, ?)"
+    let insert_sql = "INSERT INTO user_images (user_id, image_name, group_id, gallery_id, description)VALUES (?, ?, ?, ?, ?)"
     await new Promise((resolve, reject) => {
-      db.query(insert_sql, [req.session.myuser.id,final_name,req.art_group.id,req.params.sect_id], (err, result) => resolve(result))
+      db.query(insert_sql, [req.session.myuser.id,final_name,req.art_group.id,req.params.sect_id, description], (err, result) => resolve(result))
     })
 
     return res.redirect(`/group/${req.params.id}/gallery/${req.params.sect_id}`)
@@ -1110,6 +1177,68 @@ router.post('/group/:id/gallery/:sect_id/gallery_uploadimg', isLoggedIn, isMembe
 
 
   
+})
+
+
+
+// ACTUALIZAR DESCRIPCION IMAGE OF GALLERY
+router.post('/group/:id/gallery/:sect_id/editimg/:image_id', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), async function(req, res, next) {
+
+  let img_id = req.params.image_id
+  let new_desc = req.body.description
+
+  if (new_desc.length > 2000) {
+    return res.redirect('/group/'+ req.params.id + '/gallery/' + req.params.sect_id)
+  }
+
+  let find_image = "SELECT * FROM user_images WHERE id = ?"
+
+  let found_img = await new Promise((resolve, reject) => {
+    db.query(find_image, [img_id], (err, result) => resolve(result))
+  })
+
+  if (found_img.length === 0) {
+    return res.redirect('/group/'+ req.params.id + '/gallery/' + req.params.sect_id)
+  }
+
+  if (found_img[0].user_id !== req.session.myuser.id) {
+    return res.redirect('/group/'+ req.params.id + '/gallery/' + req.params.sect_id)
+  }
+
+  let update_desc = "UPDATE user_images SET description = ? WHERE id = ?"
+  await new Promise((resolve, reject) => {
+    db.query(update_desc, [new_desc, img_id], (err, result) => resolve(result))
+  })
+
+  return res.redirect('/group/'+ req.params.id + '/gallery/' + req.params.sect_id)
+
+})
+
+// DELETE IMAGE SECTION EVENT
+router.post('/group/:id/gallery/:sect_id/deleteimg/:image_id', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), async function(req, res, next) {
+
+  let img_id = req.params.image_id
+
+  let find_image = "SELECT * FROM user_images WHERE id = ?"
+
+  let found_img = await new Promise((resolve, reject) => {
+    db.query(find_image, [img_id], (err, result) => resolve(result))
+  })
+
+  if (found_img.length === 0) {
+    return res.redirect('/group/'+ req.params.id + '/gallery/' + req.params.sect_id)
+  }
+
+  if (found_img[0].user_id !== req.session.myuser.id) {
+    return res.redirect('/group/'+ req.params.id + '/gallery/' + req.params.sect_id)
+  }
+
+  let delete_img = "DELETE FROM user_images WHERE id = ?"
+  await new Promise((resolve, reject) => {
+    db.query(delete_img, [img_id], (err, result) => resolve(result))
+  })
+
+  return res.redirect('/group/'+ req.params.id + '/gallery/' + req.params.sect_id)
 })
 
 
@@ -1322,9 +1451,8 @@ router.get('/group/:id/event/:sect_id/session/:sess_id', isLoggedIn, isMemberOfG
         }
       })
 
-
       //Buscar todas las imagenes subidas a la sesión
-      let find_session_images = "SELECT user_images.*, u.username as uploader_name FROM user_images user_images JOIN users u ON user_images.user_id = u.id WHERE user_images.group_id = ? AND user_images.session_id = ? ORDER BY user_images.uploaded_at ASC"
+      let find_session_images = "SELECT user_images.*, u.pfp as user_pfp, u.username as uploader_name FROM user_images user_images JOIN users u ON user_images.user_id = u.id WHERE user_images.group_id = ? AND user_images.session_id = ? ORDER BY user_images.uploaded_at ASC"
     
       let session_images = await new Promise((resolve, reject) => {
         db.query(find_session_images, [req.art_group.id,req.params.sess_id], (error, results) => 
@@ -1334,24 +1462,35 @@ router.get('/group/:id/event/:sect_id/session/:sess_id', isLoggedIn, isMemberOfG
         })
       })
 
-
+      console.log(session_images)
 
       let formatted_session_images = session_images.map(images => {
+        dayjs(images.uploaded_at).tz('Europe/Madrid')
+        let date = dayjs(images.uploaded_at).tz('Europe/Madrid').format('DD/MM/YYYY')
+        let hour = dayjs(images.uploaded_at).tz('Europe/Madrid').format('HH:mm')
+
+        let { uploaded_at, ...rest } = images
         return {
-          ...images,
+          ...rest,
+          date: date,
+          hour: hour,
           image_name: `/group/${req.params.id}/userimage/${images.image_name}`,
+          is_you: images.user_id === req.session.myuser.id 
         }
       })
-
-      
 
 
       let section_icon = section_result[0].icon
       section_icon = `/group/${req.params.id}/image/${section_icon}`
 
       let form_action= `/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}/uploadimg`
+      let form_action_edit= `/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}/editimg`
+      let form_action_delete= `/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}/deleteimg`
+
       res.render('groupsview/session', {
         form_action,
+        form_action_edit,
+        form_action_delete,
         session: formatted_session[0],
         user_uploaded_imgs: formatted_user_uploaded_imgs,
         session_images: formatted_session_images,
@@ -1367,13 +1506,20 @@ router.get('/group/:id/event/:sect_id/session/:sess_id', isLoggedIn, isMemberOfG
 
 // POST UPLOAD IMAGE ON SESSION
 router.post('/group/:id/event/:sect_id/session/:sess_id/uploadimg', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), upload.single('image'), async function(req, res, next) {
-
+  let description = req.body.description
   let already_uploaded_image = req.body.already_uploaded_image
   let new_image = req.file 
 
   // Si hay archivo subido Y foto seleccionada, error
-  if (new_image && already_uploaded_image) {
+  if (new_image && already_uploaded_image ) {
+    console.log("-------------------ambbbaass------------------------")
     return res.redirect(`/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}?error=1`)
+  }
+
+  //Si la descripción es de mas de 2000 caracteres
+  if (description && description.length > 2000) {
+    console.log("DESCRIPTION------------------------------------------")
+    return res.redirect(`/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}`)
   }
 
   // Si seleccionó imagen ya subida
@@ -1386,15 +1532,16 @@ router.post('/group/:id/event/:sect_id/session/:sess_id/uploadimg', isLoggedIn, 
     })
 
     if(found_same_img.length > 0){
-      console.log("Esa ya la has subido a esta sesión!")
+      console.log("--------------Esa ya la has subido a esta sesión!---------------")
        return res.redirect(`/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}`)
     }
 
-    let insert_sql = "INSERT INTO user_images (user_id, image_name, group_id, session_id) VALUES (?, ?, ?, ?) "
+    let insert_sql = "INSERT INTO user_images (user_id, image_name, group_id, session_id, description)VALUES (?, ?, ?, ?, ?)"
     await new Promise((resolve, reject) => {
-      db.query(insert_sql, [req.session.myuser.id,already_uploaded_image,req.art_group.id,req.params.sess_id], (err, result) => resolve(result))
+      db.query(insert_sql, [req.session.myuser.id,already_uploaded_image,req.art_group.id,req.params.sess_id, description], (err, result) => resolve(result))
     })
 
+    console.log("--------sialFINAL-------------------------")
     return res.redirect(`/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}`)
   }
 
@@ -1415,17 +1562,89 @@ router.post('/group/:id/event/:sect_id/session/:sess_id/uploadimg', isLoggedIn, 
     await minio.putObject('images', final_name, new_image.buffer)
 
     // Insertar nombre de imagenes y keys en BD
-    let insert_sql = "INSERT INTO user_images (user_id, image_name, group_id, session_id)VALUES (?, ?, ?, ?)"
+    let insert_sql = "INSERT INTO user_images (user_id, image_name, group_id, session_id, description)VALUES (?, ?, ?, ?, ?)"
     await new Promise((resolve, reject) => {
-      db.query(insert_sql, [req.session.myuser.id,final_name,req.art_group.id,req.params.sess_id], (err, result) => resolve(result))
+      db.query(insert_sql, [req.session.myuser.id, final_name, req.art_group.id, req.params.sess_id, description], (err, result) => {
+        console.log("QUE HA PASADO -------------------------", result, err)
+        if (err) return reject(err)
+        resolve(result)
+      })
     })
 
+    console.log("SI AL FINAL NUEVAAAAAAAAA--------------------------------------------------------")
     return res.redirect(`/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}`)
   }
 
   // Si no hizo nada, redirigir igual
+  console.log("NADDDDDAAAAAAAAAAAAA-----------------------------------------")
   return res.redirect(`/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}`)
 })
+
+
+// ACTUALIZAR DESCRIPCION IMAGE OF EVENT
+router.post('/group/:id/event/:sect_id/session/:sess_id/editimg/:image_id', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), async function(req, res, next) {
+
+  let img_id = req.params.image_id
+  let new_desc = req.body.description
+
+  if (new_desc.length > 2000) {
+    return res.redirect(`/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}`)
+  }
+
+  let find_image = "SELECT * FROM user_images WHERE id = ?"
+
+  let found_img = await new Promise((resolve, reject) => {
+    db.query(find_image, [img_id], (err, result) => resolve(result))
+  })
+
+  if (found_img.length === 0) {
+    return res.redirect(`/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}`)
+  }
+
+  if (found_img[0].user_id !== req.session.myuser.id) {
+    return res.redirect(`/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}`)
+  }
+
+  let update_desc = "UPDATE user_images SET description = ? WHERE id = ?"
+  await new Promise((resolve, reject) => {
+    db.query(update_desc, [new_desc, img_id], (err, result) => resolve(result))
+  })
+
+  return res.redirect(`/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}`)
+
+})
+
+// DELETE IMAGE SECTION EVENT
+router.post('/group/:id/event/:sect_id/session/:sess_id/deleteimg/:image_id', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), async function(req, res, next) {
+
+  let img_id = req.params.image_id
+
+  let find_image = "SELECT * FROM user_images WHERE id = ?"
+
+  let found_img = await new Promise((resolve, reject) => {
+    db.query(find_image, [img_id], (err, result) => resolve(result))
+  })
+
+  if (found_img.length === 0) {
+    return res.redirect(`/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}`)
+  }
+
+  if (found_img[0].user_id !== req.session.myuser.id) {
+    return res.redirect(`/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}`)
+  }
+
+  let delete_img = "DELETE FROM user_images WHERE id = ?"
+  await new Promise((resolve, reject) => {
+    db.query(delete_img, [img_id], (err, result) => resolve(result))
+  })
+
+  return res.redirect(`/group/${req.params.id}/event/${req.params.sect_id}/session/${req.params.sess_id}`)
+})
+
+
+
+
+
 
 module.exports = router;
 

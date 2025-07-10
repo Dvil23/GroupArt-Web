@@ -101,7 +101,7 @@
             background-color: var(--color-cream)
             border-radius: 30px
             margin-bottom: 2vh
-            padding-bottom: 4vh
+            padding-bottom: 20px
             display: flex
             align-items: center
             flex-direction: column
@@ -127,7 +127,16 @@
                     display: flex
                     align-items: center
                     justify-content: space-between
-                    h2, h3
+                    .info_date
+                        // background-color: red
+                        height: 100%
+                        display: flex
+                        align-items: flex-end
+                        justify-content: center
+                        flex-direction: column
+                        *
+                            font-weight: 500
+                    h2, h3, h5
                         color: var(--color-even-darker)
             .image_container
                 width: 100%
@@ -137,6 +146,27 @@
                 width: 90%
                 margin-top: 1vh
                 color: var(--color-darker)
+                i
+                    margin-right: 5px
+            .edit_image
+                display: flex
+                align-items: center
+                justify-content: flex-end
+                width: 90%
+                margin-top: 1vh
+                color: var(--color-darker)
+                button
+                    padding: 10px
+                    cursor: pointer
+                    width: 15%
+                    height: 100%
+                    border: none
+                    background: none
+                    text-align: center      
+                    color: var(--color-even-darker)
+                    font-size: 1.5vh
+                    font-style: var(--font-cool)
+
 
 @media(max-width: 1200px)
     .contain_global
@@ -226,8 +256,7 @@
 
         .global
             padding-top: 1vh
-            .global_portada
-                
+  
             .global_portada_responsive
                 margin-left: 0
                 width: 100%
@@ -236,23 +265,12 @@
                 margin-top: 1vh
                 .event_image
 
-                    .content_image
-
-                        img
-
                     .session_title
 
                         h1
                             font-size: 4vw
                             text-align: start
 
-                .session_description
-
-                    h3
-
-                .upload_button
-
-                    button
 
             .post_container
                 margin-left: 0

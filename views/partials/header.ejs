@@ -12,11 +12,11 @@
                     <a class="header_button" onclick="window.location.href='/'">Inicio</a>
                 </div>
                 <div>
-                    <a class="header_button" onclick="window.location.href='/'">Acceder Grupo</a>
+                    <a class="header_button" onclick="window.location.href='/user/<%= myuser.myusername%>'">Mis grupos</a>
                 </div>
                 <form method="GET" action="/user/<%= myuser.myusername%>" class="profile_photo_div" id="profile_onclick">
                     <div class="profile_photo" id="profile_photo_hover">
-                        <img src="/images/default_pfp.jpg" alt="Foto de perfil">
+                        <img src="<%=myuser.mypfp%>">
                     </div>
                 </form>
             </div>

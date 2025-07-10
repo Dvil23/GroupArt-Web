@@ -47,7 +47,7 @@
                     <% if(user.image) {%>
                         <img src="<%=user.image%>">
                     <% }else{ %>
-                        <img src="/images/default_pfp.jpg">
+                        <img src="<%= user.pfp %>">
                     <% } %>
                 </div>
                 <div class="contenido">

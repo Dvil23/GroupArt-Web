@@ -56,33 +56,45 @@
 
       <div class="image_info">
         <div class="user_pfp">
-          <img src="/images/default_pfp.jpg" alt="Foto de perfil">
+          <img src="<%= image.user_pfp %>">
         </div>
         <div class="info_user">
           <h2><%= image.uploader_name %></h2>
-          <h3>Hora de ejemplo</h3>
-          <!-- <h3><%= image.uploaded_at %></h3> -->
+          <div class="info_date">
+            <h3><%=image.date %></h3>
+            <h5><%=image.hour %></h5>
+          </div>
+        
         </div>
         
       </div>
       
       <div class="image_container">
-        <img src="<%= image.image_name %>" data-image-name="<%= image.image_name.split('/').pop() %>" alt="User Image">
+        <img src="<%= image.image_name %>" data-image-name="<%= image.image_name.split('/').pop() %>">
       </div>
 
       <div class="image_description">
-        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+        <p><%= image.description %></p>
       </div>
-      
+
+      <% if(image.is_you) {%>
+      <div class="edit_image">
+        <button class="edit_image_btn"
+        data-image-id="<%= image.id %>"
+        data-image-name="<%= image.image_name.split('/').pop() %>"
+        data-description="<%- image.description || '' %>">
+          Editar
+          <i class="fa-solid fa-pencil"></i> 
+        </button>
+        
+      </div>
+      <% }%>
     </div>
 
   <% }) %>
 
   </div>
 </div>
-
-
-
 
 
 <%- include("../partials/upload_image.ejs") -%>

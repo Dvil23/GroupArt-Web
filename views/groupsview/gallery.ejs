@@ -1,19 +1,105 @@
 <%- include("../partials/start.ejs") -%>
 <%- include("../partials/header.ejs") -%>
-<h1><%= gallery.title %></h1>
-<h3><%= gallery.description %></h1>
-<img src="<%= gallery_icon %>" style="width: 200px;">
-<img src="<%= gallery_banner %>" style="width: 200px;">
+<link rel="stylesheet" href="/stylesheets/session.css" class="css">
 
-<button id="upload_image_button">Subir imagen</button>
 
-<% gallery_images.forEach((image,index) => { %>
-  <div>
-    <img src="<%= image.image_name %>" alt="User Image">
-    <p>Subida por: <%= image.uploader_name %></p>
+<div class="contain_global">
+  
+  <div class="global">
+
+    <div class="global_portada">
+      <div class="event_image">
+        <img src="<%= gallery_icon  %>"> 
+      </div>
+      <div class="session_content">
+        <div class="session_title">
+          <h1><%=gallery.title%></h1>
+          <% if (gallery.description) { %>
+              <h3><%= gallery.description %></h3> 
+          <% } %>
+        </div>
+        
+        <div class="upload_button">
+          <button class="upload_image_button">Subir imagen</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="global_portada_responsive">
+      
+        <div class="event_image">
+          <div class="content_image">
+            <img src="<%= gallery_icon %>">
+          </div>
+
+          <div class="session_title">
+            <h1><%=gallery.topic%></h1>
+            
+          </div>
+        </div>
+        <div class="session_description">
+          <% if (gallery.description) { %>
+            <h3><%= gallery.description %></h3> 
+          <% }else{ %>
+            <span>Sin descripción</span>
+          <% }%>
+        </div>
+        
+        
+        <div class="upload_button">
+          <button class="upload_image_button">Subir imagen</button>
+        </div>
+    </div>
+
+    <% gallery_images.forEach((image,index) => { %>
+    <div class="post_container">
+
+      <div class="image_info">
+        <div class="user_pfp">
+          <img src="<%= image.user_pfp %>" alt="Foto de perfil">
+        </div>
+        <div class="info_user">
+          <h2><%= image.uploader_name %></h2>
+          <div class="info_date">
+            <h3><%=image.date %></h3>
+            <h5><%=image.hour %></h5>
+          </div>
+        
+        </div>
+        
+      </div>
+      
+      <div class="image_container">
+        <img src="<%= image.image_name %>" data-image-name="<%= image.image_name.split('/').pop() %>" alt="User Image">
+      </div>
+
+      <div class="image_description">
+        <p><%= image.description %></p>
+      </div>
+
+      <% if(image.is_you) {%>
+      <div class="edit_image">
+        <button class="edit_image_btn"
+        data-image-id="<%= image.id %>"
+        data-image-name="<%= image.image_name.split('/').pop() %>"
+        data-description="<%- image.description || '' %>">
+          Editar
+          <i class="fa-solid fa-pencil"></i> 
+        </button>
+        
+      </div>
+      <% }%>
+    </div>
+
+  <% }) %>
+
   </div>
-<% }) %>
+</div>
 
+
+<%- include("../partials/upload_image.ejs") -%>
+
+<%- include("../partials/end.ejs") -%>
 
 <%- include("../partials/upload_image.ejs") -%>
 

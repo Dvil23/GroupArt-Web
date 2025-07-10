@@ -20,11 +20,36 @@
             justify-content: flex-start
             align-items: center
             background-color: var(--color-cream)
-            img
+            .user_edit_pfp_container
                 margin-left: 30px
-                height: 26vh
-                width: 26vh
-                border-radius: 500px
+                position: relative
+                img
+                    
+                    height: 26vh
+                    width: 26vh
+                    border-radius: 500px
+                    transition: 0.3s
+    
+                i
+                    cursor: pointer
+                    height: 100%
+                    width: 100%
+                    left: 0
+                    top: 0
+                    bottom: 0
+                    right: 0
+                    font-size: 80px
+                    position: absolute
+                    display: flex
+                    align-items: center
+                    justify-content: center
+                    text-align: center
+                    filter: opacity(0%)
+                    transition: 0.3s
+                    color: white
+                    &:hover
+                        filter: opacity(90%)
+                        
             h1
                 margin-left: 50px
                 font-family: var(--font-cool)
@@ -157,3 +182,40 @@
                 background-color: var(--color-cream)
             #creador
                 background-color: var(--color-bright-yellow)
+
+.swal2-html-container
+    background-color: var(--color-dark)
+    border-radius: 15px
+    padding-bottom: 20px
+    max-height: 95vh
+    overflow: hidden
+    color: var(--color-cream)
+
+    h1
+        color: var(--color-cream)
+    #change_pfp_form
+        display: flex
+        align-items: center
+        justify-content: center
+        flex-direction: column
+        button 
+            width: 30%
+            padding: 8px 16px
+            border: none
+            border-radius: 6px
+            color: white
+            cursor: pointer
+            font-size: 14px
+            font-style: var(--font-cool)
+            color: var(--color-even-darker)
+            background-color: var(--color-bright-yellow)
+
+            &:hover 
+                background-color: #e7b261
+        input
+            border: none
+
+.swal2-show, .swal2-modal, .swal2-popup
+    border-radius: 15px
+    background-color: var(--color-dark)
+    padding: 0

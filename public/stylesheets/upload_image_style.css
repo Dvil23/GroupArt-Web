@@ -1,0 +1,143 @@
+.swal2-html-container, .swal2-icon-warning {
+  background-color: var(--color-dark);
+  border-radius: 15px;
+  padding-bottom: 20px;
+  max-height: 95vh;
+  overflow: hidden;
+}
+.swal2-html-container *, .swal2-icon-warning * {
+  color: var(--color-cream);
+}
+.swal2-html-container h3, .swal2-icon-warning h3 {
+  text-align: left;
+  font-weight: normal;
+}
+.swal2-html-container i, .swal2-icon-warning i {
+  color: var(--color-dark);
+}
+.swal2-html-container button, .swal2-icon-warning button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-style: var(--font-cool);
+  color: var(--color-even-darker);
+  background-color: var(--color-bright-yellow);
+}
+.swal2-html-container button:hover, .swal2-icon-warning button:hover {
+  background-color: #e7b261;
+}
+.swal2-html-container .swal2-cancel, .swal2-icon-warning .swal2-cancel {
+  background-color: var(--color-error);
+}
+.swal2-html-container .swal2-cancel:hover, .swal2-icon-warning .swal2-cancel:hover {
+  background-color: #a15252;
+}
+.swal2-html-container .image_grid_container, .swal2-icon-warning .image_grid_container {
+  margin-top: 3vh;
+  padding: 20px;
+  background-color: var(--color-cream);
+  border-radius: 15px;
+  overflow-y: scroll;
+  max-height: 55vh;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.swal2-html-container .image_grid_container #image_grid, .swal2-icon-warning .image_grid_container #image_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+}
+.swal2-html-container .image_grid_container #image_grid img, .swal2-icon-warning .image_grid_container #image_grid img {
+  width: 100%;
+  height: auto;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+.swal2-html-container .image_grid_container #image_grid img:hover, .swal2-icon-warning .image_grid_container #image_grid img:hover {
+  transform: scale(1.03);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+.swal2-html-container .image_grid_container #image_grid img.selected, .swal2-icon-warning .image_grid_container #image_grid img.selected {
+  border: 3px solid #007bff;
+}
+.swal2-html-container .image_grid_container::-webkit-scrollbar, .swal2-icon-warning .image_grid_container::-webkit-scrollbar {
+  display: none;
+}
+.swal2-html-container input[type=file], .swal2-html-container textarea, .swal2-icon-warning input[type=file], .swal2-icon-warning textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  border-radius: 15px;
+  font-style: var(--font-cool);
+  background-color: var(--color-cream);
+  color: var(--color-dark);
+}
+.swal2-html-container textarea, .swal2-icon-warning textarea {
+  resize: vertical;
+  overflow-y: auto;
+  max-height: 34.5em;
+  color: var(--color-dark);
+}
+.swal2-html-container .custom-actions, .swal2-icon-warning .custom-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.swal2-html-container .custom-actions #cancel_button, .swal2-icon-warning .custom-actions #cancel_button {
+  background-color: var(--color-error);
+}
+.swal2-html-container .custom-actions #cancel_button:hover, .swal2-icon-warning .custom-actions #cancel_button:hover {
+  background-color: #a34343;
+}
+.swal2-html-container .button_container, .swal2-icon-warning .button_container {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.swal2-html-container .button_container button, .swal2-icon-warning .button_container button {
+  width: 30%;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-style: var(--font-cool);
+  color: var(--color-even-darker);
+  background-color: var(--color-bright-yellow);
+}
+.swal2-html-container .button_container button:hover, .swal2-icon-warning .button_container button:hover {
+  background-color: #e7b261;
+}
+.swal2-html-container .button_container #delete_btn, .swal2-icon-warning .button_container #delete_btn {
+  background-color: var(--color-error);
+}
+.swal2-html-container .button_container #delete_btn i, .swal2-icon-warning .button_container #delete_btn i {
+  margin-right: 10px;
+}
+.swal2-html-container .button_container #delete_btn:hover, .swal2-icon-warning .button_container #delete_btn:hover {
+  background-color: #a15252;
+}
+
+.swal2-show, .swal2-modal, .swal2-popup {
+  border-radius: 15px;
+  background-color: var(--color-dark);
+  padding: 0;
+}
+
+.swal2-icon-warning {
+  padding: 15px;
+}/*# sourceMappingURL=upload_image_style.css.map */

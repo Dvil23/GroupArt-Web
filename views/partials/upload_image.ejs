@@ -1,4 +1,5 @@
 <script src="/sweetalert2/sweetalert2.all.min.js"></script>
+<link rel="stylesheet" href="/stylesheets/upload_image_style.css" class="css">
 
 <script>
   document.querySelectorAll('.upload_image_button').forEach(btn => {
@@ -7,42 +8,60 @@
       let selected_img = null
 
       Swal.fire({
-        title: 'Subir imagen',
+
         html: `
+          <h1>Subir imagen</h1>
           <form id="upload_image_form" method="POST" action="<%= form_action %>" enctype="multipart/form-data">
             <input type="file" name="image" id="image_input" accept="image/*">
+            <textarea id="image_description" name="description" placeholder="Descripción" rows="7" maxlength="2000"></textarea>
             <input type="hidden" name="already_uploaded_image" id="already_uploaded_image">
-            <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+
+            <div class="custom-actions">
               <button type="button" id="cancel_button">Cancelar</button>
               <button type="submit">Subir</button>
             </div>
           </form>
 
-          <div id="image_grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px;">
+          <div class="image_grid_container">
+            <h2>O selecciona una imagen que ya hayas subido:</h2>
+            <div id="image_grid">
             <% user_uploaded_imgs.forEach(function(img) { %>
-              <img src="<%= img.image_name %>" data-image-name="<%= img.image_name.split('/').pop() %>" alt="User Image"
-                style="width: 100%; object-fit: cover; border: 2px solid transparent; border-radius: 4px; cursor: pointer;">
+              <img 
+                src="<%= img.image_name %>"
+                data-image-name="<%= img.image_name.split('/').pop() %>"
+                data-description="<%= img.description ? img.description.replace(/"/g, '&quot;') : '' %>"
+                alt="Imagen subida"
+              >
             <% }) %>
-          </div>`,
+          </div>
+          </div>
+          
+        `,
 
         showConfirmButton: false,
         showCancelButton: false,
 
         didOpen: () => {
           let imgs = document.querySelectorAll('#image_grid img')
+          let fileInput = document.getElementById('image_input')
+          let descriptionInput = document.getElementById('image_description')
+
           imgs.forEach(img => {
             img.addEventListener('click', () => {
-              imgs.forEach(i => i.style.border = '2px solid transparent')
-              img.style.border = '2px solid #007bff'
+              imgs.forEach(i => i.classList.remove('selected'))
+              img.classList.add('selected')
               selected_img = img.getAttribute('data-image-name')
-              document.getElementById('image_input').value = ''
+              let description = img.getAttribute('data-description')
+              descriptionInput.value = description || ''
+              fileInput.value = ''
             })
           })
 
-          document.getElementById('image_input').addEventListener('change', () => {
-            if (document.getElementById('image_input').files.length > 0) {
+          fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
               selected_img = null
-              imgs.forEach(i => i.style.border = '2px solid transparent')
+              imgs.forEach(i => i.classList.remove('selected'))
+              // descriptionInput.value = ''
             }
           })
 
@@ -52,22 +71,75 @@
 
           document.getElementById('upload_image_form').addEventListener('submit', e => {
             e.preventDefault()
-            let fileInput = document.getElementById('image_input')
+
             if (!fileInput.files.length && !selected_img) {
               Swal.showValidationMessage('¡Selecciona una imagen o sube una nueva!')
               return false
             }
+
             if (selected_img) {
               document.getElementById('already_uploaded_image').value = selected_img
               fileInput.value = ''
             }
+
             document.getElementById('upload_image_form').submit()
           })
         },
 
         width: '800px'
       })
+    })
+  })
+</script>
 
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.edit_image_btn').forEach(btn => {
+      btn.addEventListener('click', function () {
+        let imageId = this.dataset.imageId
+        let imageName = this.dataset.imageName
+        let currentDesc = this.dataset.description || ''
+
+        Swal.fire({
+          html: `
+          <h1> Editar </h1>
+            <form id="edit_image_form" method="POST" action="<%= form_action_edit %>/${imageId}">
+              <h3>Descripción</h3>
+              <textarea name="description" id="description_textarea" style="width:100%;height:100px">${currentDesc}</textarea>
+              <input type="hidden" name="image_id" value="${imageId}">
+              <div class="button_container">
+                <button type="submit">Guardar</button>
+              </div>
+            </form>
+
+            <div class="button_container"> 
+              <button type="button" id="delete_btn"><i class="fa-solid fa-trash"></i>Borrar imagen</button>
+            </div>
+          `,
+          showConfirmButton: false,
+          didOpen: () => {
+            document.getElementById('delete_btn').addEventListener('click', () => {
+              Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'Esta imagen será eliminada de la sesión.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, borrar',
+                cancelButtonText: 'Cancelar'
+              }).then(result => {
+                if (result.isConfirmed) {
+                  let deleteForm = document.createElement('form')
+                  deleteForm.method = 'POST'
+                  deleteForm.action = "<%= form_action_delete %>/" + imageId
+                  document.body.appendChild(deleteForm)
+                  deleteForm.submit()
+                }
+              })
+            })
+          },
+          width: '600px'
+        })
+      })
     })
   })
 </script>

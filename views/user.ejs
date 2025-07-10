@@ -4,7 +4,12 @@
 <div class="global">
     <div class="bordes">
         <div class="portada">
-            <img src="/images/<%=user.pfp%>" alt="Foto de usuario"></img>
+            <div class="user_edit_pfp_container">
+                <img id="pfp_img" src="<%= user.pfp %>" style="cursor:pointer">
+                <i class="fa-solid fa-pencil" id="pfp_image_click"></i>
+            </div>
+            
+            
             <h1><%=user.username%></h1>
             
         </div>
@@ -91,6 +96,38 @@
     </div>
 </div>
 
+
+<script src="/sweetalert2/sweetalert2.all.min.js"></script>
+
+<script>
+  document.getElementById('pfp_image_click').addEventListener('click', () => {
+    Swal.fire({
+      html: `
+        <h1>Subir nueva foto de perfil</h1>
+        <form id="change_pfp_form" method="POST" action="/changeimg/<%= user.username %>" enctype="multipart/form-data">
+          <input type="file" name="new_pfp" accept="image/*" required style="margin: 20px 0">
+          <button type="submit">Subir</button>
+        </form>
+      `,
+      showConfirmButton: false,
+      width: '500px'
+    })
+  })
+</script>
+
+<script>
+  const container = document.querySelector('.user_edit_pfp_container')
+  const pencilIcon = container.querySelector('i.fa-pencil')
+  const img = container.querySelector('img#pfp_img')
+
+  pencilIcon.addEventListener('mouseenter', () => {
+    img.style.filter = 'brightness(0.6)'
+  })
+
+  pencilIcon.addEventListener('mouseleave', () => {
+    img.style.filter = 'brightness(1)'
+  })
+</script>
 
 
 <%- include("partials/end.ejs") -%>

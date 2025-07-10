@@ -1,0 +1,128 @@
+
+.swal2-html-container, .swal2-icon-warning
+    background-color: var(--color-dark)
+    border-radius: 15px
+    padding-bottom: 20px
+    max-height: 95vh
+    overflow: hidden
+    *
+        color: var(--color-cream)
+    h3
+        text-align: left
+        font-weight: normal
+    i
+        color: var(--color-dark)
+    button 
+        padding: 8px 16px
+        border: none
+        border-radius: 6px
+        color: white
+        cursor: pointer
+        font-size: 14px
+        font-style: var(--font-cool)
+        color: var(--color-even-darker)
+        background-color: var(--color-bright-yellow)
+
+        &:hover 
+            background-color: #e7b261
+    .swal2-cancel
+        background-color: var(--color-error)
+        &:hover 
+            background-color: #a15252
+    .image_grid_container
+        margin-top: 3vh
+        padding: 20px
+        background-color: var(--color-cream)
+        border-radius: 15px
+        overflow-y: scroll
+        max-height: 55vh
+        -ms-overflow-style: none
+        scrollbar-width: none
+        #image_grid 
+
+            display: grid
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr))
+            gap: 10px
+            margin-top: 20px
+            img 
+                width: 100%
+                height: auto
+                border: 2px solid transparent
+                border-radius: 10px
+                transition: all 0.2s ease-in-out
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1)
+                cursor: pointer
+                &:hover
+                    transform: scale(1.03)
+                    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15)
+            img.selected
+                border: 3px solid #007bff
+        &::-webkit-scrollbar
+            display: none
+        
+
+    input[type="file"], textarea 
+        width: 100%
+        padding: 10px
+        margin-top: 10px
+        font-size: 14px
+        border-radius: 6px
+        border: 1px solid #ccc
+        box-sizing: border-box
+        border-radius: 15px
+        font-style: var(--font-cool)
+        background-color: var(--color-cream)
+        color: var(--color-dark)
+    textarea 
+        resize: vertical
+        overflow-y: auto
+        max-height: calc(1.5em * 23)
+        color: var(--color-dark)
+
+    .custom-actions 
+        margin-top: 20px
+        display: flex
+        justify-content: flex-end
+        gap: 10px
+
+        
+
+        #cancel_button 
+            background-color: var(--color-error)
+
+            &:hover 
+                background-color: #a34343
+    .button_container
+        margin-top: 15px 
+        display: flex
+        justify-content: center
+        align-items: center
+        button
+            width: 30%
+            padding: 8px 16px
+            border: none
+            border-radius: 6px
+            color: white
+            cursor: pointer
+            font-size: 14px
+            font-style: var(--font-cool)
+            color: var(--color-even-darker)
+            background-color: var(--color-bright-yellow)
+
+            &:hover 
+                background-color: #e7b261
+        #delete_btn
+            background-color: var(--color-error)
+            i
+                margin-right: 10px
+            &:hover 
+                background-color: #a15252
+
+.swal2-show, .swal2-modal, .swal2-popup
+    border-radius: 15px
+    background-color: var(--color-dark)
+    padding: 0
+
+.swal2-icon-warning
+
+    padding: 15px
