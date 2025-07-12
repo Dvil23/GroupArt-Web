@@ -428,7 +428,7 @@ router.post('/register',  function(req, res, next) {
                 html: `
                   <h2>¡Gracias por registrarte en Koraw, ${username}!</h2>
                   <p>Haz clic en el siguiente botón para confirmar tu cuenta:</p>
-                  <a href="http://localhost:3000/verify?token=${verify_token}" style="padding:10px 15px;background:#228A78;color:white;text-decoration:none;border-radius:4px">Confirmar cuenta</a>
+                  <a href="http://korawapp.duckdns.org:54321/verify?token=${verify_token}" style="padding:10px 15px;background:#228A78;color:white;text-decoration:none;border-radius:4px">Confirmar cuenta</a>
                   <p> Si no eres tú, por favor no haga click en el enlace</p>
                   `
               }
@@ -723,7 +723,7 @@ router.get('/group/:id', isLoggedIn, isMemberOfGroup(), GetGroupInfo(), async fu
     isadmin: req.isadmin,
     created_element: created_element || false,
     unique_code: share ? req.art_group.code : false,
-    unique_link: share ? `http://localhost:3000/group/${req.params.id}` : false,
+    unique_link: share ? `http://korawapp.duckdns.org:54321/group/${req.params.id}` : false,
     image_icon,
     image_banner
   })
@@ -923,7 +923,16 @@ router.post('/group/:id/newelement', isLoggedIn, isMemberOfGroup(true), GetGroup
   }
 
   //Nombre default del icono
-  let icon_name="default_element_icon.webp"
+  let icon_name
+  let banner_name
+  //Nombre default del banner
+  if (section_type == "gallery") {
+    banner_name="default_gallery_banner.webp"
+    icon_name="default_gallery_icon.webp"
+  } else if (section_type == "event") {
+    banner_name="default_event_banner.webp"
+    icon_name="default_event_icon.webp"
+  }
 
   //Si has insertado icono, se inserta y renombra
   if (icon){
@@ -942,9 +951,6 @@ router.post('/group/:id/newelement', isLoggedIn, isMemberOfGroup(true), GetGroup
 
     await upload_image_minio('images', icon_name, square_icon)
   }
-
-  //Nombre default del banner
-  let banner_name="default_element_banner.webp"
 
   //Si has insertado banner, se inserta y renombra
   if (banner){

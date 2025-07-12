@@ -45,6 +45,9 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+.swal2-html-container .image_grid_container h2, .swal2-icon-warning .image_grid_container h2 {
+  color: var(--color-dark);
+}
 .swal2-html-container .image_grid_container #image_grid, .swal2-icon-warning .image_grid_container #image_grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));

@@ -89,6 +89,10 @@
   overflow: hidden;
 }
 .contain_global .global .global_portada #portada .imagen_portada img {
+  -o-object-fit: cover;
+     object-fit: cover;
+  width: 100%;
+  height: 100%;
   width: 100%;
 }
 .contain_global .global .global_portada #portada .banner_shadowable {
@@ -230,6 +234,7 @@
   margin-left: 0;
   margin-right: 0;
   z-index: 1;
+  min-width: 1000px;
 }
 .contain_global .global #content hr {
   width: 100%;
@@ -310,9 +315,13 @@
   height: 100%;
   -o-object-fit: cover;
      object-fit: cover;
+  filter: brightness(0.6);
 }
 .contain_global .global #content form .element .element_shadow .element_content .background_element_banner img {
+  -o-object-fit: cover;
+     object-fit: cover;
   width: 100%;
+  height: 100%;
 }
 .contain_global .global #content form .element .element_shadow .element_content .element_up {
   z-index: 2;

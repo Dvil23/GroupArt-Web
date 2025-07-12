@@ -15,10 +15,10 @@
         </div>
 
 
-        <% var first_member_iteration=true %>
+        <% var first_member_iteration=true; var after_creator= false %>
         <div class="contenido">
             <% groups.forEach((group,index) => { %>
-
+                <% console.log("adios")%>
                 <% if (group.type==2 && index == 0){ %>
                     <div class="categoria" id="creador">
                         <div class="title">
@@ -29,10 +29,15 @@
                             <h2>Grupos que ha creado <%=user.username%></h2>
                             <% } %>
                         </div>
+                    <% after_creator = true %>
                 <% }%>
-                <% if (group.type==1 || group.type == 0  && first_member_iteration){ %>
+                <% if ((group.type==1 || group.type == 0)  && first_member_iteration){ %>
                     <% first_member_iteration=false %>
-                    </div>
+                    <% if(after_creator){ %>
+                        <% console.log("hola")%>
+                        </div>
+                    <% } %>
+                    
                     <div class="categoria" id="miembro">
                         <div class="title">
                             <h1>Miembro</h1>
